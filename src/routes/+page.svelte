@@ -22,11 +22,15 @@
 					{description}
 				</p>
 				<a href={hrefs.signup} class="btn btn-primary">Get Started</a>
+				<button
+					on:click={() => document.getElementById('info')?.scrollIntoView({ behavior: 'smooth' })}
+					class="btn btn-secondary">Learn More</button
+				>
 			</div>
 		</div>
 	</div>
 	<Container>
-		<div class="grid grid-cols-3 place-items-center">
+		<div class="grid grid-cols-3 place-items-center" id="info">
 			<div class="col-auto h-full w-full">
 				<Card
 					img={creativity}
