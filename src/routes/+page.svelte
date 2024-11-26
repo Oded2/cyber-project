@@ -5,6 +5,7 @@
 	import creativity from '$lib/images/Creativity.svg';
 	import calendar from '$lib/images/Calendar.svg';
 	import map from '$lib/images/Map.svg';
+	import Title from '$lib/components/Title.svelte';
 
 	const imgUrl =
 		'https://raw.githubusercontent.com/Oded2/Aerologger/refs/heads/main/src/lib/images/logo_simplified.png';
@@ -55,3 +56,5 @@
 		</div>
 	</Container>
 </main>
+
+<Title title={'Aerologger'}></Title>
