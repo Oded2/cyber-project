@@ -1,26 +1,106 @@
 <script lang="ts">
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
+
+	let email: string = '';
+	let displayName: string = '';
+	let username: string = '';
+	let password: string = '';
+	let confirmPassword: string = '';
+
+	$: passwordMatch = password == confirmPassword;
+
+	function submit() {}
 </script>
 
 <main>
 	<Container>
 		<div class="w-full">
-			<div class="card mx-auto max-w-md shadow-xl">
-				<div class="card-body">
-					<div class="mb-3 flex w-full border-b-2 pb-2">
-						<h2 class="card-title mx-auto">Sign Up</h2>
+			<form on:submit|preventDefault={submit}>
+				<div class="card mx-auto max-w-md shadow-xl">
+					<div class="card-body">
+						<div class="mb-3 flex w-full border-b-2 pb-2">
+							<h2 class="card-title mx-auto">Sign Up</h2>
+						</div>
+						<div class="grid gap-4">
+							<label class="input input-bordered flex items-center gap-2">
+								<div class="tooltip" data-tip="You will be asked to verify this email">
+									<i class="fa-solid fa-envelope opacity-70"></i>
+								</div>
+								<input
+									type="email"
+									class="grow"
+									placeholder="Email"
+									maxlength="500"
+									required
+									bind:value={email}
+								/>
+							</label>
+							<label class="input input-bordered flex items-center gap-2">
+								<div class="tooltip" data-tip="Does not have to be unique">
+									<i class="fa-solid fa-signature opacity-70"></i>
+								</div>
+								<input
+									type="text"
+									class="grow"
+									placeholder="Name"
+									dir="auto"
+									maxlength="50"
+									required
+									bind:value={displayName}
+								/>
+							</label>
+							<label class="input input-bordered flex items-center gap-2">
+								<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
+									<i class="fa-solid fa-id-card opacity-70"></i>
+								</div>
+								<input
+									type="text"
+									class="grow"
+									placeholder="Username"
+									maxlength="50"
+									required
+									bind:value={username}
+								/>
+							</label>
+							<label class="input input-bordered flex items-center gap-2">
+								<div class="tooltip" data-tip="Must be at least 8 characters long">
+									<i class="fa-solid fa-key opacity-70"></i>
+								</div>
+								<input
+									type="password"
+									class="grow"
+									placeholder="Password"
+									minlength="8"
+									required
+									bind:value={password}
+								/>
+							</label>
+							<label
+								class="input input-bordered flex items-center gap-2"
+								class:input-success={password.length > 0 && passwordMatch}
+							>
+								<div class="tooltip" data-tip="Confirm your password">
+									<i class="fa-solid fa-circle-check opacity-70"></i>
+								</div>
+								<input
+									type="password"
+									class="grow"
+									placeholder="Confirm Password"
+									minlength="8"
+									required
+									bind:value={confirmPassword}
+								/>
+							</label>
+						</div>
+						<div class="card-actions mt-5">
+							<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
+								>Create Account
+							</button>
+						</div>
 					</div>
-					<label class="input input-bordered flex items-center gap-2">
-						<i class="fa-solid fa-envelope opacity-70"></i>
-						<input type="email" class="grow" placeholder="Email" />
-					</label>
-					<label class="input input-bordered flex items-center gap-2">
-						<i class="fa-solid fa-signature opacity-70"></i>
-						<input type="text" class="grow" placeholder="Name" />
-					</label>
 				</div>
-			</div>
+			</form>
 		</div>
 	</Container>
 </main>

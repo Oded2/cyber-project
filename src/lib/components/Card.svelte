@@ -5,8 +5,8 @@
 </script>
 
 <div class="card h-full w-full">
-	<figure class="h-1/2 max-w-52 md:max-w-full">
-		<img src={img} alt={title} />
+	<figure class="h-1/2 w-full">
+		<img class="max-w-md" src={img} alt={title} />
 	</figure>
 	<div class="card-body">
 		<h2 class="card-title">{title}</h2>
