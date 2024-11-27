@@ -13,10 +13,10 @@
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
 </script>
 
-<main class="py-10">
+<main>
 	<div class="hero mb-10 bg-base-200">
 		<div class="hero-content flex-col lg:flex-row-reverse">
-			<img alt="Logo" src={imgUrl} class="max-w-sm rounded-lg shadow-2xl" />
+			<img alt="Logo" src={imgUrl} class="max-w-sm rounded-lg" />
 			<div>
 				<h1 class="text-5xl font-bold">Elevate Your Logbook!</h1>
 				<p class="py-6">
