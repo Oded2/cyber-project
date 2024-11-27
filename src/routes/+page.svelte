@@ -31,22 +31,22 @@
 		</div>
 	</div>
 	<Container>
-		<div class="grid grid-cols-3 place-items-center" id="info">
-			<div class="col-auto h-full w-full">
+		<div class="place-items-center md:grid md:grid-cols-2 xl:grid-cols-3" id="info">
+			<div class="col-auto h-full">
 				<Card
 					img={creativity}
 					title="Log your flights, fast and easy."
 					description="With Aerologger, you can log your flights in a very simple and quick process. Aerologger's technology will then get as much information about your flight as it can, such as weather, flight route, and more!"
 				></Card>
 			</div>
-			<div class="col-auto h-full w-full">
+			<div class="col-auto h-full">
 				<Card
 					img={calendar}
 					title="Stay updated."
 					description="Have a flight in two days? No problem. Simply plan a future flight and your pilot's calendar will update. Want to know your past flights? They will show up there as well."
 				></Card>
 			</div>
-			<div class="col-auto h-full w-full">
+			<div class="col-span-2 h-full xl:col-auto">
 				<Card
 					img={map}
 					title="Plan future flights."
