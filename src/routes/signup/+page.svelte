@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
@@ -15,7 +16,7 @@
 
 <main>
 	<Container>
-		<div class="w-full">
+		<div class="my-10 w-full">
 			<form on:submit|preventDefault={submit}>
 				<div class="card mx-auto max-w-md shadow-xl">
 					<div class="card-body">
@@ -101,6 +102,11 @@
 					</div>
 				</div>
 			</form>
+			<div class="mx-auto mt-7 w-full text-center">
+				<span
+					>Already have an account? <a href={hrefs.login} class="link link-primary">Log In</a></span
+				>
+			</div>
 		</div>
 	</Container>
 </main>
