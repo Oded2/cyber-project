@@ -49,7 +49,7 @@
 				<Card
 					img={map}
 					title="Plan future flights."
-					description="This isn't just a logbook. Aerologger is also a flight planning application. Given your future takeoff time & date, Aerologger will automatically add it to your calendar, plan a route for you based on weather and airspace restrictions, and alert you of any possible delays."
+					description="This isn't just a logbook. Aerologger is also a flight planning application. Given your future takeoff time and date, Aerologger will automatically add it to your calendar, plan a route for you based on weather and airspace restrictions, and alert you of any possible delays."
 				></Card>
 			</div>
 		</div>
