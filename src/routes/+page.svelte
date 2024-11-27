@@ -42,7 +42,7 @@
 				<Card
 					img={calendar}
 					title="Stay updated."
-					description="Have a flight in two days? No problem. Simply plan a future flight and your pilot's calendar will update. Want to know your past flights? They will show up there as well."
+					description="Have a flight in a few days? No problem. Simply plan a future flight and your pilot's calendar will update. Want to know your past flights? They will show up there as well."
 				></Card>
 			</div>
 			<div class="col-span-2 h-full xl:col-auto">
