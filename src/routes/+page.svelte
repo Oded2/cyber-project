@@ -6,9 +6,8 @@
 	import calendar from '$lib/images/Calendar.svg';
 	import map from '$lib/images/Map.svg';
 	import Title from '$lib/components/Title.svelte';
+	import logo from '$lib/images/logo.png';
 
-	const imgUrl =
-		'https://raw.githubusercontent.com/Oded2/Aerologger/refs/heads/main/src/lib/images/logo_simplified.png';
 	const description =
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
 </script>
@@ -16,7 +15,7 @@
 <main>
 	<div class="hero mb-10 bg-base-200">
 		<div class="hero-content flex-col lg:flex-row-reverse">
-			<img alt="Logo" src={imgUrl} class="max-w-sm rounded-lg" />
+			<img alt="Logo" src={logo} class="max-w-sm rounded-lg" />
 			<div>
 				<h1 class="text-5xl font-bold">Elevate Your Logbook!</h1>
 				<p class="py-6">
