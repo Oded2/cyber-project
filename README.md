@@ -8,7 +8,7 @@ If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
 # create a new project in the current directory
-npx sv create
+npx sv creates
 
 # create a new project in my-app
 npx sv create my-app
