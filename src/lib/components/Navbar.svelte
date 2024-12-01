@@ -1,20 +1,15 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { hrefs } from '$lib';
-	import type { Session, SupabaseClient } from '@supabase/supabase-js';
+	import type { SupabaseClient, User } from '@supabase/supabase-js';
 
-	export let session : Session;
-	export let supabase: SupabaseClient;
+	export let user: User | null;
 
 	const navItems = [
 		{ href: '/temp', title: 'About' },
 		{ href: '/temp', title: 'Contact' },
 		{ href: '/temp', title: 'Development' }
 	];
-
-	async function signOut(){
-		await supabase.auth.signOut();
-	}
-	
 </script>
 
 <div class="navbar bg-base-100">
@@ -52,7 +47,7 @@
 		</ul>
 	</div>
 	<div class="navbar-end">
-		{#if session}
+		{#if user}
 			<div class="dropdown dropdown-end">
 				<div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
 					<div class="w-10 rounded-full">
@@ -69,7 +64,7 @@
 						<a href="temp" class="justify-between"> Profile </a>
 					</li>
 					<li><a href="temp">Settings</a></li>
-					<li><button on:click={signOut}>Sign Out</button></li>
+					<li><button on:click>Sign Out</button></li>
 				</ul>
 			</div>
 		{:else}

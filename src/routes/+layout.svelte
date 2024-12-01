@@ -4,26 +4,28 @@
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import type { Session } from '@supabase/supabase-js';
+	import { error } from '@sveltejs/kit';
+	import { hrefs } from '$lib';
 	let { children, data } = $props();
 	// possible issue
-	let { session, supabase } = data;
-	
+	let { supabase, session, user } = data;
 
 	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('supabase:auth');
-			}
+		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
+			console.log(event);
+			if (newSession?.expires_at !== session?.expires_at) invalidate('supabase:auth');
+			if (event === 'SIGNED_OUT') window.location.href = hrefs.home;
 		});
 
 		return () => data.subscription.unsubscribe();
 	});
-
-
-
-	
 </script>
 
-<Navbar session={session as Session} supabase={supabase}></Navbar>
+<Navbar
+	{user}
+	on:click={async () => {
+		const { error: e } = await supabase.auth.signOut();
+		if (e) error(500, { message: e.message });
+	}}
+></Navbar>
 {@render children()}
