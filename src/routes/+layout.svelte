@@ -4,6 +4,7 @@
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import type { Session } from '@supabase/supabase-js';
 	let { children, data } = $props();
 	// possible issue
 	let { session, supabase } = data;
@@ -24,6 +25,5 @@
 	
 </script>
 
-<h1>{session ? session.user.id : "hello"}</h1>
-<Navbar signIn={false}></Navbar>
+<Navbar session={session as Session} supabase={supabase}></Navbar>
 {@render children()}
