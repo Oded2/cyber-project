@@ -7,7 +7,6 @@
 	import map from '$lib/images/Map.svg';
 	import Title from '$lib/components/Title.svelte';
 	import logo from '$lib/images/logo.png';
-
 	const description =
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
 </script>
