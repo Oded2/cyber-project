@@ -8,7 +8,7 @@
 	import { hrefs } from '$lib';
 	let { children, data } = $props();
 	// possible issue
-	let { supabase, session, user } = data;
+	const { supabase, session, user } = data;
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
