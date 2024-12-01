@@ -43,6 +43,7 @@
 								</div>
 								<input
 									type="text"
+									name="display"
 									class="grow"
 									placeholder="Name"
 									dir="auto"
@@ -57,6 +58,7 @@
 								</div>
 								<input
 									type="text"
+									name="username"
 									class="grow"
 									placeholder="Username"
 									maxlength="50"
