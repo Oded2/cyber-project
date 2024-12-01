@@ -5,14 +5,12 @@
 
 	let email: string = '';
 	let password: string = '';
-
-	function submit() {}
 </script>
 
 <main>
 	<Container>
 		<div class="my-10 w-full">
-			<form on:submit|preventDefault={submit}>
+			<form method="POST" action="?/login">
 				<div class="card mx-auto max-w-md shadow-xl">
 					<div class="card-body">
 						<div class="mb-3 flex w-full border-b-2 pb-2">
@@ -25,6 +23,7 @@
 								</div>
 								<input
 									type="email"
+									name="email"
 									class="grow"
 									placeholder="Email"
 									maxlength="500"
@@ -39,6 +38,7 @@
 								</div>
 								<input
 									type="password"
+									name="password"
 									class="grow"
 									placeholder="Password"
 									minlength="8"

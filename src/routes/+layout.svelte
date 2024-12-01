@@ -7,6 +7,7 @@
 	let { children, data } = $props();
 	// possible issue
 	let { session, supabase } = data;
+	
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -23,5 +24,6 @@
 	
 </script>
 
+<h1>{session ? session.user.id : "hello"}</h1>
 <Navbar signIn={false}></Navbar>
 {@render children()}
