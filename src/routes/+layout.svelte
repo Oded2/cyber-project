@@ -12,7 +12,6 @@
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
-			console.log(event);
 			if (newSession?.expires_at !== session?.expires_at) invalidate('supabase:auth');
 			if (event === 'SIGNED_OUT') window.location.href = hrefs.home;
 		});
