@@ -2,5 +2,8 @@
     "home": "/",
     "signup": "/auth?page=signup",
     "login": "/auth",
-    "signupSucess": "/auth/success"
+    "signupSucess": "/auth/success",
+    "log": "/protected/log",
+    "logbook": "/protected/logbook",
+    "planFlight": "/protected/flightplan"
 }
