@@ -23,6 +23,7 @@
 <Navbar
 	{user}
 	on:click={async () => {
+		console.log('here');
 		const { error: e } = await supabase.auth.signOut();
 		if (e) error(500, { message: e.message });
 	}}

@@ -5,5 +5,6 @@
     "signupSucess": "/auth/success",
     "log": "/protected/log",
     "logbook": "/protected/logbook",
-    "planFlight": "/protected/flightplan"
+    "planFlight": "/protected/flightplan",
+    "contact": "/contact"
 }
