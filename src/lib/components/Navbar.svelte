@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { hrefs } from '$lib';
-	import type { SupabaseClient, User } from '@supabase/supabase-js';
+	import type { User } from '@supabase/supabase-js';
+	import { page } from '$app/stores';
 
 	export let user: User | null;
+
+	$: pathname = $page.url.pathname;
 
 	const navItems = [
 		{ href: '/temp', title: 'About' },
@@ -67,7 +69,7 @@
 					<li><button on:click>Sign Out</button></li>
 				</ul>
 			</div>
-		{:else}
+		{:else if !pathname.includes(hrefs.login)}
 			<div class="join">
 				<div class="join-item me-2">
 					<a href={hrefs.login} class="btn btn-secondary">Log In</a>
