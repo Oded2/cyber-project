@@ -2,6 +2,7 @@ import type { EmailOtpType } from '@supabase/supabase-js'
 import { error, redirect } from '@sveltejs/kit'
 
 import type { RequestHandler } from './$types'
+import { hrefs } from '$lib'
 
 export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
     const token_hash = url.searchParams.get('token_hash')
@@ -25,6 +26,5 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
             redirect(303, redirectTo)
         }
     }
-
-    error(500, { "message": "Internal Server Error" })
+    error(500, "Internal Server Error")
 }

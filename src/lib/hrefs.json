@@ -1,5 +1,6 @@
 {
     "home": "/",
     "signup": "/auth?page=signup",
-    "login": "/auth"
+    "login": "/auth",
+    "signupSucess": "/auth/success"
 }
