@@ -4,13 +4,16 @@
 
 	export let data;
 
-	const { user } = data;
+	const { user, success } = data;
 </script>
 
 <main>
 	<Container>
 		<div class="card mx-auto mt-10 max-w-md border-2">
 			<div class="card-body">
+				{#if success}
+					<h2 class="card-title text-success">Message sent successfully</h2>
+				{/if}
 				<h2 class="card-title mb-3">Contact</h2>
 				<form action="?/send" method="POST">
 					<label class="input input-bordered mb-3 flex items-center gap-2">

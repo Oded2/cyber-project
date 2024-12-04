@@ -1,6 +1,10 @@
-import { hrefs } from "$lib";
+import { hrefs, addParams } from "$lib";
 import { error, redirect, type Actions } from "@sveltejs/kit";
 import { FORMSPREE_ID } from "$env/static/private";
+
+export function load({ url }) {
+    return { success: url.searchParams.get("success") === "true" }
+}
 
 export const actions: Actions = {
     send: async ({ request }) => {
@@ -18,8 +22,8 @@ export const actions: Actions = {
                 email, message
             }),
         });
-        if (response.ok) redirect(303, hrefs.home);
-        error(500, { "message": "Unable to send form" })
+        if (response.ok) redirect(303, "/contact?success=true");
+        error(400, { "message": "Unable to send form" })
 
     }
 }
