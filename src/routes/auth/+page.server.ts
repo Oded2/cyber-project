@@ -28,9 +28,14 @@ export const actions: Actions = {
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
 			console.error(e);
-			error(500, "Auth Error");
+			error(500, { message: e.message });
 		} else {
 			redirect(303, hrefs.home);
 		}
 	}
 };
+
+function validate(input: string, inputName: string, min: number = 0, max: number = 500): void {
+	if (input.length < min) error(400, { message: `${inputName} must be at least ${min} characters long.` })
+	if (input.length > max) error(400, { message: `${inputName} cannot exceed ${max} characters.` })
+}
