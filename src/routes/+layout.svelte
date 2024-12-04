@@ -6,9 +6,11 @@
 	import { onMount } from 'svelte';
 	import { error } from '@sveltejs/kit';
 	import { hrefs } from '$lib';
+	import { page } from '$app/stores';
 	let { children, data } = $props();
 	// possible issue
 	const { supabase, session, user } = data;
+	const url = $page;
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -20,12 +22,14 @@
 	});
 </script>
 
-<Navbar
-	{user}
-	on:click={async () => {
-		console.log('here');
-		const { error: e } = await supabase.auth.signOut();
-		if (e) error(500, { message: e.message });
-	}}
-></Navbar>
+{#if url.status == 200}
+	<Navbar
+		{user}
+		on:click={async () => {
+			console.log('here');
+			const { error: e } = await supabase.auth.signOut();
+			if (e) error(500, { message: e.message });
+		}}
+	></Navbar>
+{/if}
 {@render children()}

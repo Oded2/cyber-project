@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 	const url = $page;
@@ -7,13 +8,10 @@
 
 <main>
 	<Container>
-		<div class="card mx-auto mt-10 max-w-md shadow-lg">
-			<div class="card-body">
-				<div class="text-center">
-					<h1 class="text-2xl">{url.status} Error</h1>
-					<h2 class="text-xl">{url.error?.message}</h2>
-				</div>
-			</div>
+		<div id="screen" class="flex h-screen w-full flex-col items-center justify-center gap-2">
+			<h1 class="text-7xl">{url.status}</h1>
+			<h2 class="text-3xl">{url.error?.message}</h2>
+			<a href={hrefs.home} class="btn btn-neutral mt-2 rounded-3xl">Back to Home</a>
 		</div>
 	</Container>
 </main>
