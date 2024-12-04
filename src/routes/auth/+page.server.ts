@@ -13,10 +13,14 @@ export const actions: Actions = {
 		const password = formData.get('password') as string;
 		const displayName = formData.get('display') as string;
 		const username = formData.get('username') as string;
+		validate(email, "Email", 0)
+		validate(password, "Password", 8, 128)
+		validate(displayName, "Display Name", 0, 50)
+		validate(username, "Username", 0, 50)
 		const { data, error: e } = await supabase.auth.signUp({ email, password });
 		if (e) {
 			console.error(e);
-			error(500, "Auth Error");
+			error(e.status as number, { message: e.message });
 		}
 		await supabase.from('profiles').insert([{ id: data.user?.id, display: displayName, username }]);
 		redirect(303, hrefs.signupSucess);
@@ -25,10 +29,12 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
+		validate(email, "Email", 0)
+		validate(password, "Password", 8, 128)
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
 			console.error(e);
-			error(500, { message: e.message });
+			error(e.status as number, { message: e.message });
 		} else {
 			redirect(303, hrefs.home);
 		}
