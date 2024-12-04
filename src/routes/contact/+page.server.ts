@@ -5,6 +5,9 @@ import { FORMSPREE_ID } from "$env/static/private";
 export const actions: Actions = {
     send: async ({ request }) => {
         const formData = await request.formData();
+        const email = formData.get("email") as string;
+        const message = formData.get("message") as string;
+        if (message.length < 10) error(500, { "message": "Message must be at least 10 characters" })
         const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
             method: 'POST',
             headers: {
@@ -12,12 +15,11 @@ export const actions: Actions = {
                 Accept: "application/json",
             },
             body: JSON.stringify({
-                email: formData.get("email") as string,
-                message: formData.get("message") as string
+                email, message
             }),
         });
         if (response.ok) redirect(303, hrefs.home);
-        error(500, "Unable to send form")
+        error(500, { "message": "Unable to send form" })
 
     }
 }
