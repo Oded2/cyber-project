@@ -7,7 +7,7 @@ export function load({ url }) {
 }
 
 export const actions: Actions = {
-    send: async ({ request }) => {
+    send: async ({ request, url }) => {
         const formData = await request.formData();
         const email = formData.get("email") as string;
         const message = formData.get("message") as string;
@@ -22,7 +22,7 @@ export const actions: Actions = {
                 email, message
             }),
         });
-        if (response.ok) redirect(303, "/contact?success=true");
+        if (response.ok) redirect(303, addParams(hrefs.contact, { success: "true" }, url.origin));
         error(400, { "message": "Unable to send form" })
 
     }
