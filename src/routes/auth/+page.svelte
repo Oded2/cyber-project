@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	export let data;
 
+	const { supabase } = data;
 	let { signup } = data;
 	const initial = signup;
 
@@ -15,6 +15,13 @@
 	let confirmPassword: string = '';
 
 	$: passwordMatch = password == confirmPassword;
+
+	async function usernameExist(username: string): Promise<boolean> {
+		const { data, error: e } = await supabase.from('profiles').select().eq('username', 'a');
+		if (e) console.error(e);
+		if (data) return data.length > 0;
+		return false;
+	}
 
 	function swap() {
 		email = '';
