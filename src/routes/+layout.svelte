@@ -7,10 +7,13 @@
 	import { error } from '@sveltejs/kit';
 	import { hrefs } from '$lib';
 	import { page } from '$app/stores';
-	let { children, data } = $props();
+
+	export let data;
+
 	// possible issue
 	const { supabase, session, user } = data;
-	const url = $page;
+
+	$: url = $page;
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -32,4 +35,4 @@
 		}}
 	></Navbar>
 {/if}
-{@render children()}
+<slot></slot>
