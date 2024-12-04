@@ -154,8 +154,6 @@
 										name="password"
 										class="grow"
 										placeholder="Password"
-										minlength="8"
-										maxlength="128"
 										required
 										bind:value={password}
 									/>
