@@ -19,7 +19,7 @@
 							type="email"
 							name="email"
 							class="grow"
-							placeholder="Daisy"
+							placeholder="example@domain.com"
 							value={user?.email}
 							required
 						/>
