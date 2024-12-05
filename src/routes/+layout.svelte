@@ -8,12 +8,10 @@
 	import { hrefs } from '$lib';
 	import { page } from '$app/stores';
 
-	export let data;
+	const { children, data } = $props();
 
 	// possible issue
 	const { supabase, session, user } = data;
-
-	$: url = $page;
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -25,13 +23,12 @@
 	});
 </script>
 
-{#if url.status == 200}
-	<Navbar
-		{user}
-		on:click={async () => {
-			const { error: e } = await supabase.auth.signOut();
-			if (e) error(500, { message: e.message });
-		}}
-	></Navbar>
-{/if}
-<slot></slot>
+<Navbar
+	{user}
+	on:click={async () => {
+		const { error: e } = await supabase.auth.signOut();
+		if (e) error(500, { message: e.message });
+	}}
+></Navbar>
+
+{@render children()}
