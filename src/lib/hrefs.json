@@ -6,5 +6,6 @@
     "log": "/protected/log",
     "logbook": "/protected/logbook",
     "planFlight": "/protected/flightplan",
-    "contact": "/contact"
+    "contact": "/contact",
+    "settings": "/protected/settings"
 }

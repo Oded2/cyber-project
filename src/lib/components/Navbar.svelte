@@ -72,7 +72,7 @@
 						<li>
 							<a href="/temp"> Profile </a>
 						</li>
-						<li><a href="temp">Settings</a></li>
+						<li><a href={hrefs.settings}>Settings</a></li>
 						<li><button on:click>Sign Out</button></li>
 					</ul>
 				</div>
