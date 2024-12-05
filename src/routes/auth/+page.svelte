@@ -48,11 +48,14 @@
 				<form method="POST" action="?/signup">
 					<div class="card mx-auto max-w-md shadow-xl">
 						<div class="card-body">
-							<div class="mb-3 flex w-full border-b-2 pb-2">
+							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Sign Up</h2>
+								{#if invalidUsername}
+									<h2 class="card-title mx-auto text-error">Username already taken</h2>
+								{/if}
 							</div>
-							<div class="grid">
-								<label class="input input-bordered mb-4 flex items-center gap-2">
+							<div class="grid gap-4">
+								<label class="input input-bordered flex items-center gap-2">
 									<div class="tooltip" data-tip="You will be asked to verify this email">
 										<i class="fa-solid fa-envelope opacity-70"></i>
 									</div>
@@ -66,7 +69,7 @@
 										bind:value={email}
 									/>
 								</label>
-								<label class="input input-bordered mb-4 flex items-center gap-2">
+								<label class="input input-bordered flex items-center gap-2">
 									<div class="tooltip" data-tip="Does not have to be unique">
 										<i class="fa-solid fa-signature opacity-70"></i>
 									</div>
@@ -81,10 +84,7 @@
 										bind:value={displayName}
 									/>
 								</label>
-								{#if invalidUsername}
-									<span class="text-error">Username already taken</span>
-								{/if}
-								<label class="input input-bordered mb-4 flex items-center gap-2">
+								<label class="input input-bordered flex items-center gap-2">
 									<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
 										<i class="fa-solid fa-id-card opacity-70"></i>
 									</div>
@@ -99,7 +99,7 @@
 										bind:value={username}
 									/>
 								</label>
-								<label class="input input-bordered mb-4 flex items-center gap-2">
+								<label class="input input-bordered flex items-center gap-2">
 									<div class="tooltip" data-tip="Must be at least 8 characters long">
 										<i class="fa-solid fa-key opacity-70"></i>
 									</div>
