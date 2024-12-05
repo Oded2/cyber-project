@@ -4,7 +4,7 @@
 
 	export let data;
 
-	const { supabase } = data;
+	const { supabase, errorMessage } = data;
 	let { signup } = data;
 	const initial = signup;
 
@@ -149,8 +149,11 @@
 				<form method="POST" action="?/login">
 					<div class="card mx-auto max-w-md shadow-xl">
 						<div class="card-body">
-							<div class="mb-3 flex w-full border-b-2 pb-2">
+							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Log In</h2>
+								{#if errorMessage.length > 0}
+									<h2 class="card-title mx-auto text-error">{errorMessage}</h2>
+								{/if}
 							</div>
 							<div class="grid gap-4">
 								<label class="input input-bordered flex items-center gap-2">
