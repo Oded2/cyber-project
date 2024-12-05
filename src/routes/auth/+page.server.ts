@@ -20,7 +20,7 @@ export const actions: Actions = {
 		const { data, error: e } = await supabase.auth.signUp({ email, password });
 		if (e) {
 			console.error(e);
-			error(e.status as number, { message: e.message });
+			error(e.status!, { message: e.message });
 		}
 		await supabase.from('profiles').insert([{ id: data.user?.id, display: displayName, username }]);
 		redirect(303, hrefs.signupSucess);

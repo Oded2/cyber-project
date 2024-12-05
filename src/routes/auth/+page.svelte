@@ -13,15 +13,9 @@
 	let username: string = '';
 	let password: string = '';
 	let confirmPassword: string = '';
+	let invalidUsername: boolean = false;
 
 	$: passwordMatch = password == confirmPassword;
-
-	async function usernameExist(username: string): Promise<boolean> {
-		const { data, error: e } = await supabase.from('profiles').select().eq('username', 'a');
-		if (e) console.error(e);
-		if (data) return data.length > 0;
-		return false;
-	}
 
 	function swap() {
 		email = '';
@@ -31,6 +25,19 @@
 		confirmPassword = '';
 		signup = !signup;
 		document.title = signup ? 'Sign Up' : 'Login';
+	}
+	async function usernameExist(username: string): Promise<boolean> {
+		const { data, error: e } = await supabase.from('profiles').select().eq('username', username);
+		if (e) console.error(e);
+		if (data) return data.length > 0;
+		return false;
+	}
+	async function handleSignUp(): Promise<void> {
+		if (await usernameExist(username)) {
+			invalidUsername = true;
+			return;
+		}
+		document.getElementById('submit')?.click();
 	}
 </script>
 
@@ -44,8 +51,8 @@
 							<div class="mb-3 flex w-full border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Sign Up</h2>
 							</div>
-							<div class="grid gap-4">
-								<label class="input input-bordered flex items-center gap-2">
+							<div class="grid">
+								<label class="input input-bordered mb-4 flex items-center gap-2">
 									<div class="tooltip" data-tip="You will be asked to verify this email">
 										<i class="fa-solid fa-envelope opacity-70"></i>
 									</div>
@@ -59,7 +66,7 @@
 										bind:value={email}
 									/>
 								</label>
-								<label class="input input-bordered flex items-center gap-2">
+								<label class="input input-bordered mb-4 flex items-center gap-2">
 									<div class="tooltip" data-tip="Does not have to be unique">
 										<i class="fa-solid fa-signature opacity-70"></i>
 									</div>
@@ -74,7 +81,10 @@
 										bind:value={displayName}
 									/>
 								</label>
-								<label class="input input-bordered flex items-center gap-2">
+								{#if invalidUsername}
+									<span class="text-error">Username already taken</span>
+								{/if}
+								<label class="input input-bordered mb-4 flex items-center gap-2">
 									<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
 										<i class="fa-solid fa-id-card opacity-70"></i>
 									</div>
@@ -85,10 +95,11 @@
 										placeholder="Username"
 										maxlength="50"
 										required
+										on:input={() => (invalidUsername = false)}
 										bind:value={username}
 									/>
 								</label>
-								<label class="input input-bordered flex items-center gap-2">
+								<label class="input input-bordered mb-4 flex items-center gap-2">
 									<div class="tooltip" data-tip="Must be at least 8 characters long">
 										<i class="fa-solid fa-key opacity-70"></i>
 									</div>
@@ -122,9 +133,14 @@
 								</label>
 							</div>
 							<div class="card-actions mt-5">
-								<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
+								<button
+									type="button"
+									on:click={handleSignUp}
+									class="btn btn-primary mx-auto w-full max-w-xs"
 									>Create Account
 								</button>
+								<button type="submit" id="submit" aria-label="Hidden Submit" class="hidden"
+								></button>
 							</div>
 						</div>
 					</div>
