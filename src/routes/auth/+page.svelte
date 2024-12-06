@@ -22,7 +22,6 @@
 		password = '';
 		confirmPassword = '';
 		signup = !signup;
-		document.title = signup ? 'Sign Up' : 'Login';
 	}
 </script>
 
@@ -188,4 +187,4 @@
 	</Container>
 </main>
 
-<Title title={initial ? 'Sign Up' : 'Login'}></Title>
+<Title title={signup ? 'Sign Up' : 'Login'}></Title>
