@@ -19,7 +19,7 @@
 	let progress = $state(false);
 </script>
 
-<div class="form-control mb-2 w-full max-w-md border-b-2 pb-1">
+<div class="mb-2 flex w-full max-w-md flex-col border-b-2 pb-1">
 	<div class="label">
 		<span class="label-text">{title}</span>
 		<button

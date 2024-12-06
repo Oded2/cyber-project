@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
-import { hrefs } from '$lib';
+import { hrefs, isTaken } from '$lib';
 
 export function load({ url }) {
 	const params = url.searchParams;
@@ -19,9 +19,7 @@ export const actions: Actions = {
 		validate(password, "Password", 8, 128)
 		validate(displayName, "Display Name", 0, 50)
 		validate(username, "Username", 0, 50)
-		const { data: existingUsernames, error: usernameFetchError } = await supabase.from('profiles').select().eq('username', username);
-		if (usernameFetchError) error(400, { message: usernameFetchError.message })
-		if (existingUsernames.length > 0) return {
+		if (await isTaken(username, supabase)) return {
 			signup: true, email, password, displayName, username, invalidUsername: true
 		}
 		const { data, error: e } = await supabase.auth.signUp({ email, password });
