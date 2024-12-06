@@ -25,6 +25,7 @@
 		username = '';
 		password = '';
 		confirmPassword = '';
+		forgotPassword = false;
 		signup = !signup;
 	}
 </script>
