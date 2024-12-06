@@ -48,8 +48,15 @@
 					</div>
 					<ProfileEditor
 						title="Display Name"
+						min={2}
 						bind:value={updatedProfile.display}
 						action={() => updateProfile('display')}
+					></ProfileEditor>
+					<ProfileEditor
+						title="Bio"
+						bind:value={updatedProfile.bio}
+						action={() => updateProfile('bio')}
+						max={200}
 					></ProfileEditor>
 				{/if}
 			</div>
