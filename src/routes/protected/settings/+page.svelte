@@ -32,9 +32,9 @@
 
 <main>
 	<Container>
-		<div class="mt-10 grid grid-cols-5 gap-4">
-			<div class="col-span-1 border-e-2 pe-2">
-				<div class="flex w-full flex-col gap-2">
+		<div class="mt-10 flex flex-col gap-4 sm:flex-row">
+			<div class="overflow-auto sm:w-60 sm:border-e-2 sm:pe-2">
+				<div class="flex w-full gap-2 sm:flex-col">
 					<SettingsButton
 						onclick={() => (currentPage = 'profile')}
 						active={currentPage === 'profile'}
@@ -47,7 +47,7 @@
 					>
 				</div>
 			</div>
-			<div class="col-span-4">
+			<div class="w-full">
 				{#if currentPage === 'profile'}
 					<div class="mb-3 border-b-2 pb-2">
 						<h2 class="text-2xl font-bold">Profile Settings</h2>
