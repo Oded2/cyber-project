@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { capitalizeFirstLetter, isTaken } from '$lib';
+	import { goto } from '$app/navigation';
+	import { capitalizeFirstLetter, hrefs, isTaken } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
@@ -12,7 +13,7 @@
 	const { data } = $props();
 	const { supabase, user, profile } = data;
 	const updatedProfile = $state(profile);
-	const email = $state(user?.email) as string;
+	let email = $state(user?.email) as string;
 
 	let currentPage: CurrentPage = $state('account');
 	let usernameTaken: boolean = $state(false);
@@ -89,9 +90,19 @@
 				{:else if currentPage === 'account'}
 					<ProfileEditor
 						title="Email"
+						inputType="email"
 						min={2}
-						bind:value={updatedProfile.display}
-						action={() => updateProfile('display')}
+						bind:value={email}
+						action={async () => {
+							if (email === user?.email) return;
+							const { error: e } = await supabase.auth.updateUser({ email });
+							if (e) {
+								console.error(e);
+								return;
+							}
+							alert(`A verification email has been sent to ${email}`);
+							goto(hrefs.home);
+						}}
 					></ProfileEditor>
 				{/if}
 			</div>
