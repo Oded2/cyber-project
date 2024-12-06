@@ -8,5 +8,6 @@
     "planFlight": "/protected/flightplan",
     "contact": "/contact",
     "settings": "/protected/settings",
-    "passwordReset": "/protected/resetpassword"
+    "passwordReset": "/protected/resetpassword",
+    "message": "/message"
 }

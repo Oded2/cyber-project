@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
@@ -16,6 +17,7 @@
 	let passwordMatch = $derived(password === confirmPassword);
 	let mismatchError = $state(false);
 	let passwordLengthError = $state(false);
+	let forgotPassword = $state(false);
 
 	function swap() {
 		email = '';
@@ -151,6 +153,37 @@
 						</div>
 					</div>
 				</form>
+			{:else if forgotPassword}
+				<form method="POST" action="?/reset">
+					<div class="card mx-auto max-w-md shadow-xl">
+						<div class="card-body">
+							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
+								<h2 class="card-title mx-auto">Reset Password</h2>
+							</div>
+
+							<label class="input input-bordered flex items-center gap-2">
+								<div class="tooltip" data-tip="Email">
+									<i class="fa-solid fa-envelope opacity-70"></i>
+								</div>
+								<input
+									type="email"
+									name="email"
+									class="grow"
+									placeholder="Email"
+									maxlength="500"
+									required
+									bind:value={email}
+								/>
+							</label>
+
+							<div class="card-actions mt-5">
+								<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
+									>Send Reset Link</button
+								>
+							</div>
+						</div>
+					</div>
+				</form>
 			{:else}
 				<form method="POST" action="?/login">
 					<div class="card mx-auto max-w-md shadow-xl">
@@ -176,20 +209,26 @@
 										bind:value={email}
 									/>
 								</label>
-
-								<label class="input input-bordered flex items-center gap-2">
-									<div class="tooltip" data-tip="Password">
-										<i class="fa-solid fa-key opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										name="password"
-										class="grow"
-										placeholder="Password"
-										required
-										bind:value={password}
-									/>
-								</label>
+								<div>
+									<label class="input input-bordered mb-1 flex items-center gap-2">
+										<div class="tooltip" data-tip="Password">
+											<i class="fa-solid fa-key opacity-70"></i>
+										</div>
+										<input
+											type="password"
+											name="password"
+											class="grow"
+											placeholder="Password"
+											required
+											bind:value={password}
+										/>
+									</label>
+									<button
+										type="button"
+										onclick={() => (forgotPassword = true)}
+										class="link px-4 text-sm">Forgot Password?</button
+									>
+								</div>
 							</div>
 							<div class="card-actions mt-5">
 								<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs">Log In</button
