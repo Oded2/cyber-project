@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { isTaken } from '$lib';
+	import Alert from '$lib/components/Alert.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { fly } from 'svelte/transition';
 
 	type CurrentPage = 'profile' | 'logbook';
 	type ProfileKeys = 'display' | 'username' | 'bio';
@@ -86,15 +86,6 @@
 	</Container>
 </main>
 
-{#if usernameTaken}
-	<div
-		transition:fly={{ duration: 1000, y: -200 }}
-		role="alert"
-		class="alert alert-error absolute bottom-5 left-5 max-w-sm"
-	>
-		<i class="fa-solid fa-x"></i>
-		<span>Username already taken</span>
-	</div>
-{/if}
+<Alert visible={usernameTaken} message="Username already taken"></Alert>
 
 <Title title="Settings"></Title>
