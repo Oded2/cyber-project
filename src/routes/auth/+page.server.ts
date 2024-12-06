@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
-import { addParams, hrefs } from '$lib';
+import { hrefs } from '$lib';
 
 export function load({ url }) {
 	const params = url.searchParams;
@@ -35,7 +35,9 @@ export const actions: Actions = {
 		if (e) {
 			console.error(e);
 			const message = e.message;
-			if (message === "Invalid login credentials") redirect(303, addParams(hrefs.login, { error: "Email or password is incorrect" }, url.origin));
+			if (message === "Invalid login credentials") {
+				return { invalidCredentials: true }
+			}
 			error(e.status!, { message: message });
 		} else {
 			redirect(303, hrefs.home);

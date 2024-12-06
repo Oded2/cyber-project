@@ -2,9 +2,9 @@
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
-	const { data } = $props();
+	const { data, form } = $props();
 
-	const { supabase, errorMessage, signup: initial } = data;
+	const { supabase, signup: initial } = data;
 	let { signup } = $state(data);
 
 	let email: string = $state('');
@@ -149,8 +149,8 @@
 						<div class="card-body">
 							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Log In</h2>
-								{#if errorMessage.length > 0}
-									<h2 class="card-title mx-auto text-error">{errorMessage}</h2>
+								{#if form?.invalidCredentials}
+									<h2 class="card-title mx-auto text-error">Invalid login credentials</h2>
 								{/if}
 							</div>
 							<div class="grid gap-4">
