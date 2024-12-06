@@ -5,6 +5,6 @@
 		$props();
 </script>
 
-<button class="btn justify-start" class:btn-active={active} {onclick}>
+<button class="btn btn-outline btn-info justify-start" class:btn-active={active} {onclick}>
 	{@render children()}
 </button>
