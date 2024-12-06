@@ -15,7 +15,7 @@
 	const updatedProfile = $state(profile);
 	let email = $state(user?.email) as string;
 
-	let currentPage: CurrentPage = $state('account');
+	let currentPage: CurrentPage = $state('profile');
 	let usernameTaken: boolean = $state(false);
 
 	async function updateProfile(key: ProfileKeys) {
