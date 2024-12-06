@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { hrefs } from '$lib';
-	import type { User } from '@supabase/supabase-js';
 	import { page } from '$app/stores';
 
-	export let user: User | null;
+	let { loggedIn, signOut }: { loggedIn: boolean; signOut: () => void } = $props();
 
-	$: pageData = $page;
-	$: pathname = pageData.url.pathname;
-	$: status = $page.status;
+	let pageData = $derived($page);
+	let pathname = $derived(pageData.url.pathname);
+	let status = $derived(pageData.status);
 
 	const navItems = [
 		{ href: '/temp', title: 'About' },
@@ -54,7 +53,7 @@
 			</ul>
 		</div>
 		<div class="navbar-end">
-			{#if user}
+			{#if loggedIn}
 				<div class="dropdown dropdown-end">
 					<div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
 						<div class="w-10 rounded-full">
@@ -73,7 +72,7 @@
 							<a href="/temp"> Profile </a>
 						</li>
 						<li><a href={hrefs.settings}>Settings</a></li>
-						<li><button on:click>Sign Out</button></li>
+						<li><button onclick={signOut}>Sign Out</button></li>
 					</ul>
 				</div>
 			{:else if !pathname.includes(hrefs.login)}

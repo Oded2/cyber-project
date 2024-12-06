@@ -6,7 +6,6 @@
 	import { onMount } from 'svelte';
 	import { error } from '@sveltejs/kit';
 	import { hrefs } from '$lib';
-	import { page } from '$app/stores';
 
 	const { children, data } = $props();
 
@@ -24,10 +23,10 @@
 </script>
 
 <Navbar
-	{user}
-	on:click={async () => {
+	loggedIn={user ? true : false}
+	signOut={async () => {
 		const { error: e } = await supabase.auth.signOut();
-		if (e) error(500, { message: e.message });
+		if (e) error(e.status ?? 400, { message: e.message });
 	}}
 ></Navbar>
 

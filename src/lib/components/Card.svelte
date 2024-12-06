@@ -1,7 +1,5 @@
 <script lang="ts">
-	export let img: string;
-	export let title: string;
-	export let description: string;
+	let { img, title, description }: { img: string; title: string; description: string } = $props();
 </script>
 
 <div class="card h-full w-full">
