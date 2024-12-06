@@ -191,7 +191,7 @@
 							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Log In</h2>
 								{#if form?.invalidCredentials}
-									<h2 class="card-title mx-auto text-error">Incorrect username or password.</h2>
+									<h2 class="card-title mx-auto text-error">Incorrect username or password</h2>
 								{/if}
 							</div>
 							<div class="grid gap-4">
