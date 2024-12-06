@@ -44,6 +44,6 @@ export const actions: Actions = {
 };
 
 function validate(input: string, inputName: string, min: number = 0, max: number = 500): void {
-	if (input.length < min) error(400, { message: `${inputName} must be at least ${min} characters long.` })
-	if (input.length > max) error(400, { message: `${inputName} cannot exceed ${max} characters.` })
+	if (input.length < min) error(422, { message: `${inputName} must be at least ${min} characters long.` })
+	if (input.length > max) error(422, { message: `${inputName} cannot exceed ${max} characters.` })
 }
