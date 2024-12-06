@@ -41,6 +41,7 @@
 	</div>
 	{#if edit}
 		<input
+			name={title}
 			bind:value
 			type={inputType}
 			class="input input-xs border-0 text-base !outline-none"
