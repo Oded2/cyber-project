@@ -2,20 +2,18 @@
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
-	export let data;
+	const { data } = $props();
 
-	const { supabase, errorMessage } = data;
-	let { signup } = data;
-	const initial = signup;
+	const { supabase, errorMessage, signup: initial } = data;
+	let { signup } = $state(data);
 
-	let email: string = '';
-	let displayName: string = '';
-	let username: string = '';
-	let password: string = '';
-	let confirmPassword: string = '';
-	let invalidUsername: boolean = false;
-
-	$: passwordMatch = password == confirmPassword;
+	let email: string = $state('');
+	let displayName: string = $state('');
+	let username: string = $state('');
+	let password: string = $state('');
+	let confirmPassword: string = $state('');
+	let invalidUsername: boolean = $state(false);
+	let passwordMatch = $derived(password === confirmPassword);
 
 	function swap() {
 		email = '';
@@ -95,7 +93,7 @@
 										placeholder="Username"
 										maxlength="50"
 										required
-										on:input={() => (invalidUsername = false)}
+										oninput={() => (invalidUsername = false)}
 										bind:value={username}
 									/>
 								</label>
@@ -135,7 +133,7 @@
 							<div class="card-actions mt-5">
 								<button
 									type="button"
-									on:click={handleSignUp}
+									onclick={handleSignUp}
 									class="btn btn-primary mx-auto w-full max-w-xs"
 									>Create Account
 								</button>
@@ -196,11 +194,11 @@
 			<div class="mx-auto mt-7 w-full text-center">
 				{#if signup}
 					<span
-						>Already have an account? <button class="btn-link" on:click={swap}>Log In</button></span
+						>Already have an account? <button class="btn-link" onclick={swap}>Log In</button></span
 					>
 				{:else}
 					<span
-						>Don't have an account? <button class="btn-link" on:click={swap}>Sign Up</button></span
+						>Don't have an account? <button class="btn-link" onclick={swap}>Sign Up</button></span
 					>
 				{/if}
 			</div>
