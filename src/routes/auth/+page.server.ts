@@ -5,7 +5,7 @@ import { addParams, hrefs } from '$lib';
 
 export function load({ url }) {
 	const params = url.searchParams;
-	const errorMessage = params.get("error") ?? "";
+	const errorMessage = (params.get("error") ?? "") as string;
 	return { signup: params.get('page') === 'signup', errorMessage };
 }
 export const actions: Actions = {
