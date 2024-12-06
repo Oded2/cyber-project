@@ -36,11 +36,9 @@ export const actions: Actions = {
 		const password = formData.get('password') as string;
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
-			console.error(e);
 			const message = e.message;
-			if (message === "Invalid login credentials") {
-				return { invalidCredentials: true }
-			}
+			if (message === "Invalid login credentials") return { invalidCredentials: true };
+			console.error(e);
 			error(e.status!, { message: message });
 		} else {
 			redirect(303, hrefs.home);
