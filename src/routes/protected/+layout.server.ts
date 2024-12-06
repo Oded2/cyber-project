@@ -3,6 +3,7 @@ type Profile = {
     created_at: string;
     display: string;
     username: string;
+    bio: string;
 }
 
 export async function load({ locals: { supabase, user } }) {
