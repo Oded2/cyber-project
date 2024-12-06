@@ -7,5 +7,6 @@
     "logbook": "/protected/logbook",
     "planFlight": "/protected/flightplan",
     "contact": "/contact",
-    "settings": "/protected/settings"
+    "settings": "/protected/settings",
+    "passwordReset": "/protected/resetpassword"
 }

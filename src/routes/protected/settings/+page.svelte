@@ -104,6 +104,7 @@
 							goto(hrefs.home);
 						}}
 					></ProfileEditor>
+					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{/if}
 			</div>
 		</div>
