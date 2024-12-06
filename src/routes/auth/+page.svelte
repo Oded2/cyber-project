@@ -14,6 +14,8 @@
 	let confirmPassword: string = $state(form?.password ?? '');
 	let invalidUsername: boolean = $state(form?.invalidUsername ?? false);
 	let passwordMatch = $derived(password === confirmPassword);
+	let mismatchError = $state(false);
+	let passwordLengthError = $state(false);
 
 	function swap() {
 		email = '';
@@ -34,9 +36,6 @@
 						<div class="card-body">
 							<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 								<h2 class="card-title mx-auto">Sign Up</h2>
-								{#if invalidUsername}
-									<h2 class="card-title mx-auto text-error">Username already taken</h2>
-								{/if}
 							</div>
 							<div class="grid gap-4">
 								<label class="input input-bordered flex items-center gap-2">
@@ -68,56 +67,84 @@
 										bind:value={displayName}
 									/>
 								</label>
-								<label class="input input-bordered flex items-center gap-2">
-									<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
-										<i class="fa-solid fa-id-card opacity-70"></i>
-									</div>
-									<input
-										type="text"
-										name="username"
-										class="grow"
-										placeholder="Username"
-										maxlength="50"
-										required
-										oninput={() => (invalidUsername = false)}
-										bind:value={username}
-									/>
-								</label>
-								<label class="input input-bordered flex items-center gap-2">
-									<div class="tooltip" data-tip="Must be at least 8 characters long">
-										<i class="fa-solid fa-key opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										name="password"
-										class="grow"
-										placeholder="Password"
-										minlength="8"
-										maxlength="128"
-										required
-										bind:value={password}
-									/>
-								</label>
-								<label
-									class="input input-bordered flex items-center gap-2"
-									class:input-success={password.length > 0 && passwordMatch}
-								>
-									<div class="tooltip" data-tip="Confirm your password">
-										<i class="fa-solid fa-circle-check opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										class="grow"
-										placeholder="Confirm Password"
-										minlength="8"
-										maxlength="128"
-										required
-										bind:value={confirmPassword}
-									/>
-								</label>
+								<div>
+									<label class="input input-bordered flex items-center gap-2">
+										<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
+											<i class="fa-solid fa-id-card opacity-70"></i>
+										</div>
+										<input
+											type="text"
+											name="username"
+											class="grow"
+											placeholder="Username"
+											maxlength="50"
+											required
+											oninput={() => (invalidUsername = false)}
+											bind:value={username}
+										/>
+									</label>
+									{#if invalidUsername}
+										<span class="text-error">Username already taken.</span>
+									{/if}
+								</div>
+								<div>
+									<label class="input input-bordered flex items-center gap-2">
+										<div class="tooltip" data-tip="Must be at least 8 characters long">
+											<i class="fa-solid fa-key opacity-70"></i>
+										</div>
+										<input
+											type="password"
+											name="password"
+											class="grow"
+											placeholder="Password"
+											minlength="8"
+											maxlength="128"
+											required
+											oninput={() => {
+												mismatchError = false;
+												passwordLengthError = false;
+											}}
+											onchange={() => {
+												mismatchError = !passwordMatch;
+												passwordLengthError = password.length < 8;
+											}}
+											bind:value={password}
+										/>
+									</label>
+									{#if passwordLengthError}
+										<span class="text-error">Password must be at least 8 characters long.</span>
+									{/if}
+								</div>
+								<div>
+									<label
+										class="input input-bordered flex items-center gap-2"
+										class:input-success={password.length > 0 && passwordMatch}
+									>
+										<div class="tooltip" data-tip="Confirm your password">
+											<i class="fa-solid fa-circle-check opacity-70"></i>
+										</div>
+										<input
+											type="password"
+											class="grow"
+											placeholder="Confirm Password"
+											minlength="8"
+											maxlength="128"
+											required
+											oninput={() => (mismatchError = false)}
+											onchange={() => (mismatchError = !passwordMatch)}
+											bind:value={confirmPassword}
+										/>
+									</label>
+									{#if mismatchError}
+										<span class="text-error">Passwords do not match</span>
+									{/if}
+								</div>
 							</div>
 							<div class="card-actions mt-5">
-								<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
+								<button
+									type="submit"
+									disabled={!(passwordMatch || password.length < 8)}
+									class="btn btn-primary mx-auto w-full max-w-xs"
 									>Create Account
 								</button>
 							</div>
