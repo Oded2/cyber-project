@@ -19,12 +19,15 @@ export const actions: Actions = {
 		validate(password, "Password", 8, 128)
 		validate(displayName, "Display Name", 0, 50)
 		validate(username, "Username", 0, 50)
-		const { data, error: e } = await supabase.auth.signUp({ email, password });
-		if (e) {
-			console.error(e);
-			error(e.status!, { message: e.message });
+		const { data: existingUsernames, error: usernameFetchError } = await supabase.from('profiles').select().eq('username', username);
+		if (usernameFetchError) error(400, { message: usernameFetchError.message })
+		if (existingUsernames.length > 0) return {
+			signup: true, email, password, displayName, username, invalidUsername: true
 		}
-		await supabase.from('profiles').insert([{ id: data.user?.id, display: displayName, username }]);
+		const { data, error: e } = await supabase.auth.signUp({ email, password });
+		if (e) error(e.status ?? 400, { message: e.message });
+		const { error: profileFetchError } = await supabase.from('profiles').insert([{ id: data.user?.id, display: displayName, username }]);
+		if (profileFetchError) error(400, { message: profileFetchError.message })
 		redirect(303, hrefs.signupSucess);
 	},
 	login: async ({ request, locals: { supabase }, url }) => {

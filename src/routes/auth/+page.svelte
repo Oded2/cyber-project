@@ -4,15 +4,15 @@
 
 	const { data, form } = $props();
 
-	const { supabase, signup: initial } = data;
-	let { signup } = $state(data);
+	const { signup: initial } = data;
 
-	let email: string = $state('');
-	let displayName: string = $state('');
-	let username: string = $state('');
-	let password: string = $state('');
-	let confirmPassword: string = $state('');
-	let invalidUsername: boolean = $state(false);
+	let signup: boolean = $state(form?.signup ?? initial);
+	let email: string = $state(form?.email ?? '');
+	let displayName: string = $state(form?.displayName ?? '');
+	let username: string = $state(form?.username ?? '');
+	let password: string = $state(form?.password ?? '');
+	let confirmPassword: string = $state(form?.password ?? '');
+	let invalidUsername: boolean = $state(form?.invalidUsername ?? false);
 	let passwordMatch = $derived(password === confirmPassword);
 
 	function swap() {
@@ -23,19 +23,6 @@
 		confirmPassword = '';
 		signup = !signup;
 		document.title = signup ? 'Sign Up' : 'Login';
-	}
-	async function usernameExist(username: string): Promise<boolean> {
-		const { data, error: e } = await supabase.from('profiles').select().eq('username', username);
-		if (e) console.error(e);
-		if (data) return data.length > 0;
-		return false;
-	}
-	async function handleSignUp(): Promise<void> {
-		if (await usernameExist(username)) {
-			invalidUsername = true;
-			return;
-		}
-		document.getElementById('submit')?.click();
 	}
 </script>
 
@@ -131,14 +118,9 @@
 								</label>
 							</div>
 							<div class="card-actions mt-5">
-								<button
-									type="button"
-									onclick={handleSignUp}
-									class="btn btn-primary mx-auto w-full max-w-xs"
+								<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
 									>Create Account
 								</button>
-								<button type="submit" id="submit" aria-label="Hidden Submit" class="hidden"
-								></button>
 							</div>
 						</div>
 					</div>
