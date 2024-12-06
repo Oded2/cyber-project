@@ -9,7 +9,7 @@
 	import logo from '$lib/images/logo.png';
 	import HomeLink from '$lib/components/HomeLink.svelte';
 	import { onMount } from 'svelte';
-	export let data;
+	const { data } = $props();
 	const description =
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
 	const { user } = data;
@@ -56,7 +56,7 @@
 					</p>
 					<a href={hrefs.signup} class="btn btn-primary">Get Started</a>
 					<button
-						on:click={() => document.getElementById('info')?.scrollIntoView({ behavior: 'smooth' })}
+						onclick={() => document.getElementById('info')?.scrollIntoView({ behavior: 'smooth' })}
 						class="btn btn-secondary">Learn More</button
 					>
 				</div>

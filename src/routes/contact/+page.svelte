@@ -2,7 +2,7 @@
 	import Title from '$lib/components/Title.svelte';
 	import Container from '$lib/components/Container.svelte';
 
-	export let data;
+	const { data } = $props();
 
 	const { user, success } = data;
 </script>
