@@ -16,3 +16,6 @@ export async function isTaken(username: string, supabase: SupabaseClient): Promi
     if (error) return true;
     return data.length > 0;
 }
+export function capitalizeFirstLetter(value: string) {
+    return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+}

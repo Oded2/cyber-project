@@ -1,19 +1,20 @@
 <script lang="ts">
-	import { isTaken } from '$lib';
+	import { capitalizeFirstLetter, isTaken } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
 
-	type CurrentPage = 'profile' | 'logbook';
+	type CurrentPage = 'profile' | 'account' | 'logbook';
 	type ProfileKeys = 'display' | 'username' | 'bio';
 
 	const { data } = $props();
 	const { supabase, user, profile } = data;
 	const updatedProfile = $state(profile);
+	const email = $state(user?.email) as string;
 
-	let currentPage: CurrentPage = $state('profile');
+	let currentPage: CurrentPage = $state('account');
 	let usernameTaken: boolean = $state(false);
 
 	async function updateProfile(key: ProfileKeys) {
@@ -41,6 +42,11 @@
 						><i class="fa-solid fa-user"></i> Profile</SettingsButton
 					>
 					<SettingsButton
+						onclick={() => (currentPage = 'account')}
+						active={currentPage === 'account'}
+						><i class="fa-solid fa-address-card"></i> Account</SettingsButton
+					>
+					<SettingsButton
 						onclick={() => (currentPage = 'logbook')}
 						active={currentPage === 'logbook'}
 						><i class="fa-solid fa-book"></i> Logbook</SettingsButton
@@ -48,10 +54,10 @@
 				</div>
 			</div>
 			<div class="w-full">
+				<div class="mb-3 border-b-2 pb-2">
+					<h2 class="text-2xl font-bold">{capitalizeFirstLetter(currentPage)} Settings</h2>
+				</div>
 				{#if currentPage === 'profile'}
-					<div class="mb-3 border-b-2 pb-2">
-						<h2 class="text-2xl font-bold">Profile Settings</h2>
-					</div>
 					<ProfileEditor
 						title="Display Name"
 						min={2}
@@ -79,6 +85,13 @@
 						}}
 						min={2}
 						max={50}
+					></ProfileEditor>
+				{:else if currentPage === 'account'}
+					<ProfileEditor
+						title="Email"
+						min={2}
+						bind:value={updatedProfile.display}
+						action={() => updateProfile('display')}
 					></ProfileEditor>
 				{/if}
 			</div>
