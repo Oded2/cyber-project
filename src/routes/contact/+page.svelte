@@ -2,9 +2,10 @@
 	import Title from '$lib/components/Title.svelte';
 	import Container from '$lib/components/Container.svelte';
 
-	const { data } = $props();
+	const { data, form } = $props();
 
-	const { user, success } = data;
+	const { user } = data;
+	const success = form?.success ?? false;
 </script>
 
 <main>
