@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
