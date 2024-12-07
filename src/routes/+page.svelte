@@ -9,13 +9,16 @@
 	import logo from '$lib/images/logo.png';
 	import HomeLink from '$lib/components/HomeLink.svelte';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+
 	const { data } = $props();
 	const description =
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
-	const { user } = data;
+	const { user, redirect } = data;
 	// Daily image
 	const imgUrl = 'https://wallpaperswide.com/download/airplane_3-wallpaper-2560x1440.jpg';
 	onMount(() => {
+		goto(redirect);
 		document.getElementById('hero')?.scrollIntoView({ behavior: 'instant' });
 	});
 </script>

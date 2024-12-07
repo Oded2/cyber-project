@@ -45,8 +45,8 @@ export const actions: Actions = {
 	reset: async ({ request, locals: { supabase }, url }) => {
 		const formData = await request.formData();
 		const email = formData.get("email") as string;
-		const redirectTo = url.origin + hrefs.passwordReset;
-		const { error: e } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectTo });
+		const redirectTo = addParams(hrefs.home, { redirect: hrefs.passwordReset }, url.origin);
+		const { error: e } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
 		if (e) error(e.status ?? 400, { message: e.message });
 		redirect(303, addParams(hrefs.message, { message: `A password reset link has been sent to ${email}` }, url.origin));
 	}
