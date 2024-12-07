@@ -18,7 +18,7 @@
 	// Daily image
 	const imgUrl = 'https://wallpaperswide.com/download/airplane_3-wallpaper-2560x1440.jpg';
 	onMount(() => {
-		goto(redirect);
+		if (redirect.length > 0) goto(redirect);
 		document.getElementById('hero')?.scrollIntoView({ behavior: 'instant' });
 	});
 </script>
