@@ -24,7 +24,7 @@
 								type="password"
 								name="password"
 								class="grow"
-								placeholder="Password"
+								placeholder="New Password"
 								maxlength="128"
 								required
 								bind:value={password}
@@ -42,7 +42,7 @@
 								type="password"
 								name="confirmPassword"
 								class="grow"
-								placeholder="Confirm Password"
+								placeholder="Confirm New Password"
 								required
 								bind:value={confirmPassword}
 							/>
