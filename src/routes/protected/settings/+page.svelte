@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { capitalizeFirstLetter, hrefs, isTaken } from '$lib';
+	import { capitalizeFirstLetter, hrefs, isTaken, validUsername } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
@@ -17,7 +17,16 @@
 
 	let email = $state(user?.email) as string;
 	let currentPage: CurrentPage = $state('profile');
-	let usernameTaken: boolean = $state(false);
+	const errors = $state({
+		invalidUsername: false,
+		usernameTaken: false
+	});
+	type errorKeys = keyof typeof errors;
+
+	function showAlert(key: errorKeys) {
+		errors[key] = true;
+		setTimeout(() => (errors[key] = false), 5000);
+	}
 
 	async function updateProfile(key: ProfileKeys) {
 		if (updatedProfile[key] === profile[key]) return;
@@ -77,9 +86,13 @@
 						bind:value={updatedProfile.username}
 						action={async () => {
 							if (updatedProfile.username === profile.username) return;
+							if (!validUsername(updatedProfile.username)) {
+								showAlert('invalidUsername');
+								updatedProfile.username = profile.username;
+								return;
+							}
 							if (await isTaken(updatedProfile.username, supabase)) {
-								usernameTaken = true;
-								setTimeout(() => (usernameTaken = false), 5000);
+								showAlert('usernameTaken');
 								updatedProfile.username = profile.username;
 								return;
 							}
@@ -112,6 +125,10 @@
 	</Container>
 </main>
 
-<Alert visible={usernameTaken} message="Username already taken"></Alert>
+<Alert
+	visible={errors.invalidUsername}
+	message="Username can only contain latin letters and numbers."
+></Alert>
+<Alert visible={errors.usernameTaken} message="Username already taken"></Alert>
 
 <Title title="Settings"></Title>

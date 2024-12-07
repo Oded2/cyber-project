@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
-import { addParams, hrefs, isTaken } from '$lib';
+import { addParams, hrefs, isTaken, validUsername } from '$lib';
 
 export function load({ url }) {
 	const params = url.searchParams;
@@ -19,6 +19,7 @@ export const actions: Actions = {
 		validate(password, "Password", 8, 128)
 		validate(displayName, "Display Name", 0, 50)
 		validate(username, "Username", 0, 50)
+		if (!validUsername(username)) error(422, { message: "Invalid Username" })
 		if (await isTaken(username, supabase)) return {
 			signup: true, email, password, displayName, username, invalidUsername: true
 		}

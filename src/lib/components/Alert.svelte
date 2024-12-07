@@ -10,7 +10,7 @@
 		role="alert"
 		class="alert alert-error absolute bottom-5 left-5 max-w-xs"
 	>
-		<i class="fa-solid fa-x"></i>
+		<i class="fa-solid fa-circle-xmark"></i>
 		<span>{message}</span>
 	</div>
 {/if}
