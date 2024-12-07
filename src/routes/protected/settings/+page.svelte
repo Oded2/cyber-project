@@ -7,14 +7,15 @@
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
 
-	type CurrentPage = 'profile' | 'account' | 'logbook';
+	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
 
 	const { data } = $props();
 	const { supabase, user, profile } = data;
+	const aircrafts = [];
 	const updatedProfile = $state(profile);
 
 	let email = $state(user?.email) as string;
-	let currentPage: CurrentPage = $state('profile');
+	let currentPage: CurrentPage = $state('aircraft');
 	const errors = $state({
 		invalidUsername: false,
 		usernameTaken: false
@@ -55,9 +56,9 @@
 						><i class="fa-solid fa-address-card"></i> Account</SettingsButton
 					>
 					<SettingsButton
-						onclick={() => (currentPage = 'logbook')}
-						active={currentPage === 'logbook'}
-						><i class="fa-solid fa-book"></i> Logbook</SettingsButton
+						onclick={() => (currentPage = 'aircraft')}
+						active={currentPage === 'aircraft'}
+						><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
 					>
 				</div>
 			</div>
@@ -116,6 +117,13 @@
 						}}
 					></ProfileEditor>
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
+				{:else if currentPage === 'aircraft'}
+					{#if aircrafts.length == 0}
+						<div class="mb-2 max-w-xs border-b-2 pb-2">
+							<h1 class="text-lg">No registered aircrafts yet</h1>
+						</div>
+						<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
+					{/if}
 				{/if}
 			</div>
 		</div>

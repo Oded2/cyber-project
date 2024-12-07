@@ -9,5 +9,6 @@
     "contact": "/contact",
     "settings": "/protected/settings",
     "passwordReset": "/protected/resetpassword",
-    "message": "/message"
+    "message": "/message",
+    "registerAircraft": "/protected/registerAircraft"
 }

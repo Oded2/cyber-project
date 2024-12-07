@@ -2,7 +2,7 @@ import { error, type Actions } from "@sveltejs/kit";
 import { FORMSPREE_ID } from "$env/static/private";
 
 export const actions: Actions = {
-    send: async ({ request, url }) => {
+    send: async ({ request }) => {
         const formData = await request.formData();
         const email = formData.get("email") as string;
         const message = formData.get("message") as string;
