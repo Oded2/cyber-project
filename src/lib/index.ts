@@ -19,3 +19,8 @@ export async function isTaken(username: string, supabase: SupabaseClient): Promi
 export function capitalizeFirstLetter(value: string) {
     return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }
+export function validUsername(username: string): boolean {
+    if (username.length == 0) return true;
+    const regex = /^[A-Za-z0-9]+$/;
+    return regex.test(username);
+};

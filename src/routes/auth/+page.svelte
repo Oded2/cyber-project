@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { validUsername } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
@@ -12,7 +13,8 @@
 	let username: string = $state(form?.username ?? '');
 	let password: string = $state(form?.password ?? '');
 	let confirmPassword: string = $state(form?.password ?? '');
-	let invalidUsername: boolean = $state(form?.invalidUsername ?? false);
+	let usernameTaken: boolean = $state(form?.invalidUsername ?? false);
+	let invalidUsername: boolean = $state(false);
 	let passwordMatch = $derived(password === confirmPassword);
 	let mismatchError = $state(false);
 	let passwordLengthError = $state(false);
@@ -81,11 +83,20 @@
 											placeholder="Username"
 											maxlength="50"
 											required
-											oninput={() => (invalidUsername = false)}
+											oninput={() => {
+												usernameTaken = false;
+												invalidUsername = false;
+											}}
+											onchange={() => (invalidUsername = !validUsername(username))}
 											bind:value={username}
 										/>
 									</label>
 									{#if invalidUsername}
+										<span class="text-error"
+											>Username can only contain latin letters and numbers.</span
+										>
+									{/if}
+									{#if usernameTaken}
 										<span class="text-error">Username already taken.</span>
 									{/if}
 								</div>
