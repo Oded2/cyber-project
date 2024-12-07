@@ -13,22 +13,19 @@
 	const { supabase, user, profile } = data;
 	const updatedProfile = $state(profile);
 
-	type ProfileKeys = keyof typeof profile;
-
 	let email = $state(user?.email) as string;
 	let currentPage: CurrentPage = $state('profile');
 	const errors = $state({
 		invalidUsername: false,
 		usernameTaken: false
 	});
-	type errorKeys = keyof typeof errors;
 
-	function showAlert(key: errorKeys) {
+	function showAlert(key: keyof typeof errors) {
 		errors[key] = true;
 		setTimeout(() => (errors[key] = false), 5000);
 	}
 
-	async function updateProfile(key: ProfileKeys) {
+	async function updateProfile(key: keyof typeof profile) {
 		if (updatedProfile[key] === profile[key]) return;
 		const { error: e } = await supabase
 			.from('profiles')
