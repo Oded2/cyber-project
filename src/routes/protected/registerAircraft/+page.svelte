@@ -9,7 +9,7 @@
 			<div class="card mx-auto mt-10 max-w-5xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2 pb-2">
-						<h2 class="card-title">Regiter Aircraft</h2>
+						<h2 class="card-title">Register Aircraft</h2>
 					</div>
 					<div class="grid grid-cols-8 gap-4">
 						<div class="col-span-2">
