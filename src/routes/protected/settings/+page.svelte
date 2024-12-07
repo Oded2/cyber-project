@@ -8,13 +8,14 @@
 	import Title from '$lib/components/Title.svelte';
 
 	type CurrentPage = 'profile' | 'account' | 'logbook';
-	type ProfileKeys = 'display' | 'username' | 'bio';
 
 	const { data } = $props();
 	const { supabase, user, profile } = data;
 	const updatedProfile = $state(profile);
-	let email = $state(user?.email) as string;
 
+	type ProfileKeys = keyof typeof profile;
+
+	let email = $state(user?.email) as string;
 	let currentPage: CurrentPage = $state('profile');
 	let usernameTaken: boolean = $state(false);
 
