@@ -1,8 +1,9 @@
 <script lang="ts">
+	import AircraftInput from '$lib/components/AircraftInput.svelte';
+	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 
-	const maxLength: number = 100;
 	const engineTypes: string[] = [
 		'Piston',
 		'Turboprop',
@@ -11,8 +12,30 @@
 		'Electric',
 		'Rotary/Wankel',
 		'Rocket Engine',
-		'Hybrid'
+		'Hybrid',
+		'Other'
 	];
+	const aircraftTypes: string[] = [
+		'Commercial',
+		'Private',
+		'Military',
+		'Cargo',
+		'UAV (Unmanned Aerial Vehicle)',
+		'Helicopter',
+		'Amphibious',
+		'Fighter Jet',
+		'Transport',
+		'Trainer',
+		'Reconnaissance',
+		'Tanker',
+		'Lighter-than-air (Airships, Balloons)',
+		'Business Jet',
+		'Glider',
+		'Experimental'
+	];
+
+	let step = 0;
+	const steps = [];
 </script>
 
 <main>
@@ -31,51 +54,19 @@
 					</ul>
 					<div class="flex flex-col gap-4">
 						<div>
-							<label class="input input-bordered flex items-center gap-2">
-								Model
-								<input
-									type="text"
-									name="model"
-									class="grow"
-									placeholder="Cessna 172"
-									required
-									maxlength={maxLength}
-								/>
-							</label>
+							<AircraftInput required name="model" placeholder="Cessna 172"></AircraftInput>
 						</div>
 						<div>
-							<label class="input input-bordered flex items-center gap-2">
-								Tail Number
-								<input
-									type="text"
-									name="registration"
-									class="grow"
-									placeholder="N12345"
-									required
-									maxlength={maxLength}
-								/>
-							</label>
+							<AircraftInput required name="tail_number" placeholder="N12345"></AircraftInput>
 						</div>
 						<div>
-							<label class="input input-bordered flex items-center gap-2">
-								Manufacturer
-								<input
-									type="text"
-									name="manufacturer"
-									class="grow"
-									placeholder="Cessna"
-									required
-									maxlength={maxLength}
-								/>
-							</label>
+							<AircraftInput required name="manufacturer" placeholder="Cessna"></AircraftInput>
 						</div>
 						<div>
-							<select name="engine" class="select select-bordered w-full">
-								<option disabled selected>Engine type</option>
-								{#each engineTypes as engine}
-									<option value={engine}>{engine}</option>
-								{/each}
-							</select>
+							<AircraftSelect values={aircraftTypes} name="aircraft_type"></AircraftSelect>
+						</div>
+						<div>
+							<AircraftSelect values={engineTypes} name="engine_type"></AircraftSelect>
 						</div>
 					</div>
 				</div>
