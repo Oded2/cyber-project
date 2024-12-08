@@ -3,8 +3,15 @@
 		maxLength = 100,
 		required = false,
 		placeholder,
-		name
-	}: { maxLength?: number; required?: boolean; placeholder: string; name: string } = $props();
+		name,
+		onchange = () => {}
+	}: {
+		maxLength?: number;
+		required?: boolean;
+		placeholder: string;
+		name: string;
+		onchange?: (event: Event) => void;
+	} = $props();
 </script>
 
 <div>
@@ -13,6 +20,14 @@
 			.split('_')
 			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 			.join(' ')}
-		<input type="text" {name} class="grow" {placeholder} {required} maxlength={maxLength} />
+		<input
+			{onchange}
+			type="text"
+			{name}
+			class="grow"
+			{placeholder}
+			{required}
+			maxlength={maxLength}
+		/>
 	</label>
 </div>

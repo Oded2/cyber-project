@@ -36,11 +36,15 @@
 
 	let step = 0;
 	const steps = [];
+
+	function validate(event: Event) {
+		console.log((event.target as HTMLInputElement).value);
+	}
 </script>
 
 <main>
 	<Container>
-		<form action="">
+		<form>
 			<div class="card mx-auto mt-10 max-w-3xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">
@@ -54,7 +58,8 @@
 					</ul>
 					<div class="flex flex-col gap-4">
 						<div>
-							<AircraftInput required name="model" placeholder="Cessna 172"></AircraftInput>
+							<AircraftInput onchange={validate} required name="model" placeholder="Cessna 172"
+							></AircraftInput>
 						</div>
 						<div>
 							<AircraftInput required name="tail_number" placeholder="N12345"></AircraftInput>
@@ -68,6 +73,7 @@
 						<div>
 							<AircraftSelect values={engineTypes} name="engine_type"></AircraftSelect>
 						</div>
+						<button>click</button>
 					</div>
 				</div>
 			</div>
