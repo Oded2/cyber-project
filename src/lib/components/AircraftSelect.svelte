@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { capitalizeFirstLetter } from '$lib';
-
 	const { values, name }: { values: string[]; name: string } = $props();
 </script>
 

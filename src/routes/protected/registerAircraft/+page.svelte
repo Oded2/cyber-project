@@ -20,7 +20,7 @@
 		'Private',
 		'Military',
 		'Cargo',
-		'UAV (Unmanned Aerial Vehicle)',
+		'UAV',
 		'Helicopter',
 		'Amphibious',
 		'Fighter Jet',
@@ -28,7 +28,7 @@
 		'Trainer',
 		'Reconnaissance',
 		'Tanker',
-		'Lighter-than-air (Airships, Balloons)',
+		'Lighter-than-air',
 		'Business Jet',
 		'Glider',
 		'Experimental'
