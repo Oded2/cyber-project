@@ -45,10 +45,38 @@
 			page: 0
 		},
 		{
+			name: 'tail_number',
+			placeholder: 'N12345',
+			required: true,
+			inputType: 'text',
+			page: 0
+		},
+		{
+			name: 'model',
+			placeholder: 'Cessna 172',
+			required: true,
+			inputType: 'text',
+			page: 0
+		},
+		{
+			name: 'manufacturer',
+			placeholder: 'Cessna',
+			required: true,
+			inputType: 'text',
+			page: 0
+		},
+		{
 			name: 'aircraft_type',
 			required: true,
 			inputType: 'select',
 			values: aircraftTypes,
+			page: 0
+		},
+		{
+			name: 'aircraft_engine',
+			required: true,
+			inputType: 'select',
+			values: engineTypes,
 			page: 0
 		}
 	];
@@ -57,13 +85,16 @@
 		return name + 'error';
 	}
 
-	function validate(event: Event, name: string) {
+	function validateField(event: Event, name: string) {
 		const max = 5;
 		const value = (event.target as HTMLInputElement | HTMLSelectElement).value;
 		const length = value.length;
 		let errorMessage = '';
 		if (length > max) errorMessage = `${format(name)} cannot exceed ${max} characters.`;
 		if (length == 0) errorMessage = `${format(name)} cannot be empty.`;
+		const errorElement = document.getElementById(errorId(name))!;
+		errorElement.hidden = errorMessage.length == 0;
+
 		document.getElementById(errorId(name))!.textContent = errorMessage;
 	}
 </script>
@@ -87,7 +118,7 @@
 							{#if input.page === step}
 								{#if input.inputType === 'text'}
 									<AircraftInput
-										onchange={(e) => validate(e, input.name)}
+										onchange={(e) => validateField(e, input.name)}
 										required={input.required}
 										name={input.name}
 										placeholder={input.placeholder!}
@@ -96,26 +127,11 @@
 									<AircraftSelect required={input.required} name={input.name} values={input.values!}
 									></AircraftSelect>
 								{/if}
-								<span id={errorId(input.name)} class="text-error"></span>
+								<span hidden id={errorId(input.name)} class="text-error"></span>
 							{/if}
 						{/each}
-						<!-- <div>
-							<AircraftInput onchange={validate} required name="model" placeholder="Cessna 172"
-							></AircraftInput>
-						</div>
-						<div>
-							<AircraftInput required name="tail_number" placeholder="N12345"></AircraftInput>
-						</div>
-						<div>
-							<AircraftInput required name="manufacturer" placeholder="Cessna"></AircraftInput>
-						</div>
-						<div>
-							<AircraftSelect required values={aircraftTypes} name="aircraft_type"></AircraftSelect>
-						</div>
-						<div>
-							<AircraftSelect required values={engineTypes} name="engine_type"></AircraftSelect>
-						</div> -->
-						<button>click</button>
+
+						<button class="btn btn-primary ms-auto w-full max-w-xs">Click</button>
 					</div>
 				</div>
 			</div>
