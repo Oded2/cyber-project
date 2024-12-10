@@ -19,7 +19,7 @@
 <label class="input input-bordered flex items-center gap-2">
 	{format(name)}
 	<input
-		{onchange}
+		onblur={onchange}
 		type="text"
 		{name}
 		class="grow"

@@ -10,7 +10,7 @@
 	}: {
 		values: string[];
 		name: string;
-		onchange?: () => void;
+		onchange?: (event: Event) => void;
 		allowOther?: boolean;
 		required: boolean;
 	} = $props();
@@ -28,7 +28,7 @@
 			const value = select.value;
 			other = !values.includes(value);
 			// Will only show text input if other is selected
-			onchange();
+			onchange(e);
 		}}
 		id={name}
 		{name}
