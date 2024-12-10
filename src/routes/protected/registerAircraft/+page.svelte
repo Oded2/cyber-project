@@ -44,7 +44,7 @@
 		'Autogyro'
 	];
 
-	let currentStep = $state(3);
+	let currentStep = $state(0);
 	const maxLength = 100;
 	const steps = [
 		'Basic Details',
