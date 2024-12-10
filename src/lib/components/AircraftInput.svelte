@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { format } from '$lib';
+
 	const {
 		maxLength = 100,
 		required = false,
@@ -14,20 +16,15 @@
 	} = $props();
 </script>
 
-<div>
-	<label class="input input-bordered flex items-center gap-2">
-		{name
-			.split('_')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ')}
-		<input
-			{onchange}
-			type="text"
-			{name}
-			class="grow"
-			{placeholder}
-			{required}
-			maxlength={maxLength}
-		/>
-	</label>
-</div>
+<label class="input input-bordered flex items-center gap-2">
+	{format(name)}
+	<input
+		{onchange}
+		type="text"
+		{name}
+		class="grow"
+		{placeholder}
+		{required}
+		maxlength={maxLength}
+	/>
+</label>

@@ -12,8 +12,7 @@
 		'Electric',
 		'Rotary/Wankel',
 		'Rocket Engine',
-		'Hybrid',
-		'Other'
+		'Hybrid'
 	];
 	const aircraftTypes: string[] = [
 		'Commercial',
