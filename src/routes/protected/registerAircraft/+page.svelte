@@ -204,7 +204,8 @@
 			required: true,
 			inputType: 'select',
 			page: 3,
-			values: ['Public', 'Private', 'Unlisted']
+			values: ['Public', 'Private', 'Unlisted'],
+			allowOther: false
 		}
 	];
 
@@ -251,6 +252,7 @@
 										required={input.required}
 										name={input.name}
 										values={input.values!}
+										allowOther={input.allowOther}
 									></AircraftSelect>
 								{:else if input.inputType === 'number'}
 									<NumberInput
