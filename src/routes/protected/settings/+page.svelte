@@ -15,7 +15,7 @@
 	const updatedProfile = $state(profile);
 
 	let email = $state(user?.email) as string;
-	let currentPage: CurrentPage = $state('aircraft');
+	let currentPage: CurrentPage = $state('profile');
 	const errors = $state({
 		invalidUsername: false,
 		usernameTaken: false

@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { format } from '$lib';
 	import AircraftInput from '$lib/components/AircraftInput.svelte';
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import YearInput from '$lib/components/YearInput.svelte';
+	import NumberInput from '$lib/components/NumberInput.svelte';
+
+	const currentYear = new Date().getFullYear();
 
 	const engineTypes: string[] = [
 		'Piston',
@@ -16,28 +17,36 @@
 		'Rocket Engine',
 		'Hybrid'
 	];
-	const aircraftTypes: string[] = [
+	const aircraftCategories: string[] = [
 		'Commercial',
 		'Private',
 		'Military',
 		'Cargo',
-		'UAV',
-		'Helicopter',
-		'Amphibious',
-		'Fighter Jet',
-		'Transport',
-		'Trainer',
-		'Reconnaissance',
-		'Tanker',
-		'Lighter-than-air',
-		'Business Jet',
-		'Glider',
-		'Experimental'
+		'Experimental',
+		'Training',
+		'Agricultural',
+		'Rescue/Medical',
+		'Recreational',
+		'Research',
+		'Government'
 	];
 
-	let step = 0;
+	const aircraftTypes: string[] = [
+		'Fixed-Wing',
+		'Rotorcraft',
+		'Unmanned Aerial Vehicle)',
+		'Glider',
+		'Balloon',
+		'Airship',
+		'Amphibious',
+		'Seaplane',
+		'Tiltrotor',
+		'Autogyro'
+	];
+
+	let currentStep = $state(0);
 	const maxLength = 100;
-	const steps = [];
+	const steps = ['Basical Details', 'Technical Specifications'];
 	const inputs = [
 		{
 			name: 'nickname',
@@ -70,8 +79,10 @@
 		{
 			name: 'year_of_manufacture',
 			required: true,
-			inputType: 'year',
-			page: 0
+			inputType: 'number',
+			page: 0,
+			min: 1903,
+			max: currentYear
 		},
 		{
 			name: 'aircraft_type',
@@ -81,11 +92,70 @@
 			page: 1
 		},
 		{
+			name: 'category',
+			required: true,
+			inputType: 'select',
+			values: aircraftCategories,
+			page: 1
+		},
+		{
 			name: 'aircraft_engine',
 			required: true,
 			inputType: 'select',
 			values: engineTypes,
 			page: 1
+		},
+		{
+			name: 'number_of_engines',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999
+		},
+		{
+			name: 'maximum_takeoff_weight',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999,
+			placeholder: '(lbs)'
+		},
+		{
+			name: 'wingspan',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999,
+			placeholder: '(ft)'
+		},
+		{
+			name: 'range',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999,
+			placeholder: '(NM)'
+		},
+		{
+			name: 'cruising_speed',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999,
+			placeholder: '(knots)'
+		},
+		{
+			name: 'seating_capacity',
+			required: true,
+			inputType: 'number',
+			page: 1,
+			min: 1,
+			max: 999999
 		}
 	];
 
@@ -93,7 +163,7 @@
 		for (const val of inputs) {
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
 			const valueLength = element.value.length;
-			if (valueLength > maxLength || valueLength == 0) {
+			if (valueLength > maxLength || (valueLength == 0 && val.required)) {
 				element.parentElement?.classList.add('input-error');
 				return false;
 			}
@@ -105,20 +175,19 @@
 <main>
 	<Container>
 		<form>
-			<div class="card mx-auto mt-10 max-w-3xl shadow-xl">
+			<div class="card mx-auto mb-10 mt-5 max-w-3xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">
 						<h2 class="card-title">Register Aircraft</h2>
 					</div>
 					<ul class="steps mb-2">
-						<li class="step step-primary">Basic Details</li>
-						<li class="step">Technical Specifications</li>
-						<li class="step">Purchase</li>
-						<li class="step">Receive Product</li>
+						{#each steps as step, index}
+							<li class="step" class:step-info={index <= currentStep}>{step}</li>
+						{/each}
 					</ul>
 					<div class="flex flex-col gap-4">
 						{#each inputs as input}
-							{#if input.page == step}
+							<div hidden={currentStep != input.page}>
 								{#if input.inputType === 'text'}
 									<AircraftInput
 										id={input.name}
@@ -133,16 +202,40 @@
 										name={input.name}
 										values={input.values!}
 									></AircraftSelect>
-								{:else if input.inputType === 'year'}
-									<YearInput name={input.name} id={input.name} required={input.required}
-									></YearInput>
+								{:else if input.inputType === 'number'}
+									<NumberInput
+										min={input.min!}
+										max={input.max!}
+										name={input.name}
+										id={input.name}
+										required={input.required}
+										placeholder={input.placeholder}
+									></NumberInput>
 								{/if}
-							{/if}
+							</div>
 						{/each}
-
-						<button type="button" class="btn btn-primary ms-auto w-full max-w-xs" onclick={validate}
-							>Click</button
-						>
+						<div class="flex gap-4">
+							{#if currentStep != 0}
+								<button
+									type="button"
+									class="btn btn-outline btn-info me-auto w-full max-w-48"
+									onclick={() => currentStep--}>Back</button
+								>
+							{/if}
+							{#if currentStep == steps.length - 1}
+								<button
+									type="button"
+									class="btn btn-info ms-auto w-full max-w-48"
+									onclick={() => currentStep++}>Submit</button
+								>
+							{:else}
+								<button
+									type="button"
+									class="btn btn-info ms-auto w-full max-w-48"
+									onclick={() => currentStep++}>Next</button
+								>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>

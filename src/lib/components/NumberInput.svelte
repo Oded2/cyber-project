@@ -1,8 +1,21 @@
 <script lang="ts">
 	import { format, toInputElement } from '$lib';
 
-	const { name, required, id }: { name: string; required?: boolean; id: string } = $props();
-	const year = new Date().getFullYear();
+	const {
+		name,
+		required,
+		id,
+		min,
+		max,
+		placeholder
+	}: {
+		name: string;
+		required?: boolean;
+		id: string;
+		min: number;
+		max: number;
+		placeholder?: string;
+	} = $props();
 
 	let errorMessage: string = $state('');
 
@@ -11,8 +24,8 @@
 		const value = parseInt(originalValue);
 		errorMessage = '';
 		if (originalValue.length > 0 && isNaN(value)) errorMessage = 'Value must be a number.';
-		else if (value < 1903) errorMessage = 'Minimum year is 1903.';
-		else if (value > year) errorMessage = 'Value cannot be in the future.';
+		else if (value < min) errorMessage = `Minimum value is ${min}.`;
+		else if (value > max) errorMessage = `Maximum value is ${max}`;
 	}
 </script>
 
@@ -26,9 +39,10 @@
 			{name}
 			class="grow"
 			{required}
-			min="1903"
-			max={year}
+			{min}
+			{max}
 			{id}
+			placeholder={placeholder ?? ''}
 		/>
 	</label>
 	{#if errorMessage.length > 0}
