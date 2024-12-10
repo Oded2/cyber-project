@@ -67,10 +67,10 @@
 							<AircraftInput required name="manufacturer" placeholder="Cessna"></AircraftInput>
 						</div>
 						<div>
-							<AircraftSelect values={aircraftTypes} name="aircraft_type"></AircraftSelect>
+							<AircraftSelect required values={aircraftTypes} name="aircraft_type"></AircraftSelect>
 						</div>
 						<div>
-							<AircraftSelect values={engineTypes} name="engine_type"></AircraftSelect>
+							<AircraftSelect required values={engineTypes} name="engine_type"></AircraftSelect>
 						</div>
 						<button>click</button>
 					</div>

@@ -5,10 +5,18 @@
 		values,
 		name,
 		onchange = () => {},
-		allowOther = true
-	}: { values: string[]; name: string; onchange?: () => void; allowOther?: boolean } = $props();
+		allowOther = true,
+		required = false
+	}: {
+		values: string[];
+		name: string;
+		onchange?: () => void;
+		allowOther?: boolean;
+		required: boolean;
+	} = $props();
 
 	const uniqueId = name + 'other';
+	// A very simple way of creating a unique id to the "other" option without having effect on other elements on the page
 
 	let other: boolean = $state(false);
 </script>
@@ -24,6 +32,7 @@
 		}}
 		id={name}
 		{name}
+		{required}
 		class="join-item select select-bordered w-full"
 		class:max-w-40={other}
 	>
@@ -37,7 +46,6 @@
 	</select>
 	{#if other}
 		<input
-			name="type"
 			type="text"
 			class="input join-item input-bordered w-full"
 			placeholder={format(name)}
@@ -46,6 +54,8 @@
 				const selectInput = document.getElementById(name) as HTMLSelectElement;
 				const otherOption = document.getElementById(uniqueId) as HTMLOptionElement;
 				const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+				// bubbles: Allows parent to listen for events if true
+				// cancelable: Allows the event to be prevented, usuallt with preventDefault
 				otherOption.value = input.value;
 				otherOption.selected = true;
 				selectInput.dispatchEvent(changeEvent);
