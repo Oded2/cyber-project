@@ -209,23 +209,24 @@
 		}
 	];
 
-	function validate(): boolean {
+	function validate(): void {
 		for (const val of inputs) {
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
 			const valueLength = element.value.length;
 			if (valueLength > maxLength || (valueLength == 0 && val.required)) {
 				element.parentElement?.classList.add('input-error');
 				currentStep = val.page;
-				return false;
+				return;
 			}
 		}
-		return true;
+		document.getElementById('submit')?.click();
 	}
 </script>
 
 <main>
 	<Container>
-		<form>
+		<form method="POST">
+			<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
 			<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">
