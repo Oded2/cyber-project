@@ -27,18 +27,22 @@
 <div>
 	<label class="input input-bordered flex items-center gap-2">
 		{format(name)}
+		{#if !required}
+			<span class=" text-sm font-light italic">(optional)</span>
+		{/if}
 		<input
+			value=""
 			oninput={(e) => toInputElement(e).parentElement?.classList.remove('input-error')}
 			onblur={validate}
 			type="text"
 			{name}
 			class="grow"
 			{placeholder}
-			{required}
 			maxlength={maxLength}
 			{id}
 		/>
 	</label>
+
 	{#if errorMessage.length > 0}
 		<span class="px-4 text-error">{errorMessage}</span>
 	{/if}

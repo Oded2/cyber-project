@@ -44,9 +44,14 @@
 		'Autogyro'
 	];
 
-	let currentStep = $state(0);
+	let currentStep = $state(3);
 	const maxLength = 100;
-	const steps = ['Basical Details', 'Technical Specifications'];
+	const steps = [
+		'Basic Details',
+		'Technical Specifications (1/2)',
+		'Technical Specifications (2/2)',
+		'More Details'
+	];
 	const inputs = [
 		{
 			name: 'nickname',
@@ -126,7 +131,7 @@
 			name: 'wingspan',
 			required: true,
 			inputType: 'number',
-			page: 1,
+			page: 2,
 			min: 1,
 			max: 999999,
 			placeholder: '(ft)'
@@ -135,7 +140,7 @@
 			name: 'range',
 			required: true,
 			inputType: 'number',
-			page: 1,
+			page: 2,
 			min: 1,
 			max: 999999,
 			placeholder: '(NM)'
@@ -144,18 +149,62 @@
 			name: 'cruising_speed',
 			required: true,
 			inputType: 'number',
-			page: 1,
+			page: 2,
 			min: 1,
 			max: 999999,
 			placeholder: '(knots)'
 		},
 		{
+			name: 'fuel_capacity',
+			required: true,
+			inputType: 'number',
+			page: 2,
+			min: 1,
+			max: 999999,
+			placeholder: '(gallons)'
+		},
+		{
+			name: 'fuel_type',
+			required: true,
+			inputType: 'text',
+			page: 2,
+			placeholder: 'Jet A'
+		},
+		{
+			name: 'owner_name',
+			required: true,
+			inputType: 'text',
+			page: 3,
+			placeholder: 'Sully'
+		},
+		{
 			name: 'seating_capacity',
 			required: true,
 			inputType: 'number',
-			page: 1,
+			page: 3,
 			min: 1,
 			max: 999999
+		},
+		{
+			name: 'modifications',
+			required: false,
+			inputType: 'text',
+			page: 3,
+			placeholder: 'Extended fuel range'
+		},
+		{
+			name: 'notes',
+			required: false,
+			inputType: 'text',
+			page: 3,
+			placeholder: '"Flown primarily for short-haul routes"'
+		},
+		{
+			name: 'visibility ',
+			required: true,
+			inputType: 'select',
+			page: 3,
+			values: ['Public', 'Private', 'Unlisted']
 		}
 	];
 
@@ -165,6 +214,7 @@
 			const valueLength = element.value.length;
 			if (valueLength > maxLength || (valueLength == 0 && val.required)) {
 				element.parentElement?.classList.add('input-error');
+				currentStep = val.page;
 				return false;
 			}
 		}
@@ -175,7 +225,7 @@
 <main>
 	<Container>
 		<form>
-			<div class="card mx-auto mb-10 mt-5 max-w-3xl shadow-xl">
+			<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">
 						<h2 class="card-title">Register Aircraft</h2>
@@ -226,7 +276,7 @@
 								<button
 									type="button"
 									class="btn btn-info ms-auto w-full max-w-48"
-									onclick={() => currentStep++}>Submit</button
+									onclick={() => validate()}>Submit</button
 								>
 							{:else}
 								<button
