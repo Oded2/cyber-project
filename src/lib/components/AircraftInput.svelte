@@ -6,13 +6,13 @@
 		required = false,
 		placeholder,
 		name,
-		onchange = () => {}
+		id
 	}: {
 		maxLength?: number;
 		required?: boolean;
 		placeholder: string;
 		name: string;
-		onchange?: (event: Event) => void;
+		id: string;
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -38,6 +38,7 @@
 			{placeholder}
 			{required}
 			maxlength={maxLength}
+			{id}
 		/>
 	</label>
 	{#if errorMessage.length > 0}

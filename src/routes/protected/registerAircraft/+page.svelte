@@ -35,6 +35,7 @@
 	];
 
 	let step = 0;
+	const maxLength = 100;
 	const steps = [];
 	const inputs = [
 		{
@@ -80,6 +81,15 @@
 			page: 0
 		}
 	];
+
+	function validate(): boolean {
+		for (const val of inputs) {
+			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
+			const valueLength = element.value.length;
+			if (valueLength > maxLength || valueLength == 0) return false;
+		}
+		return true;
+	}
 </script>
 
 <main>
@@ -101,18 +111,25 @@
 							{#if input.page === step}
 								{#if input.inputType === 'text'}
 									<AircraftInput
+										id={input.name}
 										required={input.required}
 										name={input.name}
 										placeholder={input.placeholder!}
 									></AircraftInput>
 								{:else if input.inputType === 'select'}
-									<AircraftSelect required={input.required} name={input.name} values={input.values!}
+									<AircraftSelect
+										id={input.name}
+										required={input.required}
+										name={input.name}
+										values={input.values!}
 									></AircraftSelect>
 								{/if}
 							{/if}
 						{/each}
 
-						<button class="btn btn-primary ms-auto w-full max-w-xs">Click</button>
+						<button type="button" class="btn btn-primary ms-auto w-full max-w-xs" onclick={validate}
+							>Click</button
+						>
 					</div>
 				</div>
 			</div>

@@ -4,13 +4,13 @@
 	const {
 		values,
 		name,
-		onchange = () => {},
+		id,
 		allowOther = true,
 		required = false
 	}: {
 		values: string[];
 		name: string;
-		onchange?: (event: Event) => void;
+		id: string;
 		allowOther?: boolean;
 		required: boolean;
 	} = $props();
@@ -28,9 +28,8 @@
 			const value = select.value;
 			other = !values.includes(value);
 			// Will only show text input if other is selected
-			onchange(e);
 		}}
-		id={name}
+		{id}
 		{name}
 		{required}
 		class="join-item select select-bordered w-full"
@@ -51,7 +50,7 @@
 			placeholder={format(name)}
 			onchange={(e) => {
 				const input = e.target as HTMLInputElement;
-				const selectInput = document.getElementById(name) as HTMLSelectElement;
+				const selectInput = document.getElementById(id) as HTMLSelectElement;
 				const otherOption = document.getElementById(uniqueId) as HTMLOptionElement;
 				const changeEvent = new Event('change', { bubbles: true, cancelable: true });
 				// bubbles: Allows parent to listen for events if true
