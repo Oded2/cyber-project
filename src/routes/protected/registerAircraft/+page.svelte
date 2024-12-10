@@ -93,7 +93,10 @@
 		for (const val of inputs) {
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
 			const valueLength = element.value.length;
-			if (valueLength > maxLength || valueLength == 0) return false;
+			if (valueLength > maxLength || valueLength == 0) {
+				element.parentElement?.classList.add('input-error');
+				return false;
+			}
 		}
 		return true;
 	}
@@ -108,8 +111,8 @@
 						<h2 class="card-title">Register Aircraft</h2>
 					</div>
 					<ul class="steps mb-2">
-						<li class="step step-primary">Register</li>
-						<li class="step">Choose plan</li>
+						<li class="step step-primary">Basic Details</li>
+						<li class="step">Technical Specifications</li>
 						<li class="step">Purchase</li>
 						<li class="step">Receive Product</li>
 					</ul>
@@ -131,10 +134,7 @@
 										values={input.values!}
 									></AircraftSelect>
 								{:else if input.inputType === 'year'}
-									<YearInput
-										name={input.name}
-										id={input.name}
-										required={input.required}
+									<YearInput name={input.name} id={input.name} required={input.required}
 									></YearInput>
 								{/if}
 							{/if}

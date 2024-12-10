@@ -18,12 +18,9 @@
 	let errorMessage: string = $state('');
 
 	function validate(event: Event) {
-		const element = toInputElement(event);
-		const value = element.value;
-		const length = value.length;
+		const length = toInputElement(event).value.length;
 		errorMessage = '';
 		if (length > maxLength) errorMessage = `${format(name)} cannot exceed ${maxLength} characters.`;
-		if (length == 0) errorMessage = `${format(name)} cannot be empty`;
 	}
 </script>
 
@@ -31,6 +28,7 @@
 	<label class="input input-bordered flex items-center gap-2">
 		{format(name)}
 		<input
+			oninput={(e) => toInputElement(e).parentElement?.classList.remove('input-error')}
 			onblur={validate}
 			type="text"
 			{name}
