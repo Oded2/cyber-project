@@ -80,23 +80,6 @@
 			page: 0
 		}
 	];
-
-	function errorId(name: string): string {
-		return name + 'error';
-	}
-
-	function validateField(event: Event, name: string) {
-		const max = 5;
-		const value = (event.target as HTMLInputElement | HTMLSelectElement).value;
-		const length = value.length;
-		let errorMessage = '';
-		if (length > max) errorMessage = `${format(name)} cannot exceed ${max} characters.`;
-		if (length == 0) errorMessage = `${format(name)} cannot be empty.`;
-		const errorElement = document.getElementById(errorId(name))!;
-		errorElement.hidden = errorMessage.length == 0;
-
-		document.getElementById(errorId(name))!.textContent = errorMessage;
-	}
 </script>
 
 <main>
@@ -118,7 +101,6 @@
 							{#if input.page === step}
 								{#if input.inputType === 'text'}
 									<AircraftInput
-										onchange={(e) => validateField(e, input.name)}
 										required={input.required}
 										name={input.name}
 										placeholder={input.placeholder!}
@@ -127,7 +109,6 @@
 									<AircraftSelect required={input.required} name={input.name} values={input.values!}
 									></AircraftSelect>
 								{/if}
-								<span hidden id={errorId(input.name)} class="text-error"></span>
 							{/if}
 						{/each}
 
