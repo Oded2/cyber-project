@@ -4,6 +4,7 @@
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import YearInput from '$lib/components/YearInput.svelte';
 
 	const engineTypes: string[] = [
 		'Piston',
@@ -67,18 +68,24 @@
 			page: 0
 		},
 		{
+			name: 'year_of_manufacture',
+			required: true,
+			inputType: 'year',
+			page: 0
+		},
+		{
 			name: 'aircraft_type',
 			required: true,
 			inputType: 'select',
 			values: aircraftTypes,
-			page: 0
+			page: 1
 		},
 		{
 			name: 'aircraft_engine',
 			required: true,
 			inputType: 'select',
 			values: engineTypes,
-			page: 0
+			page: 1
 		}
 	];
 
@@ -108,7 +115,7 @@
 					</ul>
 					<div class="flex flex-col gap-4">
 						{#each inputs as input}
-							{#if input.page === step}
+							{#if input.page == step}
 								{#if input.inputType === 'text'}
 									<AircraftInput
 										id={input.name}
@@ -123,6 +130,12 @@
 										name={input.name}
 										values={input.values!}
 									></AircraftSelect>
+								{:else if input.inputType === 'year'}
+									<YearInput
+										name={input.name}
+										id={input.name}
+										required={input.required}
+									></YearInput>
 								{/if}
 							{/if}
 						{/each}

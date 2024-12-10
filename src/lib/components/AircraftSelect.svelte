@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format } from '$lib';
+	import { format, toInputElement } from '$lib';
 
 	const {
 		values,
@@ -24,7 +24,7 @@
 <div class="join w-full">
 	<select
 		onchange={(e) => {
-			const select = e.target as HTMLSelectElement;
+			const select = toInputElement(e);
 			const value = select.value;
 			other = !values.includes(value);
 			// Will only show text input if other is selected
@@ -35,7 +35,7 @@
 		class="join-item select select-bordered w-full"
 		class:max-w-40={other}
 	>
-		<option disabled selected>{format(name)}</option>
+		<option disabled value={values[0]} selected>{format(name)}</option>
 		{#each values as value}
 			<option {value}>{value}</option>
 		{/each}
@@ -49,7 +49,7 @@
 			class="input join-item input-bordered w-full"
 			placeholder={format(name)}
 			onchange={(e) => {
-				const input = e.target as HTMLInputElement;
+				const input = toInputElement(e);
 				const selectInput = document.getElementById(id) as HTMLSelectElement;
 				const otherOption = document.getElementById(uniqueId) as HTMLOptionElement;
 				const changeEvent = new Event('change', { bubbles: true, cancelable: true });

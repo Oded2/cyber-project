@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format } from '$lib';
+	import { format, toInputElement } from '$lib';
 
 	const {
 		maxLength = 100,
@@ -18,7 +18,7 @@
 	let errorMessage: string = $state('');
 
 	function validate(event: Event) {
-		const element = event.target as HTMLInputElement;
+		const element = toInputElement(event);
 		const value = element.value;
 		const length = value.length;
 		errorMessage = '';

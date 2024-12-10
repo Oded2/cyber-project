@@ -32,3 +32,7 @@ export function format(s: string, space: string = "_") {
     // Formats a string to display to a user in an adequate way
     return s.split(space).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
 }
+
+export function toInputElement(event: Event) {
+    return event.target as HTMLInputElement | HTMLSelectElement
+}
