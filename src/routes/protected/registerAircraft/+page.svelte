@@ -247,7 +247,11 @@
 							<div hidden={currentStep != input.page}>
 								<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
 								{#if input.inputType === 'text'}
-									<AircraftInput id={input.name} name={input.name} placeholder={input.placeholder!}
+									<AircraftInput
+										required={input.required}
+										id={input.name}
+										name={input.name}
+										placeholder={input.placeholder!}
 									></AircraftInput>
 								{:else if input.inputType === 'select'}
 									<AircraftSelect
