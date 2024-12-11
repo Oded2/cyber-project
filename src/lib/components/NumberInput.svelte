@@ -36,12 +36,10 @@
 		{format(name)}
 		<input
 			oninput={(e) => toInputElement(e).parentElement?.classList.remove('input-error')}
-			onblur={validate}
-			type="number"
+			onchange={validate}
+			type="text"
 			{name}
 			class="grow"
-			{min}
-			{max}
 			{id}
 			placeholder={placeholder ?? ''}
 		/>

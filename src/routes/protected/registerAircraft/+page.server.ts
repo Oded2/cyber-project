@@ -8,7 +8,7 @@ export function load() {
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();
-		let toInsert: any = {};
+		let toInsert: { [key: string]: any } = {};
 		for (const input of inputs) {
 			const inputName = input.name;
 			toInsert[inputName] = formData.get(inputName);
@@ -208,7 +208,7 @@ const inputs = [
 		placeholder: '"Flown primarily for short-haul routes"'
 	},
 	{
-		name: 'visibility ',
+		name: 'visibility',
 		required: true,
 		inputType: 'select',
 		page: 3,
