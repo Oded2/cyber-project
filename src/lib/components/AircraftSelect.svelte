@@ -5,18 +5,16 @@
 		values,
 		name,
 		id,
-		allowOther = true,
-		required = false
+		allowOther = true
 	}: {
 		values: string[];
 		name: string;
 		id: string;
 		allowOther?: boolean;
-		required: boolean;
 	} = $props();
 
 	const uniqueId = name + 'other';
-	// A very simple way of creating a unique id to the "other" option without having effect on other elements on the page
+	// Creating a unique id to the "other" option without having effect on other elements on the page
 
 	let other: boolean = $state(false);
 </script>
@@ -31,7 +29,6 @@
 		}}
 		{id}
 		{name}
-		{required}
 		class="join-item select select-bordered w-full"
 		class:max-w-40={other}
 	>

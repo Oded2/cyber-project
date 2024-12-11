@@ -3,14 +3,13 @@
 
 	const {
 		name,
-		required,
 		id,
 		min,
 		max,
 		placeholder
 	}: {
 		name: string;
-		required?: boolean;
+
 		id: string;
 		min: number;
 		max: number;
@@ -23,8 +22,11 @@
 		const originalValue = toInputElement(e).value;
 		const value = parseInt(originalValue);
 		errorMessage = '';
-		if (originalValue.length > 0 && isNaN(value)) errorMessage = 'Value must be a number.';
-		else if (value < min) errorMessage = `Minimum value is ${min}.`;
+		if (originalValue.length > 0 && isNaN(value)) {
+			// Gives an error if the value is a number, but checks that the value isn't
+			// empty first
+			errorMessage = 'Value must be a number.';
+		} else if (value < min) errorMessage = `Minimum value is ${min}.`;
 		else if (value > max) errorMessage = `Maximum value is ${max}`;
 	}
 </script>
@@ -38,7 +40,6 @@
 			type="number"
 			{name}
 			class="grow"
-			{required}
 			{min}
 			{max}
 			{id}
