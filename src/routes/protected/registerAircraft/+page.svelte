@@ -204,7 +204,7 @@
 			required: true,
 			inputType: 'select',
 			page: 3,
-			values: ['Public', 'Private', 'Unlisted'],
+			values: ['private', 'public', 'unlisted'],
 			allowOther: false
 		}
 	];

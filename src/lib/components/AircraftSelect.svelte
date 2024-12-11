@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format, toInputElement } from '$lib';
+	import { capitalizeFirstLetter, format, toInputElement } from '$lib';
 
 	const {
 		values,
@@ -34,7 +34,7 @@
 	>
 		<option disabled value={values[0]} selected>{format(name)}</option>
 		{#each values as value}
-			<option {value}>{value}</option>
+			<option {value}>{capitalizeFirstLetter(value)}</option>
 		{/each}
 		{#if allowOther}
 			<option value="other" id={uniqueId}>Other</option>
@@ -50,10 +50,12 @@
 				const selectInput = document.getElementById(id) as HTMLSelectElement;
 				const otherOption = document.getElementById(uniqueId) as HTMLOptionElement;
 				const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+				// Creates a change event in order to trigger onchnage for the select element
 				// bubbles: Allows parent to listen for events if true
-				// cancelable: Allows the event to be prevented, usuallt with preventDefault
+				// cancelable: Allows the event to be prevented, usually with preventDefault
 				otherOption.value = input.value;
 				otherOption.selected = true;
+				// Changes the value of the other option to the user's input
 				selectInput.dispatchEvent(changeEvent);
 			}}
 		/>
