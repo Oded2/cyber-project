@@ -39,7 +39,7 @@
 <main>
 	<Container>
 		<form method="POST">
-			<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
+			<button class="hiddena" aria-label="Submit" id="submit" type="submit">submit</button>
 			<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">

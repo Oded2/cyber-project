@@ -6,7 +6,18 @@ export function load() {
 }
 
 export const actions: Actions = {
-	default: async ({ request }) => {}
+	default: async ({ request, locals: { supabase } }) => {
+		const formData = await request.formData();
+		let toInsert: any = {};
+		for (const input of inputs) {
+			const inputName = input.name;
+			toInsert[inputName] = formData.get(inputName);
+		}
+		const { data, error: e } = await supabase.from('aircrafts').insert([toInsert]);
+		if (e) {
+			error(400, { message: e.message });
+		}
+	}
 };
 
 const currentYear = new Date().getFullYear();
