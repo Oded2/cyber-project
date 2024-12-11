@@ -10,12 +10,12 @@
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
 
 	const { data } = $props();
-	const { supabase, user, profile } = data;
-	const aircrafts = [];
+	const { supabase, user, profile, page } = data;
+	const aircraftsPromise = supabase.from('aircrafts').select().eq('owner', user?.id);
 	const updatedProfile = $state(profile);
 
 	let email = $state(user?.email) as string;
-	let currentPage: CurrentPage = $state('profile');
+	let currentPage: CurrentPage = $state((page as CurrentPage) ?? 'profile');
 	const errors = $state({
 		invalidUsername: false,
 		usernameTaken: false
@@ -118,12 +118,19 @@
 					></ProfileEditor>
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
-					{#if aircrafts.length == 0}
-						<div class="mb-2 max-w-xs border-b-2 pb-2">
-							<h1 class="text-lg">No registered aircrafts yet</h1>
-						</div>
+					{#await aircraftsPromise}
+						<h1>Loading</h1>
+					{:then aircrafts}
+						{#each aircrafts.data! as aircraft}
+							<h1>{aircraft['nickname']}</h1>
+						{/each}
+						{#if aircrafts.data!.length == 0}
+							<div class="mb-2 max-w-xs border-b-2 pb-2">
+								<h1 class="text-lg">No registered aircrafts yet</h1>
+							</div>
+						{/if}
 						<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
-					{/if}
+					{/await}
 				{/if}
 			</div>
 		</div>
