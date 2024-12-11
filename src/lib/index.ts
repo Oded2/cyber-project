@@ -34,7 +34,7 @@ export function validUsername(username: string): boolean {
 export function validEmail(email: string): boolean {
 	// Checks that an email has an 'at', a dot, and is at least 6 characters long,
 	// as the bare minimum length for an email to be valid is 6 characters (a@b.cd)
-	return email.length > 6 && email.includes('@') && email.includes('.');
+	return email.length >= 6 && email.includes('@') && email.includes('.');
 }
 
 export function format(s: string, space: string = '_') {
