@@ -210,16 +210,21 @@
 	];
 
 	function validate(): void {
+		// For loop iterating all of the inputs
 		for (const val of inputs) {
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
+			// Input element
 			const valueLength = element.value.length;
 			if (valueLength > maxLength || (valueLength == 0 && val.required)) {
+				// Any input over the maximum length is invalid, but only required inputs cannot be empty
 				element.parentElement?.classList.add('input-error');
 				currentStep = val.page;
+				// Sets the current page to the input's page, so the user automatically navigates to the invalidated input
 				return;
 			}
 		}
 		document.getElementById('submit')?.click();
+		// Formally submits the form
 	}
 </script>
 
@@ -240,6 +245,7 @@
 					<div class="flex flex-col gap-4">
 						{#each inputs as input}
 							<div hidden={currentStep != input.page}>
+								<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
 								{#if input.inputType === 'text'}
 									<AircraftInput
 										id={input.name}

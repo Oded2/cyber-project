@@ -18,6 +18,7 @@
 	let errorMessage: string = $state('');
 
 	function validate(event: Event) {
+		// Display's an error for the user
 		const length = toInputElement(event).value.length;
 		errorMessage = '';
 		if (length > maxLength) errorMessage = `${format(name)} cannot exceed ${maxLength} characters.`;
