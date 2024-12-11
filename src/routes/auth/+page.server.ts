@@ -67,22 +67,38 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
+		// Collected all form data, and conveniently stores them as a string
+		if (!validEmail(email)) error(422, { message: 'Invalid Email' });
+		// Email has gone through non-asynchronous validation
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
+			// Two main types of possible errors: invalid credentials (common), or server-side
+			// issue at supabase level (uncommon)
 			const message = e.message;
-			if (message === 'Invalid login credentials') return { invalidCredentials: true };
+			if (message === 'Invalid login credentials') {
+				// If the user has simply entered the wrong email or password, the server returns
+				// the user back to the login page
+				return { invalidCredentials: true };
+			}
+			// At this stage the user has encountered an uncommon error, and is met with the error
+			// status and message
 			console.error(e);
-			error(e.status!, { message: message });
-		} else {
-			redirect(303, hrefs.home);
+			error(e.status ?? 400, { message: message });
 		}
+		// User has successfully logged in, and is redirected to the home page
+		redirect(303, hrefs.home);
 	},
 	reset: async ({ request, locals: { supabase }, url }) => {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
+		// Collected all form data, and conveniently stores them as a string
 		const redirectTo = addParams(hrefs.home, { redirect: hrefs.passwordReset }, url.origin);
 		const { error: e } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
-		if (e) error(e.status ?? 400, { message: e.message });
+		if (e) {
+			// User has encountered an uncommon error
+			error(e.status ?? 400, { message: e.message });
+		}
+		// User is now given instructions
 		redirect(
 			303,
 			addParams(
@@ -95,6 +111,7 @@ export const actions: Actions = {
 };
 
 function validate(input: string, inputName: string, min: number = 0, max: number = 500): void {
+	// Simple validation function to check that inputs are not empty nor are they too long
 	if (input.length < min)
 		error(422, { message: `${inputName} must be at least ${min} characters long.` });
 	if (input.length > max) error(422, { message: `${inputName} cannot exceed ${max} characters.` });
