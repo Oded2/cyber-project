@@ -54,7 +54,7 @@ const aircraftCategories: string[] = [
 const aircraftTypes: string[] = [
 	'Fixed-Wing',
 	'Rotorcraft',
-	'Unmanned Aerial Vehicle)',
+	'Unmanned Aerial Vehicle',
 	'Glider',
 	'Balloon',
 	'Airship',
