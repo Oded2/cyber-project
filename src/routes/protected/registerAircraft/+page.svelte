@@ -168,7 +168,7 @@
 			required: true,
 			inputType: 'text',
 			page: 2,
-			placeholder: 'Jet A'
+			placeholder: 'Avgas'
 		},
 		{
 			name: 'owner_name',

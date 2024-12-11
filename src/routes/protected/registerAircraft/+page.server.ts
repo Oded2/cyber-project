@@ -1,7 +1,6 @@
-import { error, type Actions } from "@sveltejs/kit";
+import { addParams, hrefs } from '$lib';
+import { error, redirect, type Actions } from '@sveltejs/kit';
 
 export const actions: Actions = {
-    register: async ({ request }) => {
-
-    }
-}
+	default: async ({ request }) => {}
+};

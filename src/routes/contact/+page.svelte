@@ -16,7 +16,7 @@
 					<h2 class="card-title text-success">Message sent successfully</h2>
 				{/if}
 				<h2 class="card-title mb-3">Contact</h2>
-				<form action="?/send" method="POST">
+				<form method="POST">
 					<label class="input input-bordered mb-3 flex items-center gap-2">
 						Email
 						<input
