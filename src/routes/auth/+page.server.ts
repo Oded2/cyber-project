@@ -4,9 +4,10 @@ import type { Actions } from './$types';
 import { addParams, hrefs, isTaken, validEmail, validUsername } from '$lib';
 
 export function load({ url }) {
+	// Since the login and sign up page are technically on the same page,
+	// the server will tell the page which form to display
 	const params = url.searchParams;
-	const errorMessage = (params.get('error') ?? '') as string;
-	return { signup: params.get('page') === 'signup', errorMessage };
+	return { signup: params.get('page') === 'signup' };
 }
 export const actions: Actions = {
 	signup: async ({ request, locals: { supabase }, url }) => {
