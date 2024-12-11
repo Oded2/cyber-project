@@ -1,4 +1,4 @@
-import { addParams, hrefs } from '$lib';
+import { addParams, format, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
 export function load() {
@@ -6,17 +6,21 @@ export function load() {
 }
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase } }) => {
+	default: async ({ request, locals: { supabase, user }, url }) => {
 		const formData = await request.formData();
-		let toInsert: { [key: string]: any } = {};
+		let toInsert: { [key: string]: string } = {};
+		toInsert['owner'] = user!.id;
 		for (const input of inputs) {
 			const inputName = input.name;
-			toInsert[inputName] = formData.get(inputName);
+			const value = formData.get(inputName) as string;
+			if ((input.required && value.length == 0) || value.length > 100) {
+				error(422, { message: `${format(inputName)} is invalid` });
+			}
+			toInsert[inputName] = value;
 		}
-		const { data, error: e } = await supabase.from('aircrafts').insert([toInsert]);
-		if (e) {
-			error(400, { message: e.message });
-		}
+		const { error: e } = await supabase.from('aircrafts').insert([toInsert]);
+		if (e) error(400, { message: e.message });
+		redirect(303, addParams(hrefs.settings, { page: 'aircraft' }, url.origin));
 	}
 };
 
