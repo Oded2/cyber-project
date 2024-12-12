@@ -38,9 +38,10 @@
 	const { supabase, user, profile, page } = data;
 	const updatedProfile = $state(profile);
 	const aircrafts: Aircraft[] = $state([]);
+	// User cannot be null due to this being a protected page
+	let email = $state(user!.email!);
+	let currentPage: CurrentPage = $state(page);
 
-	let email = $state(user?.email) as string;
-	let currentPage: CurrentPage = $state((page as CurrentPage) ?? 'profile');
 	const errors = $state({
 		invalidUsername: false,
 		usernameTaken: false
@@ -89,7 +90,7 @@
 					<SettingsButton
 						onclick={() => {
 							currentPage = 'aircraft';
-							if (aircrafts.length == 0) fetchAircrafts();
+							fetchAircrafts();
 						}}
 						active={currentPage === 'aircraft'}
 						><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
@@ -152,9 +153,10 @@
 					></ProfileEditor>
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
+					<div class="grid bg-red-500"></div>
 					{#if aircrafts.length > 0}
 						{#each aircrafts as aircraft}
-							<h1>{aircraft.nickname}</h1>
+							<div class="card"></div>
 						{/each}
 						<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
 					{:else}
