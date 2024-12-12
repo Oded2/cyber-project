@@ -8,11 +8,36 @@
 	import Title from '$lib/components/Title.svelte';
 
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
+	type Aircraft = {
+		id: number; // bigint
+		created_at: string; // timestamp with time zone
+		nickname: string; // text
+		tail_number: string; // text
+		model: string; // text
+		manufacturer: string; // text
+		year_of_manufacture: number; // integer
+		aircraft_type: string; // text
+		category: string; // text
+		aircraft_engine: string; // text
+		number_of_engines: number; // integer
+		maximum_takeoff_weight: number; // integer
+		wingspan: number; // integer
+		range: number; // integer
+		cruising_speed: number; // integer
+		fuel_capacity: number; // integer
+		fuel_type: string; // text
+		owner_name: string; // text
+		seating_capacity: number; // integer
+		modifications: string; // text
+		notes: string; // text
+		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
+		owner: string; // uuid
+	};
 
 	const { data } = $props();
 	const { supabase, user, profile, page } = data;
-	const aircraftsPromise = supabase.from('aircrafts').select().eq('owner', user?.id);
 	const updatedProfile = $state(profile);
+	const aircrafts: Aircraft[] = [];
 
 	let email = $state(user?.email) as string;
 	let currentPage: CurrentPage = $state((page as CurrentPage) ?? 'profile');
@@ -20,6 +45,12 @@
 		invalidUsername: false,
 		usernameTaken: false
 	});
+
+	async function fetchAircrafts() {
+		let { data: temp } = await supabase.from('aircrafts').select().eq('owner', user?.id);
+		temp = temp!;
+		for (let i = 0; i < temp.length; i++) aircrafts[i] = temp[i];
+	}
 
 	function showAlert(key: keyof typeof errors) {
 		errors[key] = true;
@@ -118,7 +149,7 @@
 					></ProfileEditor>
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
-					{#await aircraftsPromise}
+					<!-- {#await aircraftsPromise}
 						<h1>Loading</h1>
 					{:then aircrafts}
 						{#each aircrafts.data! as aircraft}
@@ -130,7 +161,7 @@
 							</div>
 						{/if}
 						<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
-					{/await}
+					{/await} -->
 				{/if}
 			</div>
 		</div>
