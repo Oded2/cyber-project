@@ -49,3 +49,9 @@ export function toInputElement(event: Event) {
 	// Turns events into input element in order to allow for cleaner code
 	return event.target as HTMLInputElement | HTMLSelectElement;
 }
+
+export function showModal(id: string): void {
+	// Opens any modal by ID
+	const modal = document.getElementById(id) as HTMLDialogElement;
+	modal.showModal();
+}

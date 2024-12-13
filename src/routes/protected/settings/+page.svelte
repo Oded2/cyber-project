@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { capitalizeFirstLetter, hrefs, isTaken, validUsername } from '$lib';
+	import { capitalizeFirstLetter, hrefs, isTaken, showModal, validUsername } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
@@ -16,6 +18,8 @@
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
 	let currentPage: CurrentPage = $state(page);
+	// When deleting, there needs to be a variable with the ID of the aircraft I would like to delete
+	let currentID: number;
 	onMount(() => {
 		if (page === 'aircraft') fetchAircrafts();
 	});
@@ -24,6 +28,10 @@
 		invalidUsername: false,
 		usernameTaken: false
 	});
+
+	async function handleDelete(): Promise<void> {
+		await supabase.from('aircrafts').delete().eq('id', currentID);
+	}
 
 	async function fetchAircrafts() {
 		let { data: temp } = await supabase.from('aircrafts').select().eq('owner', user?.id);
@@ -132,13 +140,24 @@
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
 					{#if aircrafts.length > 0}
-						<div class="grid grid-cols-4 gap-4">
+						<div class="grid grid-cols-3 gap-4">
 							{#each aircrafts as aircraft}
-								<div class="card relative col-auto shadow transition hover:shadow-xl">
+								<div class="card relative col-auto w-full shadow transition hover:shadow-xl">
 									<div class="card-body">
-										<div>
+										<div class="mb-2">
 											<h2 class="card-title">{aircraft.nickname}</h2>
 											<span class="text-light text-sm">{aircraft.tail_number}</span>
+										</div>
+										<div class="card-actions justify-end">
+											<button aria-label="Edit" class="btn btn-secondary">Edit</button>
+											<button
+												aria-label="Delete"
+												class="btn btn-outline btn-error"
+												onclick={() => {
+													currentID = aircraft.id;
+													showModal('delete');
+												}}>Delete</button
+											>
 										</div>
 									</div>
 									<div
@@ -154,17 +173,18 @@
 								</div>
 							{/each}
 						</div>
-						<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 					{:else}
-						<div class="mb-2 max-w-xs border-b-2 pb-2">
+						<div class="max-w-xs border-b-2 pb-2">
 							<h1 class="text-lg">No registered aircrafts yet</h1>
 						</div>
-					{/if}
+					{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 				{/if}
 			</div>
 		</div>
 	</Container>
 </main>
+
+<ConfirmationModal id="delete" onconfirmation={handleDelete}></ConfirmationModal>
 
 <Alert
 	visible={errors.invalidUsername}
