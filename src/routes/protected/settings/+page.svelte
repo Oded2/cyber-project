@@ -6,41 +6,19 @@
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import { onMount } from 'svelte';
 
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
-	type Aircraft = {
-		id: number; // bigint
-		created_at: string; // timestamp with time zone
-		nickname: string; // text
-		tail_number: string; // text
-		model: string; // text
-		manufacturer: string; // text
-		year_of_manufacture: number; // integer
-		aircraft_type: string; // text
-		category: string; // text
-		aircraft_engine: string; // text
-		number_of_engines: number; // integer
-		maximum_takeoff_weight: number; // integer
-		wingspan: number; // integer
-		range: number; // integer
-		cruising_speed: number; // integer
-		fuel_capacity: number; // integer
-		fuel_type: string; // text
-		owner_name: string; // text
-		seating_capacity: number; // integer
-		modifications: string; // text
-		notes: string; // text
-		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
-		owner: string; // uuid
-	};
 
 	const { data } = $props();
-	const { supabase, user, profile, page } = data;
+	const { supabase, user, profile, page, aircrafts } = data;
 	const updatedProfile = $state(profile);
-	const aircrafts: Aircraft[] = $state([]);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
 	let currentPage: CurrentPage = $state(page);
+	onMount(() => {
+		if (page === 'aircraft') fetchAircrafts();
+	});
 
 	const errors = $state({
 		invalidUsername: false,
@@ -153,12 +131,17 @@
 					></ProfileEditor>
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
-					<div class="grid bg-red-500"></div>
 					{#if aircrafts.length > 0}
-						{#each aircrafts as aircraft}
-							<div class="card"></div>
-						{/each}
-						<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
+						<div class="grid grid-cols-4 gap-4">
+							{#each aircrafts as aircraft}
+								<div class="card col-auto shadow transition hover:shadow-xl">
+									<div class="card-body">
+										<h2 class="card-title mb-2">{aircraft.nickname}</h2>
+									</div>
+								</div>
+							{/each}
+						</div>
+						<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 					{:else}
 						<div class="mb-2 max-w-xs border-b-2 pb-2">
 							<h1 class="text-lg">No registered aircrafts yet</h1>
