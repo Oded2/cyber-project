@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { flip } from 'svelte/animate';
 	import { goto } from '$app/navigation';
 	import { capitalizeFirstLetter, hrefs, isTaken, showModal, validUsername } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
@@ -13,7 +13,8 @@
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
 
 	const { data } = $props();
-	const { supabase, user, profile, page, aircrafts } = data;
+	const { supabase, user, profile, page } = data;
+	let { aircrafts } = $state(data);
 	const updatedProfile = $state(profile);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
@@ -31,6 +32,7 @@
 
 	async function handleDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
+		aircrafts = aircrafts.filter((obj) => obj.id !== currentID);
 	}
 
 	async function fetchAircrafts() {
@@ -141,15 +143,18 @@
 				{:else if currentPage === 'aircraft'}
 					{#if aircrafts.length > 0}
 						<div class="grid grid-cols-3 gap-4">
-							{#each aircrafts as aircraft}
-								<div class="card relative col-auto w-full shadow transition hover:shadow-xl">
+							{#each aircrafts as aircraft (aircraft)}
+								<div
+									class="card relative col-auto w-full shadow transition hover:shadow-xl"
+									animate:flip={{ duration: 500 }}
+								>
 									<div class="card-body">
 										<div class="mb-2">
 											<h2 class="card-title">{aircraft.nickname}</h2>
 											<span class="text-light text-sm">{aircraft.tail_number}</span>
 										</div>
 										<div class="card-actions justify-end">
-											<button aria-label="Edit" class="btn btn-secondary">Edit</button>
+											<button aria-label="Edit" class="btn btn-outline btn-accent">Edit</button>
 											<button
 												aria-label="Delete"
 												class="btn btn-outline btn-error"
