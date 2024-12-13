@@ -134,9 +134,22 @@
 					{#if aircrafts.length > 0}
 						<div class="grid grid-cols-4 gap-4">
 							{#each aircrafts as aircraft}
-								<div class="card col-auto shadow transition hover:shadow-xl">
+								<div class="card relative col-auto shadow transition hover:shadow-xl">
 									<div class="card-body">
-										<h2 class="card-title mb-2">{aircraft.nickname}</h2>
+										<div>
+											<h2 class="card-title">{aircraft.nickname}</h2>
+											<span class="text-light text-sm">{aircraft.tail_number}</span>
+										</div>
+									</div>
+									<div
+										class="tooltip absolute right-2 top-2"
+										data-tip={capitalizeFirstLetter(aircraft.visibility)}
+									>
+										{#if aircraft.visibility !== 'private'}
+											<i class="fa-solid fa-eye"></i>
+										{:else}
+											<i class="fa-solid fa-eye-slash"></i>
+										{/if}
 									</div>
 								</div>
 							{/each}
