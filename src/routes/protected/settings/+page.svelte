@@ -48,6 +48,8 @@
 	}
 
 	async function updateProfile(key: keyof typeof profile) {
+		// Checks if the profile has actually been updated, else it will call a fetch
+		// for no reason
 		if (updatedProfile[key] === profile[key]) return;
 		const { error: e } = await supabase
 			.from('profiles')
@@ -57,6 +59,7 @@
 			console.error(e);
 			return;
 		}
+		// To ensure that the user sees the updated field
 		profile[key] = updatedProfile[key];
 	}
 </script>
