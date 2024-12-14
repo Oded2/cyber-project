@@ -146,7 +146,7 @@
 					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
 				{:else if currentPage === 'aircraft'}
 					{#if aircrafts.length > 0}
-						<div class="grid grid-cols-3 gap-4">
+						<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 							{#each aircrafts as aircraft (aircraft)}
 								<div
 									class="card relative col-auto w-full shadow transition hover:shadow-xl"
