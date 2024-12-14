@@ -4,6 +4,8 @@
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import NumberInput from '$lib/components/NumberInput.svelte';
+	import { addParams, hrefs } from '$lib';
+	import { page } from '$app/stores';
 
 	const { data } = $props();
 	const { inputs, aircraft } = data;
@@ -44,11 +46,18 @@
 <main>
 	<Container>
 		<form method="POST">
-			<button class="hidden" aria-label="Submit" id="submit" type="submit">submit</button>
+			<!-- Hidden submit button that actually submits the form -->
+			<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
 			<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
 				<div class="card-body">
 					<div class="mb-2">
-						<h2 class="card-title">Register Aircraft</h2>
+						<h2 class="card-title">
+							<a
+								aria-label="Back"
+								href={addParams(hrefs.settings, { page: 'aircraft' }, $page.url.origin)}
+								><i class="fa-solid fa-chevron-left"></i></a
+							> Register Aircraft
+						</h2>
 					</div>
 					<ul class="steps mb-2">
 						{#each steps as step, index}
