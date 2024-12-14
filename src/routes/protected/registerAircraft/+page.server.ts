@@ -1,12 +1,20 @@
 import { addParams, format, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-export function load() {
-	return { inputs };
+export async function load({ url, locals: { supabase } }) {
+	const id: string = url.searchParams.get('id') ?? '';
+	let aircraft: Aircraft | undefined;
+	if (id.length > 0) {
+		const { data, error: e } = await supabase.from('aircrafts').select().eq('id', id);
+		if (e) error(400, { message: e.message });
+		aircraft = data ? data[0] : undefined;
+	}
+	return { inputs, aircraft };
 }
 
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase, user }, url }) => {
+		const id: string = url.searchParams.get('id') ?? '';
 		const formData = await request.formData();
 		let toInsert: { [key: string]: string } = {};
 		toInsert['owner'] = user!.id;
@@ -18,7 +26,8 @@ export const actions: Actions = {
 			}
 			toInsert[inputName] = value;
 		}
-		const { error: e } = await supabase.from('aircrafts').insert([toInsert]);
+		if (id.length > 0) toInsert['id'] = id;
+		const { error: e } = await supabase.from('aircrafts').upsert([toInsert]);
 		if (e) error(400, { message: e.message });
 		redirect(303, addParams(hrefs.settings, { page: 'aircraft' }, url.origin));
 	}
@@ -64,7 +73,19 @@ const aircraftTypes: string[] = [
 	'Autogyro'
 ];
 
-const inputs = [
+type InputType = {
+	name: keyof Aircraft;
+	placeholder?: string;
+	required: boolean;
+	inputType: 'text' | 'select' | 'number';
+	page: number;
+	min?: number;
+	max?: number;
+	values?: string[];
+	allowOther?: boolean;
+};
+
+const inputs: InputType[] = [
 	{
 		name: 'nickname',
 		placeholder: 'Bald Eagle',

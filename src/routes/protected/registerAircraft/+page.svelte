@@ -6,9 +6,11 @@
 	import NumberInput from '$lib/components/NumberInput.svelte';
 
 	const { data } = $props();
-	const { inputs } = data;
+	const { inputs, aircraft } = data;
 
 	let currentStep = $state(0);
+	// Boolean to allow instant change of the first option in select attributes from disabled to enabled
+	// as formData won't read it if it's disabled
 	const maxLength = 100;
 	const steps = [
 		'Basic Details',
@@ -18,6 +20,9 @@
 	];
 
 	function validate(): void {
+		// Enables all the disabled options as formData doesn't read disabled option elements
+		const disabledOptions = Array.from(document.getElementsByTagName('option'));
+		disabledOptions.forEach((option) => (option.disabled = false));
 		// For loop iterating all of the inputs
 		for (const val of inputs) {
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
@@ -56,6 +61,7 @@
 								<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
 								{#if input.inputType === 'text'}
 									<AircraftInput
+										value={aircraft ? aircraft[input.name].toString() : ''}
 										required={input.required}
 										id={input.name}
 										name={input.name}
@@ -63,6 +69,7 @@
 									></AircraftInput>
 								{:else if input.inputType === 'select'}
 									<AircraftSelect
+										value={aircraft ? aircraft[input.name].toString() : ''}
 										id={input.name}
 										name={input.name}
 										values={input.values!}
@@ -70,6 +77,7 @@
 									></AircraftSelect>
 								{:else if input.inputType === 'number'}
 									<NumberInput
+										value={aircraft ? aircraft[input.name].toString() : ''}
 										min={input.min!}
 										max={input.max!}
 										name={input.name}

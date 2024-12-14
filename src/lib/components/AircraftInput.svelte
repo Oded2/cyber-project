@@ -6,13 +6,15 @@
 		required = false,
 		placeholder,
 		name,
-		id
+		id,
+		value = ''
 	}: {
 		maxLength?: number;
 		required?: boolean;
 		placeholder: string;
 		name: string;
 		id: string;
+		value?: string;
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -32,7 +34,7 @@
 			<span class=" text-sm font-light italic">(optional)</span>
 		{/if}
 		<input
-			value=""
+			{value}
 			oninput={(e) => toInputElement(e).parentElement?.classList.remove('input-error')}
 			onblur={validate}
 			type="text"

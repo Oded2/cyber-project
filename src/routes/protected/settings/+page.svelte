@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { goto } from '$app/navigation';
-	import { capitalizeFirstLetter, hrefs, isTaken, showModal, validUsername } from '$lib';
+	import { addParams, capitalizeFirstLetter, hrefs, isTaken, showModal, validUsername } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
@@ -9,20 +9,21 @@
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
 
 	const { data } = $props();
-	const { supabase, user, profile, page } = data;
+	const { supabase, user, profile, page: pageDirect } = data;
 	let { aircrafts } = $state(data);
 	const updatedProfile = $state(profile);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
-	let currentPage: CurrentPage = $state(page);
+	let currentPage: CurrentPage = $state(pageDirect);
 	// When deleting, there needs to be a variable with the ID of the aircraft I would like to delete
 	let currentID: number;
 	onMount(() => {
-		if (page === 'aircraft') fetchAircrafts();
+		if (pageDirect === 'aircraft') fetchAircrafts();
 	});
 
 	const errors = $state({
@@ -154,7 +155,15 @@
 											<span class="text-light text-sm">{aircraft.tail_number}</span>
 										</div>
 										<div class="card-actions justify-end">
-											<button aria-label="Edit" class="btn btn-outline btn-accent">Edit</button>
+											<a
+												aria-label="Edit"
+												href={addParams(
+													hrefs.registerAircraft,
+													{ id: aircraft.id.toString() },
+													$page.url.origin
+												)}
+												class="btn btn-outline btn-accent">Edit</a
+											>
 											<button
 												aria-label="Delete"
 												class="btn btn-outline btn-error"

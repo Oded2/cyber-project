@@ -6,7 +6,8 @@
 		id,
 		min,
 		max,
-		placeholder
+		placeholder,
+		value = ''
 	}: {
 		name: string;
 
@@ -14,6 +15,7 @@
 		min: number;
 		max: number;
 		placeholder?: string;
+		value?: string;
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -35,6 +37,7 @@
 	<label class="input input-bordered flex items-center gap-2">
 		{format(name)}
 		<input
+			{value}
 			oninput={(e) => toInputElement(e).parentElement?.classList.remove('input-error')}
 			onchange={validate}
 			type="text"

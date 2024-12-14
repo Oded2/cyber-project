@@ -1,22 +1,23 @@
 <script lang="ts">
 	import { capitalizeFirstLetter, format, toInputElement } from '$lib';
 
-	const {
+	let {
 		values,
 		name,
 		id,
-		allowOther = true
+		allowOther = true,
+		value: originalValue = ''
 	}: {
 		values: string[];
 		name: string;
 		id: string;
 		allowOther?: boolean;
+		value?: string;
 	} = $props();
 
 	const uniqueId = name + 'other';
 	const max: number = 100;
 	// Creating a unique id to the "other" option without having effect on other elements on the page
-
 	let errorMessage: string = $state('');
 	let other: boolean = $state(false);
 
@@ -55,7 +56,9 @@
 		class="join-item select select-bordered w-full"
 		class:max-w-40={other}
 	>
-		<option disabled value={values[0]} selected>{format(name)}</option>
+		<option disabled value={originalValue.length > 0 ? originalValue : values[0]} selected
+			>{format(name)}</option
+		>
 		{#each values as value}
 			<option {value}>{capitalizeFirstLetter(value)}</option>
 		{/each}
