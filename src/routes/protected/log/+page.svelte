@@ -3,6 +3,7 @@
 	import Container from '$lib/components/Container.svelte';
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
+	import LogNumberInput from '$lib/components/LogNumberInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
 	import LogSelect from '$lib/components/LogSelect.svelte';
 	import Title from '$lib/components/Title.svelte';
@@ -27,11 +28,19 @@
 							<div class="mb-2">
 								<h2 class="card-title">Log Flight</h2>
 							</div>
-							<div class="flex flex-col gap-4">
+							<div class="flex flex-col items-center">
 								<LogSection>Basic Details</LogSection>
 								<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 								></LogInput>
 								<LogSelect name="aircraft" values={aircraftValues}></LogSelect>
+								<LogNumberInput name="altitude" displayName="Cruising altitude" min={0} max={200000}
+								></LogNumberInput>
+								<LogNumberInput
+									name="fuel_usage"
+									displayName="Fuel Used in Gallons"
+									min={0}
+									max={200000}
+								></LogNumberInput>
 								<LogSection>Departure Details</LogSection>
 								<LogInput
 									name="dep_airport"
@@ -41,7 +50,17 @@
 									minlength={3}
 									maxlength={4}
 								></LogInput>
-								<LogDateInput name="des_time" displayName="Date" required></LogDateInput>
+								<LogDateInput name="dep_time" displayName="Date & Time" required></LogDateInput>
+								<LogSection>Destination Details</LogSection>
+								<LogInput
+									name="des_airport"
+									displayName="Airport"
+									placeholder="ICAO or IATA code"
+									required
+									minlength={3}
+									maxlength={4}
+								></LogInput>
+								<LogDateInput name="des_time" displayName="Date & Time" required></LogDateInput>
 							</div>
 						</div>
 					</div>
