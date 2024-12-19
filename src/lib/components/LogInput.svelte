@@ -51,6 +51,9 @@
 		{required}
 		{name}
 	/>
+	{#if !required}
+		<div class="label"><span class="label-text-alt font-light italic">Optional</span></div>
+	{/if}
 	{#if errorMessage.length > 0}
 		<span class="px-3 text-sm text-error">{errorMessage}</span>
 	{/if}
