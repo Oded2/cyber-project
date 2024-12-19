@@ -47,7 +47,7 @@ export function format(s: string, space: string = '_') {
 
 export function toInputElement(event: Event) {
 	// Turns events into input element in order to allow for cleaner code
-	return event.target as HTMLInputElement | HTMLSelectElement;
+	return event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 }
 
 export function showModal(id: string): void {

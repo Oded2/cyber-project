@@ -64,7 +64,7 @@
 		{required}
 	/>
 	<div class="label">
-		<span class="label-text font-light italic">Adjusted to timezone</span>
+		<span class="label-text-alt font-light italic">Adjusted to timezone</span>
 	</div>
 	{#if errorMessage.length > 0}
 		<span class="px-3 text-sm text-error">{errorMessage}</span>

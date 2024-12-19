@@ -6,6 +6,7 @@
 	import LogNumberInput from '$lib/components/LogNumberInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
 	import LogSelect from '$lib/components/LogSelect.svelte';
+	import LogTextarea from '$lib/components/LogTextarea.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
@@ -14,6 +15,11 @@
 		display: item.nickname,
 		id: item.id.toString()
 	}));
+	const visibilities: { display: string; id: string }[] = [
+		{ id: 'private', display: 'Private' },
+		{ id: 'public', display: 'Public' },
+		{ id: 'unlisted', display: 'Unlisted' }
+	];
 </script>
 
 <main>
@@ -61,6 +67,12 @@
 									maxlength={4}
 								></LogInput>
 								<LogDateInput name="des_time" displayName="Date & Time" required></LogDateInput>
+								<LogSection>Additional Details</LogSection>
+								<LogTextarea name="notes" maxlength={10000}></LogTextarea>
+								<LogSelect name="visibility" values={visibilities}></LogSelect>
+							</div>
+							<div class="card-actions justify-end">
+								<button type="button" class="btn btn-primary">Submit</button>
 							</div>
 						</div>
 					</div>

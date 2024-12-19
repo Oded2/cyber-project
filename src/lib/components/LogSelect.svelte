@@ -16,15 +16,6 @@
 	let errorMessage: string = $state('');
 </script>
 
-<!-- <div class="w-full">
-	<select {name} class=" select select-bordered w-full max-w-xs">
-		<option disabled value={values[0]} selected>{displayName}</option>
-		{#each values as value}
-			<option value={value.id}>{value.display}</option>
-		{/each}
-	</select>
-</div> -->
-
 <label class="flex w-full max-w-xs flex-col">
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
