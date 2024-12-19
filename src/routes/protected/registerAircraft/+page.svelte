@@ -78,7 +78,7 @@
 									></AircraftInput>
 								{:else if input.inputType === 'select'}
 									<AircraftSelect
-										value={aircraft ? aircraft[input.name].toString() : ''}
+										originalValue={aircraft ? aircraft[input.name].toString() : ''}
 										id={input.name}
 										name={input.name}
 										values={input.values!}

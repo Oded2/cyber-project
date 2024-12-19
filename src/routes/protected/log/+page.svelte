@@ -4,11 +4,15 @@
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
+	import LogSelect from '$lib/components/LogSelect.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { profile, supabase, aircrafts } = data;
-	const aircraftNames = aircrafts.map((item) => item.nickname);
+	const { profile, aircrafts } = data;
+	const aircraftValues: { display: string; id: string }[] = aircrafts.map((item) => ({
+		display: item.nickname,
+		id: item.id.toString()
+	}));
 </script>
 
 <main>
@@ -27,7 +31,7 @@
 								<LogSection>Basic Details</LogSection>
 								<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 								></LogInput>
-
+								<LogSelect name="aircraft" values={aircraftValues}></LogSelect>
 								<LogSection>Departure Details</LogSection>
 								<LogInput
 									name="dep_airport"

@@ -6,13 +6,13 @@
 		name,
 		id,
 		allowOther = true,
-		value: originalValue = ''
+		originalValue = ''
 	}: {
 		values: string[];
 		name: string;
 		id: string;
 		allowOther?: boolean;
-		value?: string;
+		originalValue?: string;
 	} = $props();
 
 	const uniqueId = name + 'other';
