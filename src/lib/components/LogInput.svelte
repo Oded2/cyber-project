@@ -7,7 +7,8 @@
 		minlength = 0,
 		maxlength = 50,
 		required = false,
-		placeholder = 'Type Here'
+		placeholder = 'Type Here',
+		displayName = format(name)
 	}: {
 		name: string;
 		value?: string;
@@ -15,6 +16,7 @@
 		maxlength?: number;
 		required?: boolean;
 		placeholder?: string;
+		displayName?: string;
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -36,7 +38,7 @@
 
 <label class="flex w-full max-w-xs flex-col">
 	<div class="label">
-		<span class="label-text">{format(name)}</span>
+		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
 	<input
 		type="text"

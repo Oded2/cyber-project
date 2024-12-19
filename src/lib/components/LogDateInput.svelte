@@ -1,0 +1,72 @@
+<script lang="ts">
+	import { format, toInputElement, formatDateTime, formatDate } from '$lib';
+
+	// Get the current date
+	const today = new Date();
+
+	// Calculate the date 2 weeks ago
+	const minDate = new Date(today);
+	minDate.setDate(today.getDate() - 14);
+	// Set to midnight to allow slightly more than exactly 2 weeks
+	minDate.setHours(0, 0, 0, 0);
+
+	// Calculate the date ~ 2 months ahead
+	const maxDate = new Date(today);
+	maxDate.setDate(today.getDate() + 60);
+	// Half an hour ahead to avoid edge cases error messages
+	maxDate.setMinutes(maxDate.getMinutes() + 30);
+
+	const {
+		name,
+		value = formatDateTime(today),
+		min = formatDateTime(minDate),
+		max = formatDateTime(maxDate),
+		required = false,
+		placeholder = 'Type Here',
+		displayName = format(name)
+	}: {
+		name: string;
+		value?: string;
+		min?: string;
+		max?: string;
+		required?: boolean;
+		placeholder?: string;
+		displayName?: string;
+	} = $props();
+
+	let errorMessage: string = $state('');
+
+	function handleChange(e: Event): void {
+		// Simply to assist the user, does not perform any client-side validation
+		const value = new Date(toInputElement(e).value);
+		if (value > maxDate) {
+			errorMessage = `Date cannot be before ${formatDate(maxDate)}`;
+		} else if (value < minDate) {
+			errorMessage = `Date cannot be before ${formatDate(minDate)}`;
+		} else {
+			errorMessage = '';
+		}
+	}
+</script>
+
+<label class="flex w-full max-w-xs flex-col">
+	<div class="label">
+		<span class="text-lg font-semibold">{displayName}</span>
+	</div>
+	<input
+		type="datetime-local"
+		{value}
+		onchange={handleChange}
+		{placeholder}
+		class="input input-sm input-bordered w-full max-w-xs py-5"
+		{min}
+		{max}
+		{required}
+	/>
+	<div class="label">
+		<span class="label-text font-light italic">Adjusted to timezone</span>
+	</div>
+	{#if errorMessage.length > 0}
+		<span class="px-3 text-sm text-error">{errorMessage}</span>
+	{/if}
+</label>
