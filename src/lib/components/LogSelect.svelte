@@ -12,10 +12,6 @@
 		max?: number;
 		displayName?: string;
 	} = $props();
-
-	const uniqueId = name + 'other';
-	// Creating a unique id to the "other" option without having effect on other elements on the page
-	let errorMessage: string = $state('');
 </script>
 
 <div class="join w-full">
@@ -26,6 +22,3 @@
 		{/each}
 	</select>
 </div>
-{#if errorMessage.length > 0}
-	<span class="px-4 text-error">{errorMessage}</span>
-{/if}
