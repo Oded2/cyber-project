@@ -28,11 +28,12 @@ export async function load({ locals: { supabase, user } }) {
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase, user } }) => {
 		const formData = await request.formData();
-		const obj = Object.fromEntries(formData.entries());
 		const dep = formData.get('dep_airport') as string;
 		const des = formData.get('des_airport') as string;
 		const depICAO = await getAirportData(dep).then((val) => val.icao);
 		const desICAO = await getAirportData(des).then((val) => val.icao);
+		formData.set('dep_airport', depICAO);
+		formData.set('des_airport', desICAO);
 	}
 };
 async function getAirportData(code: string): Promise<AirportInfo> {
