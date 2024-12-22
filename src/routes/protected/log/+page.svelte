@@ -20,6 +20,10 @@
 		{ id: 'public', display: 'Public' },
 		{ id: 'unlisted', display: 'Unlisted' }
 	];
+	const ratings: { display: string; id: string }[] = [
+		{ id: 'visual', display: 'VFR' },
+		{ id: 'instrument', display: 'IFR' }
+	];
 </script>
 
 <main>
@@ -27,20 +31,19 @@
 		<main>
 			<Container>
 				<form method="POST">
-					<!-- Hidden submit button that actually submits the form -->
-					<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
 					<div class="card mx-auto mb-10 mt-5 max-w-5xl shadow-xl">
 						<div class="card-body">
 							<div class="mb-2">
 								<h2 class="card-title">Log Flight</h2>
 							</div>
-							<div class="flex flex-col items-center">
+							<div class="flex flex-col">
 								<LogSection>Basic Details</LogSection>
 								<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 								></LogInput>
 								<LogSelect name="aircraft" values={aircraftValues}></LogSelect>
 								<LogNumberInput name="altitude" displayName="Cruising altitude" min={0} max={200000}
 								></LogNumberInput>
+								<LogSelect name="rating" values={ratings}></LogSelect>
 								<LogNumberInput
 									name="fuel_usage"
 									displayName="Fuel Used in Gallons"
@@ -72,7 +75,7 @@
 								<LogSelect name="visibility" values={visibilities}></LogSelect>
 							</div>
 							<div class="card-actions justify-end">
-								<button type="button" class="btn btn-primary">Submit</button>
+								<button type="submit" class="btn btn-primary">Submit</button>
 							</div>
 						</div>
 					</div>

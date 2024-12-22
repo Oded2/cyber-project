@@ -21,9 +21,9 @@
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
 	<select {name} class=" select select-bordered w-full max-w-xs">
-		<option disabled value={values[0]} selected>{displayName}</option>
-		{#each values as value}
-			<option value={value.id}>{value.display}</option>
+		{#each values as value, index}
+			<!-- Index == 0 ensures thsat the first option is automatically selected -->
+			<option selected={index == 0} value={value.id}>{value.display}</option>
 		{/each}
 	</select>
 	{#if errorMessage.length > 0}
