@@ -21,7 +21,7 @@ export async function load({ locals: { supabase, user } }) {
 		.eq('owner', user?.id);
 	if (e) error(500, { message: e.message });
 	// Temporary error redirect to avoid user without aircrafts
-	if (aircrafts.length == 0) error(400, { message: 'No aircrafts' });
+	if (aircrafts.length == 0) error(400, { message: 'No aircrafts registered' });
 	return { aircrafts: aircrafts as Aircraft[] };
 }
 
