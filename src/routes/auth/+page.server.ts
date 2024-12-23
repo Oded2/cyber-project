@@ -1,7 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-
+import { SERIVE_ROLE } from '$env/static/private';
 import type { Actions } from './$types';
 import { addParams, hrefs, isTaken, validEmail, validUsername } from '$lib';
+import { createClient } from '@supabase/supabase-js';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 
 export function load({ url }) {
 	// Since the login and sign up page are technically on the same page,
@@ -11,6 +13,9 @@ export function load({ url }) {
 }
 export const actions: Actions = {
 	signup: async ({ request, locals: { supabase }, url }) => {
+		// Creating an admin supabase client in order to bypass RLS and insert
+		// a profile
+		const admin = createClient(PUBLIC_SUPABASE_URL, SERIVE_ROLE);
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
@@ -46,9 +51,9 @@ export const actions: Actions = {
 			error(e.status ?? 400, { message: e.message });
 		}
 		// At this stage the user has been signed up to supabase and is given an id
-		const { error: profileFetchError } = await supabase
+		const { error: profileFetchError } = await admin
 			.from('profiles')
-			.insert([{ id: data.user?.id, display: displayName, username }]);
+			.insert([{ id: data.user!.id, display: displayName, username }]);
 		if (profileFetchError) {
 			// Error shouldn't occur due to previous validation, but if
 			// it does then the user is met with an error

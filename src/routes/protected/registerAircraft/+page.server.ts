@@ -24,7 +24,6 @@ export const actions: Actions = {
 			}
 		}
 		const obj = Object.fromEntries(formData.entries());
-		obj['owner'] = user!.id;
 		if (id.length > 0) obj['id'] = id;
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row
 		const { error: e } = await supabase.from('aircrafts').upsert([obj]);

@@ -29,18 +29,30 @@ export const actions: Actions = {
 	default: async ({ request, locals: { supabase, user } }) => {
 		const formData = await request.formData();
 		console.log(formData);
-		const dep = formData.get('dep_airport') as string;
-		const des = formData.get('des_airport') as string;
-		const depICAO = await getAirportData(dep).then((val) => val.icao);
-		const desICAO = await getAirportData(des).then((val) => val.icao);
+		const depICAO = await getAirportData(formData.get('dep_airport') as string).then(
+			(val) => val.icao
+		);
+		const desICAO = await getAirportData(formData.get('des_airport') as string).then(
+			(val) => val.icao
+		);
 		formData.set('dep_airport', depICAO);
 		formData.set('des_airport', desICAO);
+		numToNull(formData, 'fuel_usage');
+		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries());
-		// Future: use delete
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
 	}
 };
+
+function numToNull(form: FormData, name: string): void {
+	// Some inputs that are numbers are allowed to be null
+	// This function deletes the value of the empty numbers in order to pass
+	// a null value to supabase
+	const val = form.get(name) as string;
+	if (val.length == 0) form.delete(name);
+}
+
 async function getAirportData(code: string): Promise<AirportInfo> {
 	// Returns a type AirportInfo based on an ICAO/IATA code
 	// If the code is invalid the function returns an error
