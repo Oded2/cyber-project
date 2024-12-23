@@ -15,7 +15,23 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
-	type Aircraft = {
+	interface Log {
+		id: number; // bigint
+		owner: string; // uuid
+		created_at: string; // timestamp with time zone
+		dep_time: Date; // timestamp with time zone
+		des_time: Date; // timestamp with time zone
+		dep_airport: string; // text
+		des_airport: string; // text
+		aircraft: number; // bigint (foreign key referencing aircrafts)
+		notes: string; // text
+		altitude?: number; // integer (optional)
+		pilot_in_command: string; // text
+		visibility: 'public' | 'unlisted' | 'private'; // text with constraints
+		fuel_usage?: number; // bigint (optional)
+		rating: 'visual' | 'instrument'; // text with constraints
+	}
+	interface Aircraft {
 		id: number; // bigint
 		created_at: string; // timestamp with time zone
 		nickname: string; // text
@@ -39,7 +55,7 @@ declare global {
 		notes: string; // text
 		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
 		owner: string; // uuid
-	};
+	}
 }
 
 export {};
