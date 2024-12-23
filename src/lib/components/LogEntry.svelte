@@ -1,5 +1,9 @@
 <script lang="ts">
-	const { log, shade }: { log: Log; shade: boolean } = $props();
+	import { page } from '$app/stores';
+	import { addParams, hrefs } from '$lib';
+
+	const { log, shade, aircrafts }: { log: Log; shade: boolean; aircrafts: Aircraft[] } = $props();
+	const origin: string = $page.url.origin;
 
 	function getDuration(date1: Date, date2: Date): string {
 		// This function takes the difference in time between two dates and formats it
@@ -10,9 +14,16 @@
 		if (minutes == 0) return `${hours} hours`;
 		return `${hours} hours and ${minutes} minutes`;
 	}
+
+	const aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
 </script>
 
 <div class="grid grid-cols-4 px-3 py-5" class:bg-base-200={shade}>
 	<div class="col-auto"><h2 class="font-bold">{log.dep_airport} TO {log.des_airport}</h2></div>
 	<div class="col-auto"><h2>{getDuration(log.dep_time, log.des_time)}</h2></div>
+	<div class="col-auto">
+		<a class="link" href={addParams(hrefs.aircraft, { id: aircraft.id.toString() }, origin)}
+			>{aircraft.nickname}</a
+		>
+	</div>
 </div>

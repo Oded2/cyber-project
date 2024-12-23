@@ -10,5 +10,6 @@
     "settings": "/protected/settings",
     "passwordReset": "/protected/resetpassword",
     "message": "/message",
-    "registerAircraft": "/protected/registerAircraft"
+    "registerAircraft": "/protected/registerAircraft",
+    "aircraft": "/aircraft"
 }

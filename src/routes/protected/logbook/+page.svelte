@@ -4,7 +4,7 @@
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { logs, profile } = data;
+	const { logs, profile, aircrafts } = data;
 </script>
 
 <Title title="Logbook"></Title>
@@ -17,11 +17,11 @@
 		<div class="grid grid-cols-4 border-b-2 px-3 pb-2">
 			<div class="col-auto">Airports</div>
 			<div class="col-auto">Duration</div>
-			<div class="col-auto">Column 3</div>
+			<div class="col-auto">Aircraft</div>
 			<div class="col-auto">Column 4</div>
 		</div>
 		{#each logs as log, index}
-			<LogEntry shade={index % 2 != 0} {log}></LogEntry>
+			<LogEntry {aircrafts} shade={index % 2 != 0} {log}></LogEntry>
 		{/each}
 	</div>
 </Container>
