@@ -3,7 +3,7 @@
 
 	function getDuration(date1: Date, date2: Date): string {
 		const miliseconds = Math.abs(date1.getTime() - date2.getTime());
-		return `${miliseconds / 3600000} Hours, ${(miliseconds / 60000) % 60} Minutes`;
+		return `${Math.floor(miliseconds / 3600000)} Hours, ${(miliseconds / 60000) % 60} Minutes`;
 	}
 </script>
 
