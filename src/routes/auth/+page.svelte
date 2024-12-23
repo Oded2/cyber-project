@@ -117,7 +117,7 @@
 												mismatchError = false;
 												passwordLengthError = false;
 											}}
-											onchange={() => {
+											onblur={() => {
 												mismatchError = !passwordMatch;
 												passwordLengthError = password.length < 8;
 											}}
@@ -144,7 +144,7 @@
 											maxlength="128"
 											required
 											oninput={() => (mismatchError = false)}
-											onchange={() => (mismatchError = !passwordMatch)}
+											onblur={() => (mismatchError = !passwordMatch)}
 											bind:value={confirmPassword}
 										/>
 									</label>
