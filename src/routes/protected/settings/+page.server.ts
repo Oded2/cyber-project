@@ -1,4 +1,4 @@
-import { SERIVE_ROLE } from '$env/static/private';
+import { SERVICE_ROLE } from '$env/static/private';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { hrefs } from '$lib';
 import { createClient } from '@supabase/supabase-js';
@@ -17,7 +17,7 @@ export async function load({ url, locals: { supabase, user } }) {
 
 export const actions: Actions = {
 	deleteAccount: async ({ locals: { user } }) => {
-		const admin = createClient(PUBLIC_SUPABASE_URL, SERIVE_ROLE);
+		const admin = createClient(PUBLIC_SUPABASE_URL, SERVICE_ROLE);
 		const { error: e } = await admin.auth.admin.deleteUser(user!.id);
 		if (e) error(e.status ?? 500, { message: e.message });
 		redirect(303, hrefs.home);
