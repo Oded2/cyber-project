@@ -31,7 +31,7 @@
 		usernameTaken: false
 	});
 
-	async function handleDelete(): Promise<void> {
+	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
 		aircrafts = aircrafts.filter((obj) => obj.id !== currentID);
 	}
@@ -61,6 +61,13 @@
 		}
 		// To ensure that the user sees the updated field
 		profile[key] = updatedProfile[key];
+	}
+
+	function handleAccountDelete(): void {
+		const hiddenButton: HTMLButtonElement = document.getElementById(
+			'deleteAccountButton'
+		) as HTMLButtonElement;
+		hiddenButton.click();
 	}
 </script>
 
@@ -143,7 +150,13 @@
 							goto(hrefs.home);
 						}}
 					></ProfileEditor>
-					<a href={hrefs.passwordReset} class="btn btn-neutral">Reset Password</a>
+					<div class="max-w-[10rem]">
+						<a href={hrefs.passwordReset} class="btn btn-neutral w-full">Reset Password</a>
+						<button
+							class="btn btn-outline btn-error mt-2 w-full"
+							onclick={() => showModal('deleteAccount')}>Delete Account</button
+						>
+					</div>
 				{:else if currentPage === 'aircraft'}
 					{#if aircrafts.length > 0}
 						<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -172,7 +185,7 @@
 												class="btn btn-outline btn-error"
 												onclick={() => {
 													currentID = aircraft.id;
-													showModal('delete');
+													showModal('deleteAircraft');
 												}}>Delete</button
 											>
 										</div>
@@ -201,7 +214,12 @@
 	</Container>
 </main>
 
-<ConfirmationModal id="delete" onconfirmation={handleDelete}></ConfirmationModal>
+<form action="?/deleteAccount" method="POST" class="hidden">
+	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
+</form>
+
+<ConfirmationModal id="deleteAccount" onconfirmation={handleAccountDelete}></ConfirmationModal>
+<ConfirmationModal id="deleteAircraft" onconfirmation={handleAircraftDelete}></ConfirmationModal>
 
 <Alert
 	visible={errors.invalidUsername}
