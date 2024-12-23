@@ -43,86 +43,84 @@
 	}
 </script>
 
-<main>
-	<Container>
-		<form method="POST">
-			<!-- Hidden submit button that actually submits the form -->
-			<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
-			<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
-				<div class="card-body">
-					<div class="mb-2">
-						<h2 class="card-title">
-							<a
-								aria-label="Back"
-								href={addParams(hrefs.settings, { page: 'aircraft' }, $page.url.origin)}
-								><i class="fa-solid fa-chevron-left"></i></a
-							> Register Aircraft
-						</h2>
-					</div>
-					<ul class="steps mb-2">
-						{#each steps as step, index}
-							<li class="step" class:step-info={index <= currentStep}>{step}</li>
-						{/each}
-					</ul>
-					<div class="flex flex-col gap-4">
-						{#each inputs as input}
-							<div hidden={currentStep != input.page}>
-								<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
-								{#if input.inputType === 'text'}
-									<AircraftInput
-										value={aircraft ? aircraft[input.name].toString() : ''}
-										required={input.required}
-										id={input.name}
-										name={input.name}
-										placeholder={input.placeholder!}
-									></AircraftInput>
-								{:else if input.inputType === 'select'}
-									<AircraftSelect
-										originalValue={aircraft ? aircraft[input.name].toString() : ''}
-										id={input.name}
-										name={input.name}
-										values={input.values!}
-										allowOther={input.allowOther}
-									></AircraftSelect>
-								{:else if input.inputType === 'number'}
-									<NumberInput
-										value={aircraft ? aircraft[input.name].toString() : ''}
-										min={input.min!}
-										max={input.max!}
-										name={input.name}
-										id={input.name}
-										placeholder={input.placeholder}
-									></NumberInput>
-								{/if}
-							</div>
-						{/each}
-						<div class="flex gap-4">
-							{#if currentStep != 0}
-								<button
-									type="button"
-									class="btn btn-outline btn-info me-auto w-full max-w-48"
-									onclick={() => currentStep--}>Back</button
-								>
-							{/if}
-							{#if currentStep == steps.length - 1}
-								<button
-									type="button"
-									class="btn btn-info ms-auto w-full max-w-48"
-									onclick={() => validate()}>Submit</button
-								>
-							{:else}
-								<button
-									type="button"
-									class="btn btn-info ms-auto w-full max-w-48"
-									onclick={() => currentStep++}>Next</button
-								>
+<Container>
+	<form method="POST">
+		<!-- Hidden submit button that actually submits the form -->
+		<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
+		<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
+			<div class="card-body">
+				<div class="mb-2">
+					<h2 class="card-title">
+						<a
+							aria-label="Back"
+							href={addParams(hrefs.settings, { page: 'aircraft' }, $page.url.origin)}
+							><i class="fa-solid fa-chevron-left"></i></a
+						> Register Aircraft
+					</h2>
+				</div>
+				<ul class="steps mb-2">
+					{#each steps as step, index}
+						<li class="step" class:step-info={index <= currentStep}>{step}</li>
+					{/each}
+				</ul>
+				<div class="flex flex-col gap-4">
+					{#each inputs as input}
+						<div hidden={currentStep != input.page}>
+							<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
+							{#if input.inputType === 'text'}
+								<AircraftInput
+									value={aircraft ? aircraft[input.name].toString() : ''}
+									required={input.required}
+									id={input.name}
+									name={input.name}
+									placeholder={input.placeholder!}
+								></AircraftInput>
+							{:else if input.inputType === 'select'}
+								<AircraftSelect
+									originalValue={aircraft ? aircraft[input.name].toString() : ''}
+									id={input.name}
+									name={input.name}
+									values={input.values!}
+									allowOther={input.allowOther}
+								></AircraftSelect>
+							{:else if input.inputType === 'number'}
+								<NumberInput
+									value={aircraft ? aircraft[input.name].toString() : ''}
+									min={input.min!}
+									max={input.max!}
+									name={input.name}
+									id={input.name}
+									placeholder={input.placeholder}
+								></NumberInput>
 							{/if}
 						</div>
+					{/each}
+					<div class="flex gap-4">
+						{#if currentStep != 0}
+							<button
+								type="button"
+								class="btn btn-outline btn-info me-auto w-full max-w-48"
+								onclick={() => currentStep--}>Back</button
+							>
+						{/if}
+						{#if currentStep == steps.length - 1}
+							<button
+								type="button"
+								class="btn btn-info ms-auto w-full max-w-48"
+								onclick={() => validate()}>Submit</button
+							>
+						{:else}
+							<button
+								type="button"
+								class="btn btn-info ms-auto w-full max-w-48"
+								onclick={() => currentStep++}>Next</button
+							>
+						{/if}
 					</div>
 				</div>
 			</div>
-		</form>
-	</Container>
-</main>
+		</div>
+	</form>
+</Container>
 
 <Title title="Register Aircraft"></Title>

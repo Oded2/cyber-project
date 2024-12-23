@@ -71,148 +71,142 @@
 	}
 </script>
 
-<main>
-	<Container>
-		<div class="mt-10 flex flex-col gap-4 sm:flex-row">
-			<div class="overflow-auto sm:w-60 sm:border-e-2 sm:pe-2">
-				<div class="flex w-full gap-2 sm:flex-col">
-					<SettingsButton
-						onclick={() => (currentPage = 'profile')}
-						active={currentPage === 'profile'}
-						><i class="fa-solid fa-user"></i> Profile</SettingsButton
-					>
-					<SettingsButton
-						onclick={() => (currentPage = 'account')}
-						active={currentPage === 'account'}
-						><i class="fa-solid fa-address-card"></i> Account</SettingsButton
-					>
-					<SettingsButton
-						onclick={() => {
-							currentPage = 'aircraft';
-							fetchAircrafts();
-						}}
-						active={currentPage === 'aircraft'}
-						><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
-					>
-				</div>
-			</div>
-			<div class="w-full">
-				<div class="mb-3 border-b-2 pb-2">
-					<h2 class="text-2xl font-bold">{capitalizeFirstLetter(currentPage)} Settings</h2>
-				</div>
-				{#if currentPage === 'profile'}
-					<ProfileEditor
-						title="Display Name"
-						min={2}
-						bind:value={updatedProfile.display}
-						action={() => updateProfile('display')}
-					></ProfileEditor>
-					<ProfileEditor
-						title="Bio"
-						bind:value={updatedProfile.bio}
-						action={() => updateProfile('bio')}
-						max={200}
-					></ProfileEditor>
-					<ProfileEditor
-						title="Username"
-						bind:value={updatedProfile.username}
-						action={async () => {
-							if (updatedProfile.username === profile.username) return;
-							if (!validUsername(updatedProfile.username)) {
-								showAlert('invalidUsername');
-								updatedProfile.username = profile.username;
-								return;
-							}
-							if (await isTaken(updatedProfile.username, supabase)) {
-								showAlert('usernameTaken');
-								updatedProfile.username = profile.username;
-								return;
-							}
-							await updateProfile('username');
-						}}
-						min={2}
-						max={50}
-					></ProfileEditor>
-				{:else if currentPage === 'account'}
-					<ProfileEditor
-						title="Email"
-						inputType="email"
-						min={2}
-						bind:value={email}
-						action={async () => {
-							if (email === user?.email) return;
-							const { error: e } = await supabase.auth.updateUser({ email });
-							if (e) {
-								console.error(e);
-								return;
-							}
-							alert(`A verification email has been sent to ${email}`);
-							goto(hrefs.home);
-						}}
-					></ProfileEditor>
-					<div class="max-w-[10rem]">
-						<a href={hrefs.passwordReset} class="btn btn-neutral w-full">Reset Password</a>
-						<button
-							class="btn btn-outline btn-error mt-2 w-full"
-							onclick={() => showModal('deleteAccount')}>Delete Account</button
-						>
-					</div>
-				{:else if currentPage === 'aircraft'}
-					{#if aircrafts.length > 0}
-						<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-							{#each aircrafts as aircraft (aircraft)}
-								<div
-									class="card relative col-auto w-full shadow transition hover:shadow-xl"
-									animate:flip={{ duration: 500 }}
-								>
-									<div class="card-body">
-										<div class="mb-2">
-											<h2 class="card-title">{aircraft.nickname}</h2>
-											<span class="text-light text-sm">{aircraft.tail_number}</span>
-										</div>
-										<div class="card-actions justify-end">
-											<a
-												aria-label="Edit"
-												href={addParams(
-													hrefs.registerAircraft,
-													{ id: aircraft.id.toString() },
-													$page.url.origin
-												)}
-												class="btn btn-outline btn-accent">Edit</a
-											>
-											<button
-												aria-label="Delete"
-												class="btn btn-outline btn-error"
-												onclick={() => {
-													currentID = aircraft.id;
-													showModal('deleteAircraft');
-												}}>Delete</button
-											>
-										</div>
-									</div>
-									<div
-										class="tooltip absolute right-2 top-2"
-										data-tip={capitalizeFirstLetter(aircraft.visibility)}
-									>
-										{#if aircraft.visibility !== 'private'}
-											<i class="fa-solid fa-eye"></i>
-										{:else}
-											<i class="fa-solid fa-eye-slash"></i>
-										{/if}
-									</div>
-								</div>
-							{/each}
-						</div>
-					{:else}
-						<div class="max-w-xs border-b-2 pb-2">
-							<h1 class="text-lg">No registered aircrafts yet</h1>
-						</div>
-					{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
-				{/if}
+<Container>
+	<div class="mt-10 flex flex-col gap-4 sm:flex-row">
+		<div class="overflow-auto sm:w-60 sm:border-e-2 sm:pe-2">
+			<div class="flex w-full gap-2 sm:flex-col">
+				<SettingsButton onclick={() => (currentPage = 'profile')} active={currentPage === 'profile'}
+					><i class="fa-solid fa-user"></i> Profile</SettingsButton
+				>
+				<SettingsButton onclick={() => (currentPage = 'account')} active={currentPage === 'account'}
+					><i class="fa-solid fa-address-card"></i> Account</SettingsButton
+				>
+				<SettingsButton
+					onclick={() => {
+						currentPage = 'aircraft';
+						fetchAircrafts();
+					}}
+					active={currentPage === 'aircraft'}
+					><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
+				>
 			</div>
 		</div>
-	</Container>
-</main>
+		<div class="w-full">
+			<div class="mb-3 border-b-2 pb-2">
+				<h2 class="text-2xl font-bold">{capitalizeFirstLetter(currentPage)} Settings</h2>
+			</div>
+			{#if currentPage === 'profile'}
+				<ProfileEditor
+					title="Display Name"
+					min={2}
+					bind:value={updatedProfile.display}
+					action={() => updateProfile('display')}
+				></ProfileEditor>
+				<ProfileEditor
+					title="Bio"
+					bind:value={updatedProfile.bio}
+					action={() => updateProfile('bio')}
+					max={200}
+				></ProfileEditor>
+				<ProfileEditor
+					title="Username"
+					bind:value={updatedProfile.username}
+					action={async () => {
+						if (updatedProfile.username === profile.username) return;
+						if (!validUsername(updatedProfile.username)) {
+							showAlert('invalidUsername');
+							updatedProfile.username = profile.username;
+							return;
+						}
+						if (await isTaken(updatedProfile.username, supabase)) {
+							showAlert('usernameTaken');
+							updatedProfile.username = profile.username;
+							return;
+						}
+						await updateProfile('username');
+					}}
+					min={2}
+					max={50}
+				></ProfileEditor>
+			{:else if currentPage === 'account'}
+				<ProfileEditor
+					title="Email"
+					inputType="email"
+					min={2}
+					bind:value={email}
+					action={async () => {
+						if (email === user?.email) return;
+						const { error: e } = await supabase.auth.updateUser({ email });
+						if (e) {
+							console.error(e);
+							return;
+						}
+						alert(`A verification email has been sent to ${email}`);
+						goto(hrefs.home);
+					}}
+				></ProfileEditor>
+				<div class="max-w-[10rem]">
+					<a href={hrefs.passwordReset} class="btn btn-neutral w-full">Reset Password</a>
+					<button
+						class="btn btn-outline btn-error mt-2 w-full"
+						onclick={() => showModal('deleteAccount')}>Delete Account</button
+					>
+				</div>
+			{:else if currentPage === 'aircraft'}
+				{#if aircrafts.length > 0}
+					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{#each aircrafts as aircraft (aircraft)}
+							<div
+								class="card relative col-auto w-full shadow transition hover:shadow-xl"
+								animate:flip={{ duration: 500 }}
+							>
+								<div class="card-body">
+									<div class="mb-2">
+										<h2 class="card-title">{aircraft.nickname}</h2>
+										<span class="text-light text-sm">{aircraft.tail_number}</span>
+									</div>
+									<div class="card-actions justify-end">
+										<a
+											aria-label="Edit"
+											href={addParams(
+												hrefs.registerAircraft,
+												{ id: aircraft.id.toString() },
+												$page.url.origin
+											)}
+											class="btn btn-outline btn-accent">Edit</a
+										>
+										<button
+											aria-label="Delete"
+											class="btn btn-outline btn-error"
+											onclick={() => {
+												currentID = aircraft.id;
+												showModal('deleteAircraft');
+											}}>Delete</button
+										>
+									</div>
+								</div>
+								<div
+									class="tooltip absolute right-2 top-2"
+									data-tip={capitalizeFirstLetter(aircraft.visibility)}
+								>
+									{#if aircraft.visibility !== 'private'}
+										<i class="fa-solid fa-eye"></i>
+									{:else}
+										<i class="fa-solid fa-eye-slash"></i>
+									{/if}
+								</div>
+							</div>
+						{/each}
+					</div>
+				{:else}
+					<div class="max-w-xs border-b-2 pb-2">
+						<h1 class="text-lg">No registered aircrafts yet</h1>
+					</div>
+				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
+			{/if}
+		</div>
+	</div>
+</Container>
 
 <form action="?/deleteAccount" method="POST" class="hidden">
 	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
