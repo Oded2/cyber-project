@@ -54,6 +54,7 @@
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
 	<input
+		{name}
 		type="datetime-local"
 		{value}
 		onchange={handleChange}

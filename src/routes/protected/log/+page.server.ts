@@ -28,15 +28,22 @@ export async function load({ locals: { supabase, user } }) {
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase, user } }) => {
 		const formData = await request.formData();
+		console.log(formData);
 		const dep = formData.get('dep_airport') as string;
 		const des = formData.get('des_airport') as string;
 		const depICAO = await getAirportData(dep).then((val) => val.icao);
 		const desICAO = await getAirportData(des).then((val) => val.icao);
 		formData.set('dep_airport', depICAO);
 		formData.set('des_airport', desICAO);
+		const obj = Object.fromEntries(formData.entries());
+		// Future: use delete
+		const { error: e } = await supabase.from('logs').insert(obj);
+		if (e) error(500, { message: e.message });
 	}
 };
 async function getAirportData(code: string): Promise<AirportInfo> {
+	// Returns a type AirportInfo based on an ICAO/IATA code
+	// If the code is invalid the function returns an error
 	const length: number = code.length;
 	if (length < 3 || length > 4) error(422, { message: 'Invalid airport code' });
 	const param: string = length == 4 ? 'icao' : 'iata';
@@ -44,6 +51,6 @@ async function getAirportData(code: string): Promise<AirportInfo> {
 	const response: Response = await fetch(url);
 	if (!response.ok) error(response.status, { message: response.statusText });
 	const json: AirportInfo = await response.json();
-	if (!json['country']) error(422, { message: 'Invalid airport code' });
+	if (!json['country']) error(422, { message: 'API could not fetch airport code' });
 	return json;
 }

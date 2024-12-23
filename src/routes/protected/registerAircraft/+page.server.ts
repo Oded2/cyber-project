@@ -16,20 +16,19 @@ export const actions: Actions = {
 	default: async ({ request, locals: { supabase, user }, url }) => {
 		const id: string = url.searchParams.get('id') ?? '';
 		const formData = await request.formData();
-		let toInsert: { [key: string]: string } = {};
-		toInsert['owner'] = user!.id;
 		for (const input of inputs) {
 			const inputName = input.name;
 			const value = formData.get(inputName) as string;
 			if ((input.required && value.length == 0) || value.length > 100) {
 				error(422, { message: `${format(inputName)} is invalid` });
 			}
-			toInsert[inputName] = value;
 		}
-		if (id.length > 0) toInsert['id'] = id;
+		const obj = Object.fromEntries(formData.entries());
+		obj['owner'] = user!.id;
+		if (id.length > 0) obj['id'] = id;
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row
-		const { error: e } = await supabase.from('aircrafts').upsert([toInsert]);
-		if (e) error(400, { message: e.message });
+		const { error: e } = await supabase.from('aircrafts').upsert([obj]);
+		if (e) error(500, { message: e.message });
 		redirect(303, addParams(hrefs.settings, { page: 'aircraft' }, url.origin));
 	}
 };
