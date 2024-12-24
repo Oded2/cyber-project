@@ -1,7 +1,15 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { goto } from '$app/navigation';
-	import { addParams, capitalizeFirstLetter, hrefs, isTaken, showModal, validUsername } from '$lib';
+	import {
+		addParams,
+		capitalizeFirstLetter,
+		defaultProfilePicture,
+		hrefs,
+		isTaken,
+		showModal,
+		validUsername
+	} from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
@@ -124,7 +132,7 @@
 					action={async () => {
 						await updateProfile('image');
 						const pfp = document.getElementById('profilePicture') as HTMLImageElement;
-						pfp.src = profile.image;
+						pfp.src = profile.image.length > 0 ? profile.image : defaultProfilePicture;
 					}}
 				></ProfileEditor>
 			{:else if currentPage === 'account'}

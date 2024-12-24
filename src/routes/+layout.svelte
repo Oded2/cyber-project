@@ -5,13 +5,11 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { error } from '@sveltejs/kit';
-	import { hrefs } from '$lib';
+	import { defaultProfilePicture, hrefs } from '$lib';
 
 	const { children, data } = $props();
 	// possible issue
 	const { supabase, session, user, profile } = data;
-	const defaultImage =
-		'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -27,7 +25,7 @@
 </script>
 
 <Navbar
-	profileImage={profile.image.length > 0 ? profile.image : defaultImage}
+	profileImage={profile.image.length > 0 ? profile.image : defaultProfilePicture}
 	loggedIn={user ? true : false}
 	signOut={async () => {
 		const { error: e } = await supabase.auth.signOut();

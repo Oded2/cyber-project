@@ -3,6 +3,8 @@ import hrefsFile from './hrefs.json';
 import { error } from '@sveltejs/kit';
 
 export const hrefs = hrefsFile;
+export const defaultProfilePicture =
+	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
 
 export function addParams(
 	link: string,
