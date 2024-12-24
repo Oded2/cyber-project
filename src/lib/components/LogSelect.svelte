@@ -16,11 +16,11 @@
 	let errorMessage: string = $state('');
 </script>
 
-<label class="flex w-full max-w-xs flex-col">
+<label class="flex w-full flex-col">
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
-	<select {name} class=" select select-bordered w-full max-w-xs">
+	<select {name} class=" select select-bordered w-full">
 		{#each values as value, index}
 			<!-- Index == 0 ensures thsat the first option is automatically selected -->
 			<option selected={index == 0} value={value.id}>{value.display}</option>

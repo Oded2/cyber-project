@@ -33,7 +33,7 @@
 	}
 </script>
 
-<label class="flex w-full max-w-xs flex-col">
+<label class="flex w-full flex-col">
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>

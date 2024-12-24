@@ -49,7 +49,7 @@
 	}
 </script>
 
-<label class="flex w-full max-w-xs flex-col">
+<label class="flex w-full flex-col">
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
@@ -59,7 +59,7 @@
 		{value}
 		onchange={handleChange}
 		{placeholder}
-		class="input input-sm input-bordered w-full max-w-xs py-5"
+		class="input input-sm input-bordered w-full py-5"
 		{min}
 		{max}
 		{required}

@@ -27,7 +27,7 @@
 
 <Container>
 	<form method="POST">
-		<div class="card mx-auto mb-10 mt-5 max-w-5xl shadow-xl">
+		<div class="card mx-auto mb-10 mt-5 max-w-3xl shadow-xl">
 			<div class="card-body">
 				<div class="mb-2">
 					<h2 class="card-title">Log Flight</h2>
