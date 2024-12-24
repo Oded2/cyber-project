@@ -45,7 +45,7 @@ export const actions: Actions = {
 
 function validateDates(dep: Date, des: Date): void {
 	// Ensures that the dates are not the same and that the takeoff happened before the landing
-	const difference: number = des.getMilliseconds() - dep.getMilliseconds();
+	const difference: number = des.getTime() - dep.getTime();
 	if (difference <= 0) error(422, { message: 'Invalid dates' });
 }
 
