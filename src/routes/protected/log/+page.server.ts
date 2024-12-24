@@ -20,15 +20,19 @@ export const actions: Actions = {
 	default: async ({ request, locals: { user } }) => {
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
-		console.log(formData);
 		const depICAO = await getAirportData(formData.get('dep_airport') as string).then(
 			(val) => val.icao
 		);
 		const desICAO = await getAirportData(formData.get('des_airport') as string).then(
 			(val) => val.icao
 		);
+		// Set the form data as ICAO codes
 		formData.set('dep_airport', depICAO);
 		formData.set('des_airport', desICAO);
+		const depDate = new Date(formData.get('dep_time') as string);
+		const desDate = new Date(formData.get('des_time') as string);
+		validateDates(depDate, desDate);
+		// Set the owner of the log as the user
 		formData.set('owner', user!.id);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
@@ -38,6 +42,12 @@ export const actions: Actions = {
 		redirect(303, hrefs.logbook);
 	}
 };
+
+function validateDates(dep: Date, des: Date): void {
+	// Ensures that the dates are not the same and that the takeoff happened before the landing
+	const difference: number = des.getMilliseconds() - dep.getMilliseconds();
+	if (difference <= 0) error(422, { message: 'Invalid dates' });
+}
 
 function numToNull(form: FormData, name: string): void {
 	// Some inputs that are numbers are allowed to be null
