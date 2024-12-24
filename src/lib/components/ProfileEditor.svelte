@@ -7,7 +7,8 @@
 		action,
 		min = 0,
 		max = 50,
-		inputType = 'text'
+		inputType = 'text',
+		required = false
 	}: {
 		title: string;
 		value: string;
@@ -15,6 +16,7 @@
 		min?: number;
 		max?: number;
 		inputType?: 'text' | 'email' | 'password';
+		required?: boolean;
 	} = $props();
 	let edit = $state(false);
 
@@ -22,7 +24,7 @@
 </script>
 
 <form
-	class="mb-2 flex w-full max-w-md flex-col border-b-2 pb-1"
+	class="mb-2 flex w-full max-w-md flex-col overflow-hidden border-b-2 pb-1"
 	onsubmit={async () => {
 		progress = true;
 		await action();
@@ -45,13 +47,13 @@
 			bind:value
 			type={inputType}
 			class="input input-xs border-0 text-base !outline-none"
-			required
+			{required}
 			minlength={min}
 			maxlength={max}
 		/>
 	{:else}
 		<div class="px-2">
-			<h6 class="font-light">
+			<h6 class="whitespace-nowrap font-light">
 				{#if value.length > 0}
 					{value}
 				{:else}

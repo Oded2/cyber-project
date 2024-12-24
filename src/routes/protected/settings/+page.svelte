@@ -101,6 +101,7 @@
 					min={2}
 					bind:value={updatedProfile.display}
 					action={() => updateProfile('display')}
+					required
 				></ProfileEditor>
 				<ProfileEditor
 					title="Bio"
@@ -127,6 +128,17 @@
 					}}
 					min={2}
 					max={50}
+					required
+				></ProfileEditor>
+				<ProfileEditor
+					title="Profile Picture URL"
+					bind:value={updatedProfile.image}
+					max={9999}
+					action={async () => {
+						await updateProfile('image');
+						const pfp = document.getElementById('profilePicture') as HTMLImageElement;
+						pfp.src = profile.image;
+					}}
 				></ProfileEditor>
 			{:else if currentPage === 'account'}
 				<ProfileEditor
@@ -134,6 +146,7 @@
 					inputType="email"
 					min={2}
 					bind:value={email}
+					required
 					action={async () => {
 						if (email === user?.email) return;
 						const { error: e } = await supabase.auth.updateUser({ email });

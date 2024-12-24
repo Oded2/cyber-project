@@ -1,5 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
+import { error } from '@sveltejs/kit';
 
 export const hrefs = hrefsFile;
 
@@ -74,4 +75,8 @@ export function formatDate(date: Date): string {
 		day: 'numeric'
 	});
 	return formatter.format(date);
+}
+
+export function handleError(e: PostgrestError | null): void {
+	if (e) error(500, { message: e.message });
 }

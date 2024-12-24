@@ -2,7 +2,11 @@
 	import { hrefs } from '$lib';
 	import { page } from '$app/stores';
 
-	let { loggedIn, signOut }: { loggedIn: boolean; signOut: () => void } = $props();
+	let {
+		loggedIn,
+		signOut,
+		profileImage
+	}: { loggedIn: boolean; signOut: () => void; profileImage: string } = $props();
 
 	let pageData = $derived($page);
 	let pathname = $derived(pageData.url.pathname);
@@ -57,10 +61,7 @@
 				<div class="dropdown dropdown-end">
 					<div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
 						<div class="w-10 rounded-full">
-							<img
-								alt="Tailwind CSS Navbar component"
-								src="https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png"
-							/>
+							<img alt="Tailwind CSS Navbar component" src={profileImage} id="profilePicture" />
 						</div>
 					</div>
 					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
