@@ -220,8 +220,16 @@
 	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
 </form>
 
-<ConfirmationModal id="deleteAccount" onconfirmation={handleAccountDelete}></ConfirmationModal>
-<ConfirmationModal id="deleteAircraft" onconfirmation={handleAircraftDelete}></ConfirmationModal>
+<ConfirmationModal
+	message="This action cannot be undone."
+	id="deleteAccount"
+	onconfirmation={handleAccountDelete}
+></ConfirmationModal>
+<ConfirmationModal
+	id="deleteAircraft"
+	message="This will delete all of the logs related to this aircraft."
+	onconfirmation={handleAircraftDelete}
+></ConfirmationModal>
 
 <Alert
 	visible={errors.invalidUsername}
