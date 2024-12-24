@@ -24,16 +24,18 @@
 </script>
 
 <div class="grid grid-cols-6 px-3 py-5" class:bg-base-200={shade}>
-	<div class="col-auto"><h2 class="font-bold">{log.dep_airport} TO {log.des_airport}</h2></div>
-	<div class="col-auto"><h2>{getDuration(log.dep_time, log.des_time)}</h2></div>
-	<div class="col-auto">
+	<div class="col-auto flex items-center">
+		<h2 class="font-bold">{log.dep_airport} TO {log.des_airport}</h2>
+	</div>
+	<div class="col-auto flex items-center"><h2>{getDuration(log.dep_time, log.des_time)}</h2></div>
+	<div class="col-auto flex items-center">
 		<a class="link" href={addParams(hrefs.aircraft, { id: aircraft.id.toString() }, origin)}
 			>{aircraft.nickname}</a
 		>
 	</div>
-	<div class="col-auto">
+	<div class="col-auto flex items-center">
 		<h2>{formatRating(log.rating)}</h2>
 	</div>
-	<div class=" col-auto"><h2>{log.pilot_in_command}</h2></div>
-	<!-- <div class="col-auto"><button class="btn btn-info">View</button></div> -->
+	<div class=" col-auto flex items-center"><h2>{log.pilot_in_command}</h2></div>
+	<div class="col-auto flex items-center"><button class="btn btn-info">View</button></div>
 </div>
