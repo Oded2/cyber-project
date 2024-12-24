@@ -129,6 +129,7 @@
 					title="Profile Picture URL"
 					bind:value={updatedProfile.image}
 					max={9999}
+					allowPaste
 					action={async () => {
 						await updateProfile('image');
 						const pfp = document.getElementById('profilePicture') as HTMLImageElement;

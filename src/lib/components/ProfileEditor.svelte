@@ -8,7 +8,8 @@
 		min = 0,
 		max = 50,
 		inputType = 'text',
-		required = false
+		required = false,
+		allowPaste = false
 	}: {
 		title: string;
 		value: string;
@@ -17,10 +18,18 @@
 		max?: number;
 		inputType?: 'text' | 'email' | 'password';
 		required?: boolean;
+		allowPaste?: boolean;
 	} = $props();
 	let edit = $state(false);
-
 	let progress = $state(false);
+
+	async function handlePaste(): Promise<void> {
+		try {
+			value = await navigator.clipboard.readText();
+		} catch {
+			console.error('Unable to paste');
+		}
+	}
 </script>
 
 <form
@@ -34,9 +43,14 @@
 >
 	<div class="label">
 		<span class="label-text">{title}</span>
-		<button hidden={!edit} type="submit" class="text-info" class:opacity-50={progress}>
-			Confirm
-		</button>
+		<div hidden={!edit} class="text-info" class:opacity-50={progress}>
+			{#if allowPaste}
+				<button onclick={handlePaste} type="button" class="me-2" aria-label="Paste"
+					><i class="fa-solid fa-paste"></i></button
+				>
+			{/if}
+			<button type="submit">Confirm</button>
+		</div>
 		<button hidden={edit} type="button" class="text-info" onclick={() => (edit = true)}>
 			Edit
 		</button>
