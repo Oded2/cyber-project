@@ -52,7 +52,12 @@
 						minlength={3}
 						maxlength={4}
 					></LogInput>
-					<LogDateInput name="dep_time" displayName="Date & Time" required></LogDateInput>
+					<LogDateInput
+						name="dep_time"
+						attributeChange={{ id: 'des_time', attribute: 'min' }}
+						displayName="Date & Time"
+						required
+					></LogDateInput>
 					<LogSection>Destination Details</LogSection>
 					<LogInput
 						name="des_airport"
@@ -63,7 +68,12 @@
 						minlength={3}
 						maxlength={4}
 					></LogInput>
-					<LogDateInput name="des_time" displayName="Date & Time" required></LogDateInput>
+					<LogDateInput
+						name="des_time"
+						attributeChange={{ id: 'dep_time', attribute: 'max' }}
+						displayName="Date & Time"
+						required
+					></LogDateInput>
 					<LogSection>Additional Details</LogSection>
 					<LogTextarea name="notes" maxlength={10000}></LogTextarea>
 					<LogSelect name="visibility" values={visibilities}></LogSelect>

@@ -23,7 +23,8 @@
 		max = formatDateTime(maxDate),
 		required = false,
 		placeholder = 'Type Here',
-		displayName = format(name)
+		displayName = format(name),
+		attributeChange
 	}: {
 		name: string;
 		value?: string;
@@ -32,6 +33,7 @@
 		required?: boolean;
 		placeholder?: string;
 		displayName?: string;
+		attributeChange: { id: 'dep_time' | 'des_time'; attribute: 'min' | 'max' };
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -46,6 +48,8 @@
 		} else {
 			errorMessage = '';
 		}
+		const otherInput = document.getElementById(attributeChange.id) as HTMLInputElement;
+		otherInput.setAttribute(attributeChange.attribute, formatDateTime(value));
 	}
 </script>
 
@@ -55,6 +59,7 @@
 	</div>
 	<input
 		{name}
+		id={name}
 		type="datetime-local"
 		{value}
 		onchange={handleChange}
