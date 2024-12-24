@@ -15,10 +15,15 @@
 		return `${hours} hours and ${minutes} minutes`;
 	}
 
-	const aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
+	function formatRating(rating: typeof log.rating): string {
+		if (rating === 'instrument') return 'IFR';
+		return 'VFR';
+	}
+
+	const aircraft: Aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
 </script>
 
-<div class="grid grid-cols-4 px-3 py-5" class:bg-base-200={shade}>
+<div class="grid grid-cols-6 px-3 py-5" class:bg-base-200={shade}>
 	<div class="col-auto"><h2 class="font-bold">{log.dep_airport} TO {log.des_airport}</h2></div>
 	<div class="col-auto"><h2>{getDuration(log.dep_time, log.des_time)}</h2></div>
 	<div class="col-auto">
@@ -26,4 +31,9 @@
 			>{aircraft.nickname}</a
 		>
 	</div>
+	<div class="col-auto">
+		<h2>{formatRating(log.rating)}</h2>
+	</div>
+	<div class=" col-auto"><h2>{log.pilot_in_command}</h2></div>
+	<!-- <div class="col-auto"><button class="btn btn-info">View</button></div> -->
 </div>

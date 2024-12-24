@@ -14,11 +14,13 @@
 		<h1 class="text-xl font-bold">Welcome back, {profile.display}</h1>
 	</div>
 	<div class="mt-5 flex w-full flex-col">
-		<div class="grid grid-cols-4 border-b-2 px-3 pb-2">
+		<div class="grid grid-cols-6 border-b-2 px-3 pb-2">
 			<div class="col-auto">Airports</div>
 			<div class="col-auto">Duration</div>
 			<div class="col-auto">Aircraft</div>
-			<div class="col-auto">Column 4</div>
+			<div class="col-auto">Rating</div>
+			<div class="col-auto">Pilot in Command</div>
+			<div class="col-auto">Options</div>
 		</div>
 		{#each logs as log, index}
 			<LogEntry {aircrafts} shade={index % 2 != 0} {log}></LogEntry>
