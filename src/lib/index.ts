@@ -1,10 +1,15 @@
-import type { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
 import { error } from '@sveltejs/kit';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 
 export const hrefs = hrefsFile;
 export const defaultProfilePicture =
 	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
+
+export function createSupabaseClient(key: string) {
+	return createClient(PUBLIC_SUPABASE_URL, key);
+}
 
 export function addParams(
 	link: string,

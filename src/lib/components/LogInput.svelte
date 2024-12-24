@@ -8,7 +8,8 @@
 		maxlength = 50,
 		required = false,
 		placeholder = 'Type Here',
-		displayName = format(name)
+		displayName = format(name),
+		autocorrect = 'on'
 	}: {
 		name: string;
 		value?: string;
@@ -17,6 +18,7 @@
 		required?: boolean;
 		placeholder?: string;
 		displayName?: string;
+		autocorrect?: 'on' | 'off';
 	} = $props();
 
 	let errorMessage: string = $state('');
@@ -45,6 +47,7 @@
 		{value}
 		onchange={handleChange}
 		{placeholder}
+		{autocorrect}
 		class="input input-sm input-bordered w-full max-w-xs py-5"
 		{minlength}
 		{maxlength}

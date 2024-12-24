@@ -1,9 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { SERVICE_ROLE } from '$env/static/private';
 import type { Actions } from './$types';
-import { addParams, hrefs, isTaken, validEmail, validUsername } from '$lib';
-import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { addParams, createSupabaseClient, hrefs, isTaken, validEmail, validUsername } from '$lib';
 
 export function load({ url }) {
 	// Since the login and sign up page are technically on the same page,
@@ -15,7 +13,7 @@ export const actions: Actions = {
 	signup: async ({ request, locals: { supabase }, url }) => {
 		// Creating an admin supabase client in order to bypass RLS and insert
 		// a profile
-		const admin = createClient(PUBLIC_SUPABASE_URL, SERVICE_ROLE);
+		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;

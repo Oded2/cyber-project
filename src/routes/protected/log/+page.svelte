@@ -1,5 +1,4 @@
 <script lang="ts">
-	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
@@ -48,6 +47,7 @@
 						name="dep_airport"
 						displayName="Airport"
 						placeholder="ICAO or IATA code"
+						autocorrect="off"
 						required
 						minlength={3}
 						maxlength={4}
@@ -58,6 +58,7 @@
 						name="des_airport"
 						displayName="Airport"
 						placeholder="ICAO or IATA code"
+						autocorrect="off"
 						required
 						minlength={3}
 						maxlength={4}

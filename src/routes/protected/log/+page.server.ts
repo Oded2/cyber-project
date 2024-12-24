@@ -1,4 +1,5 @@
-import { addParams } from '$lib';
+import { SERVICE_ROLE } from '$env/static/private';
+import { addParams, createSupabaseClient, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
 const apiUrl = 'https://airport-data.com/api/ap_info.json';
@@ -16,7 +17,8 @@ type AirportInfo = {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase, user } }) => {
+	default: async ({ request, locals: { user } }) => {
+		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
 		console.log(formData);
 		const depICAO = await getAirportData(formData.get('dep_airport') as string).then(
@@ -27,11 +29,13 @@ export const actions: Actions = {
 		);
 		formData.set('dep_airport', depICAO);
 		formData.set('des_airport', desICAO);
+		formData.set('owner', user!.id);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries());
-		const { error: e } = await supabase.from('logs').insert(obj);
+		const { error: e } = await admin.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
+		redirect(303, hrefs.logbook);
 	}
 };
 
