@@ -8,7 +8,6 @@
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
 	type CurrentPage = 'profile' | 'account' | 'logbook' | 'aircraft';
@@ -22,9 +21,6 @@
 	let currentPage: CurrentPage = $state(pageDirect);
 	// When deleting, there needs to be a variable with the ID of the aircraft I would like to delete
 	let currentID: number;
-	onMount(() => {
-		if (pageDirect === 'aircraft') fetchAircrafts();
-	});
 
 	const errors = $state({
 		invalidUsername: false,
@@ -34,12 +30,6 @@
 	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
 		aircrafts = aircrafts.filter((obj) => obj.id !== currentID);
-	}
-
-	async function fetchAircrafts() {
-		let { data: temp } = await supabase.from('aircrafts').select().eq('owner', user?.id);
-		temp = temp!;
-		for (let i = 0; i < temp.length; i++) aircrafts[i] = temp[i];
 	}
 
 	function showAlert(key: keyof typeof errors) {
@@ -82,10 +72,7 @@
 					><i class="fa-solid fa-address-card"></i> Account</SettingsButton
 				>
 				<SettingsButton
-					onclick={() => {
-						currentPage = 'aircraft';
-						fetchAircrafts();
-					}}
+					onclick={() => (currentPage = 'aircraft')}
 					active={currentPage === 'aircraft'}
 					><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
 				>
