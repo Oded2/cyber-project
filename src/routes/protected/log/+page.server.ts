@@ -1,20 +1,20 @@
-import { SERVICE_ROLE } from '$env/static/private';
+import { APININJAS, SERVICE_ROLE } from '$env/static/private';
 import { addParams, createSupabaseClient, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-const apiUrl = 'https://airport-data.com/api/ap_info.json';
-type AirportInfo = {
+const apiUrl = 'https://api.api-ninjas.com/v1/airports';
+interface Airport {
 	icao: string;
 	iata: string;
 	name: string;
-	location: string;
+	city: string;
+	region: string;
 	country: string;
-	country_code: string;
-	longitude: string;
+	elevation_ft: string;
 	latitude: string;
-	link: string;
-	status: number;
-};
+	longitude: string;
+	timezone: string;
+}
 
 export const actions: Actions = {
 	default: async ({ request, locals: { user } }) => {
@@ -57,16 +57,16 @@ function numToNull(form: FormData, name: string): void {
 	if (val.length == 0) form.delete(name);
 }
 
-async function getAirportData(code: string): Promise<AirportInfo> {
+async function getAirportData(code: string): Promise<Airport> {
 	// Returns a type AirportInfo based on an ICAO/IATA code
 	// If the code is invalid the function returns an error
 	const length: number = code.length;
 	if (length < 3 || length > 4) error(422, { message: 'Invalid airport code' });
 	const param: string = length == 4 ? 'icao' : 'iata';
 	const url: string = addParams(apiUrl, { [param]: code });
-	const response: Response = await fetch(url);
+	const response: Response = await fetch(url, { headers: { 'X-Api-Key': APININJAS } });
 	if (!response.ok) error(response.status, { message: response.statusText });
-	const json: AirportInfo = await response.json();
-	if (!json['country']) error(422, { message: 'API could not fetch airport code' });
-	return json;
+	const json: any[] = await response.json();
+	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });
+	return json[0] as Airport;
 }
