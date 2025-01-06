@@ -62,6 +62,9 @@
 	}
 
 	function handleAccountDelete(): void {
+		const message: string =
+			'Are you sure you want to delete your account? This will delete all of your logs and CANNOT be undone.';
+		if (!confirm(message)) return;
 		const hiddenButton: HTMLButtonElement = document.getElementById(
 			'deleteAccountButton'
 		) as HTMLButtonElement;
