@@ -2,7 +2,6 @@ import { APININJAS, SERVICE_ROLE } from '$env/static/private';
 import { addParams, createSupabaseClient, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-const apiUrl = 'https://api.api-ninjas.com/v1/airports';
 interface Airport {
 	icao: string;
 	iata: string;
@@ -15,6 +14,56 @@ interface Airport {
 	longitude: string;
 	timezone: string;
 }
+interface WeatherData {
+	latitude: number;
+	longitude: number;
+	generationtime_ms: number;
+	utc_offset_seconds: number;
+	timezone: string;
+	timezone_abbreviation: string;
+	elevation: number;
+	hourly_units: {
+		time: string;
+		temperature_2m: string;
+		relative_humidity_2m: string;
+		dew_point_2m: string;
+		precipitation: string;
+		weather_code: string;
+		pressure_msl: string;
+		surface_pressure: string;
+		cloud_cover: string;
+		visibility: string;
+		wind_speed_180m: string;
+		wind_direction_180m: string;
+		temperature_180m: string;
+	};
+	hourly: {
+		time: string[];
+		temperature_2m: number[];
+		relative_humidity_2m: number[];
+		dew_point_2m: number[];
+		precipitation: number[];
+		weather_code: number[];
+		pressure_msl: number[];
+		surface_pressure: number[];
+		cloud_cover: number[];
+		visibility: number[];
+		wind_speed_180m: number[];
+		wind_direction_180m: number[];
+		temperature_180m: number[];
+	};
+}
+interface Weather {
+	temperature: number;
+	dewPoint: number;
+	humidity: number;
+	precipation: number;
+	pressure: number;
+	cloud_cover: number;
+	visibility: number;
+	wind_speed: number;
+	wind_direction: number;
+}
 
 export const actions: Actions = {
 	default: async ({ request, locals: { user } }) => {
@@ -22,11 +71,11 @@ export const actions: Actions = {
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
 		// Get data for the airports and check that they are real
-		const depICAO = await getAirportData(formData.get('dep_airport') as string);
-		const desICAO = await getAirportData(formData.get('des_airport') as string);
+		const depAirport = await getAirportData(formData.get('dep_airport') as string);
+		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		// Set the form data as ICAO codes
-		formData.set('dep_airport', depICAO.icao);
-		formData.set('des_airport', desICAO.icao);
+		formData.set('dep_airport', depAirport.icao);
+		formData.set('des_airport', desAirport.icao);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
 		validateDates(depDate, desDate);
@@ -34,7 +83,9 @@ export const actions: Actions = {
 		formData.set('owner', user!.id);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
-		const obj = Object.fromEntries(formData.entries());
+		const obj = Object.fromEntries(formData.entries()) as any;
+		obj['dep_weather'] = await getWeatherData(depDate, depAirport.longitude, depAirport.latitude);
+		obj['des_weather'] = await getWeatherData(desDate, desAirport.longitude, desAirport.latitude);
 		const { error: e } = await admin.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
 		redirect(303, hrefs.logbook);
@@ -58,6 +109,7 @@ function numToNull(form: FormData, name: string): void {
 async function getAirportData(code: string): Promise<Airport> {
 	// Returns a type AirportInfo based on an ICAO/IATA code
 	// If the code is invalid the function returns an error
+	const apiUrl = 'https://api.api-ninjas.com/v1/airports';
 	const length: number = code.length;
 	if (length < 3 || length > 4) error(422, { message: 'Invalid airport code' });
 	const param: string = length == 4 ? 'icao' : 'iata';
@@ -67,4 +119,42 @@ async function getAirportData(code: string): Promise<Airport> {
 	const json: any[] = await response.json();
 	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });
 	return json[0] as Airport;
+}
+
+async function getWeatherData(time: Date, long: string, lat: string): Promise<Weather> {
+	// Retrieves inforamtion about the weather for a specific date
+	const apiUrl = 'https://api.open-meteo.com/v1/forecast';
+	const date = time.toISOString().split('T')[0];
+	const params: Record<string, string> = {
+		longitude: long,
+		latitude: lat,
+		hourly:
+			'temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,weather_code,pressure_msl,surface_pressure,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,temperature_180m',
+		wind_speed_unit: 'kn',
+		timezone: 'Africa/Cairo',
+		start_date: date,
+		end_date: date
+	};
+	const url: string = addParams(apiUrl, params);
+	const response: Response = await fetch(url);
+	if (!response.ok) error(response.status, { message: response.statusText });
+	const json: WeatherData = (await response.json()) as WeatherData;
+	const hourlyData = json.hourly;
+	const hourlyIndex = hourlyData.time.findIndex((item) => oneHourDiff(new Date(item), time));
+	return {
+		temperature: hourlyData.temperature_2m[hourlyIndex],
+		dewPoint: hourlyData.dew_point_2m[hourlyIndex],
+		humidity: hourlyData.relative_humidity_2m[hourlyIndex],
+		precipation: hourlyData.precipitation[hourlyIndex],
+		pressure: hourlyData.pressure_msl[hourlyIndex],
+		cloud_cover: hourlyData.cloud_cover[hourlyIndex],
+		visibility: hourlyData.visibility[hourlyIndex],
+		wind_speed: hourlyData.wind_speed_180m[hourlyIndex],
+		wind_direction: hourlyData.wind_direction_180m[hourlyIndex]
+	};
+}
+
+function oneHourDiff(date1: Date, date2: Date): boolean {
+	// Checks that the difference between two dates is less than an hour
+	return Math.abs(date1.getTime() - date2.getTime()) < 3600000;
 }
