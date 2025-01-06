@@ -21,16 +21,12 @@ export const actions: Actions = {
 		// Create an admin supabase client
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
-		// Get the icao codes for the airports and check that they are real
-		const depICAO = await getAirportData(formData.get('dep_airport') as string).then(
-			(val) => val.icao
-		);
-		const desICAO = await getAirportData(formData.get('des_airport') as string).then(
-			(val) => val.icao
-		);
+		// Get data for the airports and check that they are real
+		const depICAO = await getAirportData(formData.get('dep_airport') as string);
+		const desICAO = await getAirportData(formData.get('des_airport') as string);
 		// Set the form data as ICAO codes
-		formData.set('dep_airport', depICAO);
-		formData.set('des_airport', desICAO);
+		formData.set('dep_airport', depICAO.icao);
+		formData.set('des_airport', desICAO.icao);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
 		validateDates(depDate, desDate);
