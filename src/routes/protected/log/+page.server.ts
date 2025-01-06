@@ -18,8 +18,10 @@ interface Airport {
 
 export const actions: Actions = {
 	default: async ({ request, locals: { user } }) => {
+		// Create an admin supabase client
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
+		// Get the icao codes for the airports and check that they are real
 		const depICAO = await getAirportData(formData.get('dep_airport') as string).then(
 			(val) => val.icao
 		);
