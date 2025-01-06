@@ -51,7 +51,7 @@ declare global {
 		fuel_type: string; // text
 		owner_name: string; // text
 		seating_capacity: number; // integer
-		modifications: string; // text
+		image_url: string; // text
 		notes: string; // text
 		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
 		owner: string; // uuid

@@ -13,7 +13,7 @@ export async function load({ url, locals: { supabase } }) {
 }
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase, user }, url }) => {
+	default: async ({ request, locals: { supabase }, url }) => {
 		const id: string = url.searchParams.get('id') ?? '';
 		const formData = await request.formData();
 		for (const input of inputs) {
@@ -218,18 +218,18 @@ const inputs: InputType[] = [
 		max: 999999
 	},
 	{
-		name: 'modifications',
-		required: false,
-		inputType: 'text',
-		page: 3,
-		placeholder: 'Extended fuel range'
-	},
-	{
 		name: 'notes',
 		required: false,
 		inputType: 'text',
 		page: 3,
 		placeholder: '"Flown primarily for short-haul routes"'
+	},
+	{
+		name: 'image_url',
+		required: false,
+		inputType: 'text',
+		page: 3,
+		placeholder: 'https://example.com/images/cessna.png'
 	},
 	{
 		name: 'visibility',
