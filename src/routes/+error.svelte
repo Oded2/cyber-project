@@ -2,8 +2,12 @@
 	import { page } from '$app/stores';
 	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
-	import Title from '$lib/components/Title.svelte';
+	import { onMount } from 'svelte';
 	const url = $page;
+
+	onMount(() => {
+		document.title = `${url.status} Error`;
+	});
 </script>
 
 <Container>
@@ -13,5 +17,3 @@
 		<a href={hrefs.home} class="btn btn-neutral mt-2 rounded-3xl">Back to Home</a>
 	</div>
 </Container>
-
-<Title title={`${url.status} Error`}></Title>
