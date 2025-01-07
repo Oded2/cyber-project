@@ -2,7 +2,12 @@
 	import { page } from '$app/stores';
 	import { addParams, hrefs, getDuration } from '$lib';
 
-	const { log, shade, aircrafts }: { log: Log; shade: boolean; aircrafts: Aircraft[] } = $props();
+	const {
+		log,
+		shade,
+		aircrafts,
+		ondelete
+	}: { log: Log; shade: boolean; aircrafts: Aircraft[]; ondelete: () => void } = $props();
 	const origin: string = $page.url.origin;
 
 	function formatRating(rating: typeof log.rating): string {
@@ -27,7 +32,12 @@
 		<h2>{formatRating(log.rating)}</h2>
 	</div>
 	<div class=" col-auto flex items-center"><h2>{log.pilot_in_command}</h2></div>
-	<div class="col-auto flex items-center">
-		<a href={hrefs.logView.replace('slug', log.id.toString())} class="btn btn-info">View</a>
+	<div class="join col-auto flex items-center">
+		<a href={hrefs.logView.replace('slug', log.id.toString())} class="btn btn-info join-item"
+			>View</a
+		>
+		<button aria-label="Delete" class="btn btn-outline btn-info join-item" onclick={ondelete}
+			><i class="fa-solid fa-trash"></i></button
+		>
 	</div>
 </div>

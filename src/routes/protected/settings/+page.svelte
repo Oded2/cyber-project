@@ -37,7 +37,7 @@
 
 	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
-		aircrafts = aircrafts.filter((obj) => obj.id !== currentID);
+		aircrafts = aircrafts.filter((obj) => obj.id != currentID);
 	}
 
 	function showAlert(key: keyof typeof errors) {
