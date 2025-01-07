@@ -117,6 +117,7 @@ interface Coordinates {
 	longitude: number;
 }
 export function haversineDistance(pointA: Coordinates, pointB: Coordinates): number {
+	console.log(pointA, pointB);
 	// Mathematical function to calculate the distance between two points
 	// Taken from the internet
 	let radius = 6371; // km

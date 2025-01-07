@@ -92,8 +92,9 @@ async function getAirportData(code: string): Promise<Airport> {
 	const json: { [key: string]: any }[] = await response.json();
 	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });
 	const airport = json[0];
-	airport['longitude'] = parseInt(airport['longitude']);
-	airport['latitude'] = parseInt(airport['latitude']);
+	// Converts the longitude and latitude coordinates to number
+	airport['longitude'] = parseFloat(airport['longitude']);
+	airport['latitude'] = parseFloat(airport['latitude']);
 	return json[0] as Airport;
 }
 

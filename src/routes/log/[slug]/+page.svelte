@@ -9,11 +9,11 @@
 
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
-	console.log(typeof log.dep_airport.latitude);
-	// const distance = haversineDistance(
-	// 	{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
-	// 	{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
-	// );
+	const distance =
+		haversineDistance(
+			{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
+			{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
+		) / 1.852;
 
 	function formatSpecificDate(date: Date): string {
 		const formatter = new Intl.DateTimeFormat('en-US', {
@@ -47,6 +47,7 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
+					<li>Distance: {Math.round(distance)}NM</li>
 					<strong>Departure & Landing</strong>
 					<ul>
 						<li>Takeoff: {entryTime(depTime)}</li>
