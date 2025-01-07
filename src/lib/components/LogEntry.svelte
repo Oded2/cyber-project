@@ -33,8 +33,13 @@
 	</div>
 	<div class=" col-auto flex items-center"><h2>{log.pilot_in_command}</h2></div>
 	<div class="join col-auto flex items-center">
-		<a href={hrefs.logView.replace('slug', log.id.toString())} class="btn btn-info join-item"
-			>View</a
+		<a
+			href={addParams(
+				hrefs.logView.replace('slug', log.id.toString()),
+				{ ref: hrefs.logbook },
+				origin
+			)}
+			class="btn btn-info join-item">View</a
 		>
 		<button aria-label="Delete" class="btn btn-outline btn-info join-item" onclick={ondelete}
 			><i class="fa-solid fa-trash"></i></button

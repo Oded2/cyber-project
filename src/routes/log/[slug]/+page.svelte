@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { getDuration, haversineDistance } from '$lib';
 	import Container from '$lib/components/Container.svelte';
+	import Float from '$lib/components/Float.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { log, aircraft } = data;
+	const { log, aircraft, ref } = data;
 
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
@@ -33,12 +34,12 @@
 </script>
 
 <Container>
-	<div class="my-10 border-b-2 text-center">
-		<h1 class="text-xl">
+	<div class="relative my-10 border-b-2">
+		<h1 class="text-center text-xl">
 			<span class="font-bold">{log.dep_airport.city}</span> <i class="fa-solid fa-arrow-right"></i>
 			<span class="font-bold"> {log.des_airport.city}</span>
 		</h1>
-		<h2>{formatSpecificDate(depTime)}</h2>
+		<h2 class="text-center">{formatSpecificDate(depTime)}</h2>
 	</div>
 	<div class="mb-10 grid grid-cols-3 gap-4">
 		<LogViewerCard title="Basic Info">
@@ -97,6 +98,12 @@
 		{/if}
 	</div>
 </Container>
+
+{#if ref.length > 0}
+	<Float>
+		<a href={ref} aria-label="Back" class="btn shadow"><i class="fa-solid fa-arrow-left"></i></a>
+	</Float>
+{/if}
 
 <Title title="Log Viewer"></Title>
 

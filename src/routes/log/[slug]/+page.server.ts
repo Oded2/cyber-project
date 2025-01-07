@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 
-export async function load({ params, locals: { supabase } }) {
+export async function load({ params, url, locals: { supabase } }) {
+	const ref = url.searchParams.get('ref') ?? '';
 	const id: number = parseInt(params.slug);
 	if (isNaN(id)) error(400, { message: 'Invalid Log Id' });
 	const { data: l, error: eL } = await supabase.from('logs').select().eq('id', id);
@@ -15,5 +16,5 @@ export async function load({ params, locals: { supabase } }) {
 		.eq('id', log['aircraft']);
 	if (eA) error(500, { message: eA.message });
 	const aircraft = a[0];
-	return { log: log as Log, aircraft: aircraft as Aircraft };
+	return { log: log as Log, aircraft: aircraft as Aircraft, ref };
 }
