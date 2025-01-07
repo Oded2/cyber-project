@@ -11,5 +11,6 @@
     "passwordReset": "/protected/resetpassword",
     "message": "/message",
     "registerAircraft": "/protected/registerAircraft",
-    "aircraft": "/aircraft"
+    "aircraft": "/aircraft",
+    "logView": "/log/slug"
 }

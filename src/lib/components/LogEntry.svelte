@@ -37,5 +37,7 @@
 		<h2>{formatRating(log.rating)}</h2>
 	</div>
 	<div class=" col-auto flex items-center"><h2>{log.pilot_in_command}</h2></div>
-	<div class="col-auto flex items-center"><button class="btn btn-info">View</button></div>
+	<div class="col-auto flex items-center">
+		<a href={hrefs.logView.replace('slug', log.id.toString())} class="btn btn-info">View</a>
+	</div>
 </div>

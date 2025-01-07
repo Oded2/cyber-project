@@ -85,6 +85,17 @@ export function formatDate(date: Date): string {
 	return formatter.format(date);
 }
 
+export function formatSpecificDate(date: Date): string {
+	const formatter = new Intl.DateTimeFormat('en-US', {
+		month: 'long',
+		day: 'numeric',
+		weekday: 'long',
+		hour: 'numeric',
+		minute: 'numeric'
+	});
+	return formatter.format(date);
+}
+
 export function handleError(e: PostgrestError | null): void {
 	if (e) error(500, { message: e.message });
 }
