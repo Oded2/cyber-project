@@ -89,19 +89,22 @@ async function getAirportData(code: string): Promise<Airport> {
 	const url: string = addParams(apiUrl, { [param]: code });
 	const response: Response = await fetch(url, { headers: { 'X-Api-Key': APININJAS } });
 	if (!response.ok) error(response.status, { message: response.statusText });
-	const json: any[] = await response.json();
+	const json: { [key: string]: any }[] = await response.json();
 	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });
+	const airport = json[0];
+	airport['longitude'] = parseInt(airport['longitude']);
+	airport['latitude'] = parseInt(airport['latitude']);
 	return json[0] as Airport;
 }
 
-async function getWeatherData(time: Date, long: string, lat: string): Promise<Weather> {
+async function getWeatherData(time: Date, long: number, lat: number): Promise<Weather> {
 	// Retrieves inforamtion about the weather for a specific date
 	const apiUrl = 'https://api.open-meteo.com/v1/forecast';
 	// Converts the date to UTC to adjust for timezone differences
 	const date = toUTC(time).toISOString().split('T')[0];
 	const params: Record<string, string> = {
-		longitude: long,
-		latitude: lat,
+		longitude: long.toString(),
+		latitude: lat.toString(),
 		hourly:
 			'temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,weather_code,pressure_msl,surface_pressure,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,temperature_180m',
 		wind_speed_unit: 'kn',

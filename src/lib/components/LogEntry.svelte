@@ -1,19 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { addParams, hrefs } from '$lib';
+	import { addParams, hrefs, getDuration } from '$lib';
 
 	const { log, shade, aircrafts }: { log: Log; shade: boolean; aircrafts: Aircraft[] } = $props();
 	const origin: string = $page.url.origin;
-
-	function getDuration(date1: Date, date2: Date): string {
-		// This function takes the difference in time between two dates and formats it
-		const miliseconds = Math.abs(date1.getTime() - date2.getTime());
-		const hours = Math.floor(miliseconds / 3600000);
-		const minutes = (miliseconds / 60000) % 60;
-		if (hours == 0) return `${minutes} minutes`;
-		if (minutes == 0) return `${hours} hours`;
-		return `${hours} hours and ${minutes} minutes`;
-	}
 
 	function formatRating(rating: typeof log.rating): string {
 		if (rating === 'instrument') return 'IFR';

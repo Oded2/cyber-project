@@ -66,8 +66,8 @@ declare global {
 		region: string;
 		country: string;
 		elevation_ft: string;
-		latitude: string;
-		longitude: string;
+		latitude: number;
+		longitude: number;
 		timezone: string;
 	}
 	interface Weather {

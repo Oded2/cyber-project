@@ -85,17 +85,6 @@ export function formatDate(date: Date): string {
 	return formatter.format(date);
 }
 
-export function formatSpecificDate(date: Date): string {
-	const formatter = new Intl.DateTimeFormat('en-US', {
-		month: 'long',
-		day: 'numeric',
-		weekday: 'long',
-		hour: 'numeric',
-		minute: 'numeric'
-	});
-	return formatter.format(date);
-}
-
 export function handleError(e: PostgrestError | null): void {
 	if (e) error(500, { message: e.message });
 }
@@ -112,4 +101,38 @@ export function toUTC(date: Date): Date {
 			date.getMilliseconds()
 		)
 	);
+}
+export function getDuration(date1: Date, date2: Date): string {
+	// This function takes the difference in time between two dates and formats it
+	const miliseconds = Math.abs(date1.getTime() - date2.getTime());
+	const hours = Math.floor(miliseconds / 3600000);
+	const minutes = (miliseconds / 60000) % 60;
+	if (hours == 0) return `${minutes} minutes`;
+	if (minutes == 0) return `${hours} hours`;
+	return `${hours} hours and ${minutes} minutes`;
+}
+
+interface Coordinates {
+	latitude: number;
+	longitude: number;
+}
+export function haversineDistance(pointA: Coordinates, pointB: Coordinates): number {
+	// Mathematical function to calculate the distance between two points
+	// Taken from the internet
+	let radius = 6371; // km
+	//convert latitude and longitude to radians
+	const deltaLatitude = ((pointB.latitude - pointA.latitude) * Math.PI) / 180;
+	const deltaLongitude = ((pointB.longitude - pointA.longitude) * Math.PI) / 180;
+
+	const halfChordLength =
+		Math.cos((pointA.latitude * Math.PI) / 180) *
+			Math.cos((pointB.latitude * Math.PI) / 180) *
+			Math.sin(deltaLongitude / 2) *
+			Math.sin(deltaLongitude / 2) +
+		Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
+
+	const angularDistance =
+		2 * Math.atan2(Math.sqrt(halfChordLength), Math.sqrt(1 - halfChordLength));
+
+	return radius * angularDistance;
 }
