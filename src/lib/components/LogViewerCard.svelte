@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	const { title, children }: { title: string; children: Snippet } = $props();
+	const {
+		title,
+		image = '',
+		children
+	}: { title: string; image?: string; children: Snippet } = $props();
 </script>
 
 <div class="card bg-primary-content transition hover:shadow-lg">
@@ -9,4 +13,7 @@
 		<h2 class="card-title">{title}</h2>
 		{@render children()}
 	</div>
+	{#if image.length > 0}
+		<figure><img src={image} alt={title} /></figure>
+	{/if}
 </div>

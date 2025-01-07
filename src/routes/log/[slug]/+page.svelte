@@ -5,7 +5,7 @@
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { log } = data;
+	const { log, aircraft } = data;
 
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
@@ -58,7 +58,7 @@
 						<li>Cruising Altitude: {log.altitude}ft</li>
 					{/if}
 					{#if log.fuel_usage}
-						<li>Fuel Usage: {log.fuel_usage} gallons</li>
+						<li>Fuel Usage: {log.fuel_usage} Gallons</li>
 					{/if}
 				</ul>
 			</div>
@@ -77,6 +77,24 @@
 				</ul>
 			</div>
 		</LogViewerCard>
+		{#if aircraft}
+			<LogViewerCard title="Aircraft" image={aircraft.image_url}>
+				<div class="prose">
+					<ul>
+						<li>Nickname: {aircraft.nickname}</li>
+						<li>Tail Number: {aircraft.tail_number}</li>
+						<li>Model: {aircraft.model}</li>
+						<li>Manufacturer: {aircraft.manufacturer}</li>
+						<li>Category: {aircraft.category}</li>
+						<li>Range: {aircraft.range.toLocaleString()}NM</li>
+						<li>Fuel Capacity: {aircraft.fuel_capacity.toLocaleString()} Gallons</li>
+						<li>Notes: {aircraft.notes}</li>
+					</ul>
+				</div>
+			</LogViewerCard>
+		{:else}
+			<LogViewerCard title="Private Aircraft">This aircraft is private</LogViewerCard>
+		{/if}
 	</div>
 </Container>
 
