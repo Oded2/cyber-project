@@ -12,7 +12,7 @@
 
 	// Calculate the date ~ 2 months ahead
 	const maxDate = new Date(today);
-	maxDate.setDate(today.getDate() + 60);
+	maxDate.setDate(today.getDate() + 14);
 	// Half an hour ahead to avoid edge cases error messages
 	maxDate.setMinutes(maxDate.getMinutes() + 30);
 
