@@ -25,7 +25,7 @@
 
 <div class="grid grid-cols-6 px-3 py-5" class:bg-base-200={shade}>
 	<div class="col-auto flex items-center">
-		<h2 class="font-bold">{log.dep_airport} TO {log.des_airport}</h2>
+		<h2 class="font-bold">{log.dep_airport.icao} TO {log.des_airport.icao}</h2>
 	</div>
 	<div class="col-auto flex items-center"><h2>{getDuration(log.dep_time, log.des_time)}</h2></div>
 	<div class="col-auto flex items-center">

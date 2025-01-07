@@ -1,19 +1,7 @@
-import { APININJAS, SERVICE_ROLE } from '$env/static/private';
-import { addParams, createSupabaseClient, hrefs } from '$lib';
+import { APININJAS } from '$env/static/private';
+import { addParams, hrefs, toUTC } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-interface Airport {
-	icao: string;
-	iata: string;
-	name: string;
-	city: string;
-	region: string;
-	country: string;
-	elevation_ft: string;
-	latitude: string;
-	longitude: string;
-	timezone: string;
-}
 interface WeatherData {
 	latitude: number;
 	longitude: number;
@@ -53,40 +41,25 @@ interface WeatherData {
 		temperature_180m: number[];
 	};
 }
-interface Weather {
-	temperature: number;
-	dewPoint: number;
-	humidity: number;
-	precipation: number;
-	pressure: number;
-	cloud_cover: number;
-	visibility: number;
-	wind_speed: number;
-	wind_direction: number;
-}
 
 export const actions: Actions = {
-	default: async ({ request, locals: { user } }) => {
+	default: async ({ request, locals: { supabase } }) => {
 		// Create an admin supabase client
-		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
-		// Set the form data as ICAO codes
-		formData.set('dep_airport', depAirport.icao);
-		formData.set('des_airport', desAirport.icao);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
 		validateDates(depDate, desDate);
-		// Set the owner of the log as the user
-		formData.set('owner', user!.id);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
-		const obj = Object.fromEntries(formData.entries()) as any;
+		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
 		obj['dep_weather'] = await getWeatherData(depDate, depAirport.longitude, depAirport.latitude);
 		obj['des_weather'] = await getWeatherData(desDate, desAirport.longitude, desAirport.latitude);
-		const { error: e } = await admin.from('logs').insert(obj);
+		obj['dep_airport'] = depAirport;
+		obj['des_airport'] = desAirport;
+		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
 		redirect(303, hrefs.logbook);
 	}
@@ -124,14 +97,14 @@ async function getAirportData(code: string): Promise<Airport> {
 async function getWeatherData(time: Date, long: string, lat: string): Promise<Weather> {
 	// Retrieves inforamtion about the weather for a specific date
 	const apiUrl = 'https://api.open-meteo.com/v1/forecast';
-	const date = time.toISOString().split('T')[0];
+	// Converts the date to UTC to adjust for timezone differences
+	const date = toUTC(time).toISOString().split('T')[0];
 	const params: Record<string, string> = {
 		longitude: long,
 		latitude: lat,
 		hourly:
 			'temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,weather_code,pressure_msl,surface_pressure,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,temperature_180m',
 		wind_speed_unit: 'kn',
-		timezone: 'Africa/Cairo',
 		start_date: date,
 		end_date: date
 	};

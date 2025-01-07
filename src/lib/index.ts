@@ -99,3 +99,17 @@ export function formatSpecificDate(date: Date): string {
 export function handleError(e: PostgrestError | null): void {
 	if (e) error(500, { message: e.message });
 }
+
+export function toUTC(date: Date): Date {
+	return new Date(
+		Date.UTC(
+			date.getFullYear(),
+			date.getMonth(),
+			date.getDate(),
+			date.getHours(),
+			date.getMinutes(),
+			date.getSeconds(),
+			date.getMilliseconds()
+		)
+	);
+}

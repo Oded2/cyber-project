@@ -16,20 +16,22 @@ declare global {
 		// interface Platform {}
 	}
 	interface Log {
-		id: number; // bigint
-		owner: string; // uuid
-		created_at: string; // timestamp with time zone
-		dep_time: Date; // timestamp with time zone
-		des_time: Date; // timestamp with time zone
-		dep_airport: string; // text
-		des_airport: string; // text
-		aircraft: number; // bigint (foreign key referencing aircrafts)
-		notes: string; // text
-		altitude?: number; // integer (optional)
-		pilot_in_command: string; // text
-		visibility: 'public' | 'unlisted' | 'private'; // text with constraints
-		fuel_usage?: number; // bigint (optional)
-		rating: 'visual' | 'instrument'; // text with constraints
+		id: number;
+		owner: string;
+		created_at: string;
+		dep_time: Date;
+		des_time: Date;
+		dep_airport: Airport;
+		des_airport: Airport;
+		aircraft: number;
+		notes: string;
+		altitude?: number;
+		pilot_in_command: string;
+		visibility: 'public' | 'unlisted' | 'private';
+		fuel_usage?: number;
+		rating: 'visual' | 'instrument';
+		dep_weather: Weather;
+		des_weather: Weather;
 	}
 	interface Aircraft {
 		id: number; // bigint
@@ -55,6 +57,29 @@ declare global {
 		notes: string; // text
 		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
 		owner: string; // uuid
+	}
+	interface Airport {
+		icao: string;
+		iata: string;
+		name: string;
+		city: string;
+		region: string;
+		country: string;
+		elevation_ft: string;
+		latitude: string;
+		longitude: string;
+		timezone: string;
+	}
+	interface Weather {
+		temperature: number;
+		dewPoint: number;
+		humidity: number;
+		precipation: number;
+		pressure: number;
+		cloud_cover: number;
+		visibility: number;
+		wind_speed: number;
+		wind_direction: number;
 	}
 }
 
