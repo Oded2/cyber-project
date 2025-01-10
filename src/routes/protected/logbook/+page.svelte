@@ -41,10 +41,10 @@
 					>
 				</li>
 			</Dropdown>
-			<button class="btn" onclick={() => logs.reverse()} aria-label="Reverse"
-				><i class="fa-solid fa-arrow-right-arrow-left"></i></button
-			>
 		</div>
+		<button class="btn" onclick={() => logs.reverse()} aria-label="Reverse"
+			><i class="fa-solid fa-arrow-right-arrow-left"></i></button
+		>
 		<a href={hrefs.calendar} aria-label="Calendar" class="btn"
 			><i class="fa-solid fa-calendar-days"></i></a
 		>
