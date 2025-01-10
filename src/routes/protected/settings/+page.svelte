@@ -14,7 +14,6 @@
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
-	import SettingsButton from '$lib/components/SettingsButton.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { page } from '$app/stores';
 
@@ -73,17 +72,25 @@
 	<div class="flex flex-col gap-4 sm:flex-row">
 		<div class="overflow-auto sm:w-60 sm:border-e-2 sm:pe-2">
 			<div class="flex w-full gap-2 sm:flex-col">
-				<SettingsButton onclick={() => (currentPage = 'profile')} active={currentPage === 'profile'}
-					><i class="fa-solid fa-user"></i> Profile</SettingsButton
-				>
-				<SettingsButton onclick={() => (currentPage = 'account')} active={currentPage === 'account'}
-					><i class="fa-solid fa-address-card"></i> Account</SettingsButton
-				>
-				<SettingsButton
-					onclick={() => (currentPage = 'aircraft')}
-					active={currentPage === 'aircraft'}
-					><i class="fa-solid fa-plane"></i> Aircrafts</SettingsButton
-				>
+				{@render settingsButton(
+					'Profile',
+					'fa-solid fa-user',
+					() => (currentPage = 'profile'),
+					currentPage === 'profile'
+				)}
+
+				{@render settingsButton(
+					'Account',
+					'fa-solid fa-address-card',
+					() => (currentPage = 'account'),
+					currentPage === 'account'
+				)}
+				{@render settingsButton(
+					'Aircrafts',
+					'fa-solid fa-plane',
+					() => (currentPage = 'aircraft'),
+					currentPage === 'aircraft'
+				)}
 			</div>
 		</div>
 		<div class="w-full">
@@ -217,6 +224,7 @@
 	</div>
 </Container>
 
+<!-- Hidden form that sends a request to the server to delete the user's account -->
 <form action="?/deleteAccount" method="POST" class="hidden">
 	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
 </form>
@@ -240,3 +248,9 @@
 <Alert visible={errors.usernameTaken} message="Username already taken"></Alert>
 
 <Title title="Settings"></Title>
+
+{#snippet settingsButton(text: string, icon: string, onclick: () => void, active: boolean)}
+	<button class="btn btn-outline btn-info justify-start" class:btn-active={active} {onclick}>
+		<i class={icon}></i>{text}
+	</button>
+{/snippet}
