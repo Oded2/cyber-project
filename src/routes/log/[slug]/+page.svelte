@@ -7,6 +7,7 @@
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
+	// console.log(log);
 
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
