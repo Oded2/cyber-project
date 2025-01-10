@@ -26,6 +26,7 @@
 
 <Container>
 	<h1 class="text-xl font-bold">Welcome back, {profile.display}</h1>
+	<div class="my-2 flex border p-2"></div>
 	<div class="mt-5 flex w-full flex-col">
 		<div class="grid grid-cols-6 border-b-2 px-3 pb-2">
 			<div class="col-auto">Log</div>

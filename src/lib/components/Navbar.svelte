@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { hrefs } from '$lib';
 	import { page } from '$app/stores';
+	import Dropdown from './Dropdown.svelte';
 
 	let {
 		loggedIn,
@@ -64,17 +65,13 @@
 							<img alt="Tailwind CSS Navbar component" src={profileImage} id="profilePicture" />
 						</div>
 					</div>
-					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-					<ul
-						tabindex="0"
-						class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-					>
+					<Dropdown>
 						<li>
 							<a href="/temp"> Profile </a>
 						</li>
 						<li><a href={hrefs.settings}>Settings</a></li>
 						<li><button onclick={signOut}>Sign Out</button></li>
-					</ul>
+					</Dropdown>
 				</div>
 			{:else if !pathname.includes(hrefs.login)}
 				<div class="join">
