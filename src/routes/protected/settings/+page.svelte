@@ -64,6 +64,14 @@
 		) as HTMLButtonElement;
 		hiddenButton.click();
 	}
+	async function changeLogsVisibility(
+		visibility: 'public' | 'private' | 'unlisted'
+	): Promise<void> {
+		await supabase.from('logs').update({ visibility }).eq('owner', user!.id);
+	}
+	async function handleLogPurge(): Promise<void> {
+		await supabase.from('logs').delete().eq('owner', user!.id);
+	}
 </script>
 
 <Container>
@@ -223,6 +231,21 @@
 						<h1 class="text-lg">No registered aircrafts yet</h1>
 					</div>
 				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
+			{:else if currentPage === 'logs'}
+				<div class="flex flex-col gap-2">
+					<button onclick={() => showModal('publicLogs')} class="btn btn-outline btn-info max-w-xs"
+						>Publicize Logs</button
+					>
+					<button onclick={() => showModal('privateLogs')} class="btn btn-outline btn-info max-w-xs"
+						>Privatize Logs</button
+					>
+					<button onclick={() => showModal('unlistLogs')} class="btn btn-outline btn-info max-w-xs"
+						>Unlist Logs</button
+					>
+					<button onclick={() => showModal('purgeLogs')} class="btn btn-outline btn-error max-w-xs"
+						>Purge Logs</button
+					>
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -236,13 +259,34 @@
 <ConfirmationModal
 	message="This action cannot be undone."
 	id="deleteAccount"
-	text={profile.username}
+	text={`${profile.username}/account`}
 	onconfirmation={handleAccountDelete}
 ></ConfirmationModal>
 <ConfirmationModal
 	id="deleteAircraft"
 	message="This will delete all of the logs related to this aircraft."
 	onconfirmation={handleAircraftDelete}
+></ConfirmationModal>
+<ConfirmationModal
+	message="All of your logs will become public."
+	id="publicLogs"
+	onconfirmation={() => changeLogsVisibility('public')}
+></ConfirmationModal>
+<ConfirmationModal
+	message="All of your logs will become private."
+	id="privateLogs"
+	onconfirmation={() => changeLogsVisibility('private')}
+></ConfirmationModal>
+<ConfirmationModal
+	message="All of your logs will become unlisted."
+	id="unlistLogs"
+	onconfirmation={() => changeLogsVisibility('unlisted')}
+></ConfirmationModal>
+<ConfirmationModal
+	message="This action will delete ALL of your logs and cannot be undone."
+	id="purgeLogs"
+	onconfirmation={handleLogPurge}
+	text={`${profile.username}/logs`}
 ></ConfirmationModal>
 
 <Alert
