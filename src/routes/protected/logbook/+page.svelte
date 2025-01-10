@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { showModal } from '$lib';
+	import { hrefs, showModal } from '$lib';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogEntry from '$lib/components/LogEntry.svelte';
@@ -27,7 +27,7 @@
 
 <Container>
 	<h1 class="border-b-2 pb-2 text-xl font-bold">Welcome back, {profile.display}</h1>
-	<div class="mb-2 flex border-b-2 p-2">
+	<div class="mb-2 flex gap-2 border-b-2 p-2">
 		<div class="dropdown-start dropdown">
 			<button class="btn">Sort By</button>
 			<Dropdown automaticClose>
@@ -43,6 +43,9 @@
 				</li>
 			</Dropdown>
 		</div>
+		<a href={hrefs.calendar} aria-label="Calendar" class="btn"
+			><i class="fa-solid fa-calendar-days"></i></a
+		>
 	</div>
 	<div class="mt-5 flex w-full flex-col">
 		<div class="grid grid-cols-6 border-b-2 px-3 pb-2">
