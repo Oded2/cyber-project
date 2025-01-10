@@ -18,7 +18,7 @@
 	const aircraft: Aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
 </script>
 
-<div class="grid grid-cols-6 px-3 py-5" class:bg-base-200={shade}>
+<div class="grid grid-cols-7 px-3 py-5" class:bg-base-200={shade}>
 	<div class="col-auto flex flex-col justify-center gap-1">
 		<h2 class="font-bold">{log.dep_airport.icao} TO {log.des_airport.icao}</h2>
 		<h6 class="text-sm font-light">{formatDate(log.dep_time)}</h6>
@@ -44,6 +44,17 @@
 		>
 		<button aria-label="Delete" class="btn btn-outline btn-info join-item" onclick={ondelete}
 			><i class="fa-solid fa-trash"></i></button
+		>
+	</div>
+	<div class=" col-auto flex items-center">
+		<span
+			>{log.created_at.toLocaleString('en-US', {
+				year: 'numeric',
+				month: 'short',
+				day: '2-digit',
+				hour: 'numeric',
+				minute: 'numeric'
+			})}</span
 		>
 	</div>
 </div>
