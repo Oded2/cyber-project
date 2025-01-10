@@ -55,7 +55,7 @@
 </Container>
 
 {#snippet box(day: number)}
-	<div class=" col-auto h-32 overflow-auto border transition hover:shadow">
+	<div class=" col-auto h-32 overflow-auto border">
 		<div class="sticky top-0 bg-base-100">
 			<h2 class="text-lg">{day}</h2>
 		</div>
@@ -69,7 +69,7 @@
 						},
 						$page.url.origin
 					)}
-					class="bg-base-200"
+					class="bg-base-200 transition hover:shadow-md"
 				>
 					<span>{formatLog(log)} </span>
 				</a>
