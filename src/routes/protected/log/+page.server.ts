@@ -2,6 +2,11 @@ import { APININJAS } from '$env/static/private';
 import { addParams, hrefs, toUTC } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
+export async function load({ parent }) {
+	const { aircrafts } = await parent();
+	if (aircrafts.length == 0) error(400, { message: 'No registered aircrafts' });
+}
+
 interface WeatherData {
 	latitude: number;
 	longitude: number;

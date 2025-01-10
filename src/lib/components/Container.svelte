@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	const { children }: { children: Snippet } = $props();
+	const { margin = true, children }: { margin?: boolean; children: Snippet } = $props();
 </script>
 
-<main class="container mx-auto my-10">
+<main class="container mx-auto" class:my-10={margin}>
 	{@render children()}
 </main>
