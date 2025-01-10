@@ -47,7 +47,7 @@
 			{current.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
 		</h1>
 	</div>
-	<div class=" grid grid-cols-3 gap-1 md:grid-cols-7">
+	<div class="grid grid-cols-2 gap-1 sm:grid-cols-3 md:grid-cols-7">
 		{#each { length: getDaysInMonth(current) } as _, index}
 			{@render box(index + 1)}
 		{/each}
@@ -55,7 +55,7 @@
 </Container>
 
 {#snippet box(day: number)}
-	<div class=" col-auto h-32 overflow-auto border">
+	<div class="col-auto h-32 overflow-auto border">
 		<div class="sticky top-0 bg-base-100">
 			<h2 class="text-lg">{day}</h2>
 		</div>
