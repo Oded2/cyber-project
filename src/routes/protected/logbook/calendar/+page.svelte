@@ -15,6 +15,12 @@
 		const change: number = dir === 'next' ? 1 : -1;
 		current.setMonth(current.getMonth() + change);
 	}
+	function resetDate(): void {
+		const today = new Date();
+		current.setFullYear(today.getFullYear());
+		current.setMonth(today.getMonth());
+		current.setDate(today.getDate());
+	}
 	function getDaysInMonth(date: SvelteDate): number {
 		// The purpose of this function is to return the days in a month, with accounting for February 29th
 		// Create a date object set to the 0th day of the next month
@@ -39,6 +45,12 @@
 <Container>
 	<div class="mb-2 flex items-center gap-2 border-b-2 pb-2">
 		<div class="join">
+			<a href={hrefs.logbook} class="btn join-item" aria-label="Logbook"
+				><i class="fa-solid fa-book"></i></a
+			>
+			<button onclick={resetDate} class="btn join-item" aria-label="Reset"
+				><i class="fa-solid fa-clock-rotate-left"></i></button
+			>
 			<button onclick={() => change(' previous')} class="btn join-item" aria-label="Previous month"
 				><i class="fa-solid fa-caret-left"></i></button
 			><button onclick={() => change('next')} class="btn join-item" aria-label="Next month"
