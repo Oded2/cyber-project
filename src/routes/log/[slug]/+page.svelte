@@ -16,13 +16,12 @@
 			{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
 		) / 1.852;
 	function formatSpecificDate(date: Date): string {
-		const formatter = new Intl.DateTimeFormat('en-US', {
+		return date.toLocaleString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',
 			weekday: 'long'
 		});
-		return formatter.format(date);
 	}
 	function entryTime(date: Date): string {
 		const formatter = new Intl.DateTimeFormat('en-US', {
@@ -47,7 +46,7 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
-					<li>Distance: {Math.round(distance)}NM</li>
+					<li>Distance: {Math.round(distance).toLocaleString()}NM</li>
 					<li>
 						<strong>Departure & Landing</strong>
 						<ul>
