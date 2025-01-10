@@ -37,9 +37,9 @@
 					>
 					<button
 						onclick={() => logs.sort((a, b) => b.created_at.getTime() - a.created_at.getTime())}
-						>Creation Date</button
+						>Date Logged</button
 					>
-					<button onclick={() => logs.reverse()}> Reverse </button>
+					<button onclick={() => logs.reverse()}>Reverse</button>
 				</li>
 			</Dropdown>
 		</div>
