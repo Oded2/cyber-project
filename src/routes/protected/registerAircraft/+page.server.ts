@@ -19,7 +19,7 @@ export const actions: Actions = {
 		for (const input of inputs) {
 			const inputName = input.name;
 			const value = formData.get(inputName) as string;
-			if ((input.required && value.length == 0) || value.length > 100) {
+			if ((input.required && value.length == 0) || value.length > (input.max ?? 100)) {
 				error(422, { message: `${format(inputName)} is invalid` });
 			}
 		}
@@ -229,6 +229,7 @@ const inputs: InputType[] = [
 		required: false,
 		inputType: 'text',
 		page: 3,
+		max: 5000,
 		placeholder: 'https://example.com/images/cessna.png'
 	},
 	{

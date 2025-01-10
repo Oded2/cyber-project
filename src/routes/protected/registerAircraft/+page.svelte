@@ -30,7 +30,7 @@
 			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
 			// Input element
 			const valueLength = element.value.length;
-			if (valueLength > maxLength || (valueLength == 0 && val.required)) {
+			if (valueLength > (val.max ?? maxLength) || (valueLength == 0 && val.required)) {
 				// Any input over the maximum length is invalid, but only required inputs cannot be empty
 				element.parentElement?.classList.add('input-error');
 				currentStep = val.page;
@@ -74,6 +74,7 @@
 									id={input.name}
 									name={input.name}
 									placeholder={input.placeholder!}
+									maxLength={input.max ?? maxLength}
 								></AircraftInput>
 							{:else if input.inputType === 'select'}
 								<AircraftSelect
