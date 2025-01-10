@@ -9,7 +9,7 @@
 </script>
 
 <Container>
-	<div class="card mx-auto mt-10 max-w-md border-2">
+	<div class="card mx-auto max-w-md border-2">
 		<div class="card-body">
 			{#if success}
 				<h2 class="card-title text-success">Message sent successfully</h2>

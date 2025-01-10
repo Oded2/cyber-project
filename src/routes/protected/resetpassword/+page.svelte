@@ -9,7 +9,7 @@
 
 <Container>
 	<form method="POST" action="?/reset">
-		<div class="card mx-auto mt-10 max-w-md shadow-xl">
+		<div class="card mx-auto max-w-md shadow-xl">
 			<div class="card-body">
 				<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 					<h2 class="card-title mx-auto">Reset Password</h2>
