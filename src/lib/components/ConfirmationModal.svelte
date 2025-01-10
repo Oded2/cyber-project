@@ -6,12 +6,26 @@
 		message = '',
 		text = '',
 		onconfirmation
-	}: { id: string; message?: string; text?: string; onconfirmation: () => void } = $props();
+	}: {
+		id: string;
+		message?: string;
+		text?: string;
+		onconfirmation: () => Promise<void> | void;
+	} = $props();
 
 	let value: string = $state('');
+	let inProgress: boolean = $state(false);
 
 	function onclose(): void {
 		value = '';
+	}
+	async function handleSubmit() {
+		inProgress = true;
+		await onconfirmation();
+		inProgress = false;
+		const modal = document.getElementById(id) as HTMLDialogElement;
+		onclose();
+		modal.close();
 	}
 </script>
 
@@ -30,10 +44,10 @@
 		<div class="flex justify-end gap-2">
 			<button type="submit" class="btn btn-secondary">Cancel</button>
 			<button
-				type="submit"
-				onclick={onconfirmation}
+				type="button"
+				onclick={handleSubmit}
 				class="btn btn-primary"
-				disabled={value !== text}>Confirm</button
+				disabled={value !== text || inProgress}>Confirm</button
 			>
 		</div>
 	</form>
