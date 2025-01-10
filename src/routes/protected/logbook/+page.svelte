@@ -39,9 +39,11 @@
 						onclick={() => logs.sort((a, b) => b.created_at.getTime() - a.created_at.getTime())}
 						>Date Logged</button
 					>
-					<button onclick={() => logs.reverse()}>Reverse</button>
 				</li>
 			</Dropdown>
+			<button class="btn" onclick={() => logs.reverse()} aria-label="Reverse"
+				><i class="fa-solid fa-arrow-right-arrow-left"></i></button
+			>
 		</div>
 		<a href={hrefs.calendar} aria-label="Calendar" class="btn"
 			><i class="fa-solid fa-calendar-days"></i></a
