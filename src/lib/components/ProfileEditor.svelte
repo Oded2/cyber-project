@@ -34,7 +34,9 @@
 
 <form
 	class="mb-2 flex w-full max-w-md flex-col overflow-hidden border-b-2 pb-1"
-	onsubmit={async () => {
+	onsubmit={async (e) => {
+		// preventDefault stops the form from trying to contact the server
+		e.preventDefault();
 		progress = true;
 		await action();
 		progress = false;
