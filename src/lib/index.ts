@@ -118,6 +118,7 @@ export function handleLogs(logs: Log[]): void {
 	logs.forEach((item) => {
 		item.dep_time = new Date(item.dep_time);
 		item.des_time = new Date(item.des_time);
+		item.created_at = new Date(item.created_at);
 	});
 	// Sorts the array based on the date
 	logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());

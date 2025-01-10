@@ -18,7 +18,7 @@ declare global {
 	interface Log {
 		id: number;
 		owner: string;
-		created_at: string;
+		created_at: Date;
 		dep_time: Date;
 		des_time: Date;
 		dep_airport: Airport;

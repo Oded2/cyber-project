@@ -5,6 +5,7 @@
 	import Container from '$lib/components/Container.svelte';
 	import LogEntry from '$lib/components/LogEntry.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
 
 	const { data } = $props();
 	const { profile, aircrafts, supabase } = data;
@@ -25,8 +26,24 @@
 <Title title="Logbook"></Title>
 
 <Container>
-	<h1 class="text-xl font-bold">Welcome back, {profile.display}</h1>
-	<div class="my-2 flex border p-2"></div>
+	<h1 class="border-b-2 pb-2 text-xl font-bold">Welcome back, {profile.display}</h1>
+	<div class="mb-2 flex border-b-2 p-2">
+		<div class="dropdown-start dropdown">
+			<button class="btn">Sort By</button>
+			<Dropdown automaticClose>
+				<li>
+					<button onclick={() => logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime())}
+						>Departure Date</button
+					>
+					<button
+						onclick={() => logs.sort((a, b) => b.created_at.getTime() - a.created_at.getTime())}
+						>Creation Date</button
+					>
+					<button onclick={() => logs.reverse()}> Reverse </button>
+				</li>
+			</Dropdown>
+		</div>
+	</div>
 	<div class="mt-5 flex w-full flex-col">
 		<div class="grid grid-cols-6 border-b-2 px-3 pb-2">
 			<div class="col-auto">Log</div>

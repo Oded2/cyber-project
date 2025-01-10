@@ -41,7 +41,9 @@
 						</blockquote>
 					</div>
 					<HomeLink href={hrefs.log}><i class="fa-solid fa-plane"></i>Log New Flight</HomeLink>
-					<HomeLink href={hrefs.calendar}><i class="fa-solid fa-clock"></i>View Calendar</HomeLink>
+					<HomeLink href={hrefs.calendar}
+						><i class="fa-solid fa-calendar-days"></i>View Calendar</HomeLink
+					>
 					<HomeLink href={hrefs.logbook}><i class="fa-solid fa-book"></i>View Logbook</HomeLink>
 				</div>
 			</div>
