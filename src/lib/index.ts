@@ -112,12 +112,15 @@ export function getDuration(date1: Date, date2: Date): string {
 	return `${hours} hours and ${minutes} minutes`;
 }
 
-export function handleLogs(logs: { [key: string]: any }[]): void {
+export function handleLogs(logs: Log[]): void {
 	// Helper function to ensure that logs fetched from the database are in the correct format
+	// Transforms the departure and destination time to Date objects
 	logs.forEach((item) => {
-		item['dep_time'] = new Date(item['dep_time']);
-		item['des_time'] = new Date(item['des_time']);
+		item.dep_time = new Date(item.dep_time);
+		item.des_time = new Date(item.des_time);
 	});
+	// Sorts the array based on the date
+	logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());
 }
 
 interface Coordinates {

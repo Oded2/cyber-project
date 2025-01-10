@@ -61,6 +61,11 @@
 					{#if log.fuel_usage}
 						<li>Fuel Usage: {log.fuel_usage} Gallons</li>
 					{/if}
+					{#if log.notes.length > 0}
+						<li>
+							Notes: {log.notes}
+						</li>
+					{/if}
 				</ul>
 			</div>
 		</LogViewerCard>
@@ -89,7 +94,9 @@
 						<li>Category: {aircraft.category}</li>
 						<li>Range: {aircraft.range.toLocaleString()}NM</li>
 						<li>Fuel Capacity: {aircraft.fuel_capacity.toLocaleString()} Gallons</li>
-						<li>Notes: {aircraft.notes}</li>
+						{#if aircraft.notes.length > 0}
+							<li>Notes: {aircraft.notes}</li>
+						{/if}
 					</ul>
 				</div>
 			</LogViewerCard>
