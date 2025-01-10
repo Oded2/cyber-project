@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { format, toInputElement, formatDateTime, formatDate } from '$lib';
+	import { onMount } from 'svelte';
 
 	// Get the current date
 	const today = new Date();
@@ -36,6 +37,14 @@
 		attributeChange: { id: 'dep_time' | 'des_time'; attribute: 'min' | 'max' };
 	} = $props();
 
+	// 'otherInput' is the opposite of the current one
+	// For example, if this input is 'dep_time' then 'otherInput' is 'des_time'
+	let otherInput: HTMLInputElement;
+	onMount(() => {
+		// This defines 'otherInput' but only after the document loads
+		otherInput = document.getElementById(attributeChange.id) as HTMLInputElement;
+	});
+
 	let errorMessage: string = $state('');
 
 	function handleChange(e: Event): void {
@@ -48,8 +57,12 @@
 		} else {
 			errorMessage = '';
 		}
-		const otherInput = document.getElementById(attributeChange.id) as HTMLInputElement;
 		otherInput.setAttribute(attributeChange.attribute, formatDateTime(value));
+	}
+	function sync(): void {
+		// Function that synchronizes the current input to the other one
+		const input = document.getElementById(name) as HTMLInputElement;
+		input.value = otherInput.value;
 	}
 </script>
 
@@ -57,18 +70,21 @@
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
-	<input
-		{name}
-		id={name}
-		type="datetime-local"
-		{value}
-		onchange={handleChange}
-		{placeholder}
-		class="input input-sm input-bordered w-full py-5"
-		{min}
-		{max}
-		{required}
-	/>
+	<div class="flex gap-1">
+		<input
+			{name}
+			id={name}
+			type="datetime-local"
+			{value}
+			onchange={handleChange}
+			{placeholder}
+			class="input input-sm input-bordered w-full py-5"
+			{min}
+			{max}
+			{required}
+		/>
+		<button type="button" onclick={sync} class="btn">Sync</button>
+	</div>
 	<div class="label">
 		<span class="label-text-alt font-light italic">Adjusted to timezone</span>
 	</div>
