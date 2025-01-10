@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getDuration, haversineDistance } from '$lib';
+	import { format, getDuration, haversineDistance } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Float from '$lib/components/Float.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
@@ -65,6 +65,9 @@
 							Notes: {log.notes}
 						</li>
 					{/if}
+					<li>
+						Visibility: {format(log.visibility)}
+					</li>
 				</ul>
 			</div>
 		</LogViewerCard>
