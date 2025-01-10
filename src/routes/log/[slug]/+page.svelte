@@ -55,10 +55,10 @@
 						</ul>
 					</li>
 					{#if log.altitude}
-						<li>Cruising Altitude: {log.altitude}ft</li>
+						<li>Cruising Altitude: {log.altitude.toLocaleString()}ft</li>
 					{/if}
 					{#if log.fuel_usage}
-						<li>Fuel Usage: {log.fuel_usage} Gallons</li>
+						<li>Fuel Usage: {log.fuel_usage.toLocaleString()} Gallons</li>
 					{/if}
 					{#if log.notes.length > 0}
 						<li>
