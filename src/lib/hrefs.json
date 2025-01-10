@@ -12,5 +12,6 @@
     "message": "/message",
     "registerAircraft": "/protected/registerAircraft",
     "aircraft": "/aircraft",
-    "logView": "/log/slug"
+    "logView": "/log/slug",
+    "calendar": "/protected/logbook/calendar"
 }

@@ -112,6 +112,14 @@ export function getDuration(date1: Date, date2: Date): string {
 	return `${hours} hours and ${minutes} minutes`;
 }
 
+export function handleLogs(logs: { [key: string]: any }[]): void {
+	// Helper function to ensure that logs fetched from the database are in the correct format
+	logs.forEach((item) => {
+		item['dep_time'] = new Date(item['dep_time']);
+		item['des_time'] = new Date(item['des_time']);
+	});
+}
+
 interface Coordinates {
 	latitude: number;
 	longitude: number;

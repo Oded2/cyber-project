@@ -4,6 +4,6 @@
 	const { children }: { children: Snippet } = $props();
 </script>
 
-<main class="container mx-auto">
+<main class="container mx-auto my-10">
 	{@render children()}
 </main>
