@@ -49,13 +49,14 @@
 			><i class="fa-solid fa-calendar-days"></i></a
 		>
 	</div>
+
 	<div class="mt-5 flex w-full flex-col">
-		<div class="grid grid-cols-7 border-b-2 px-3 pb-2">
+		<div class="grid grid-cols-3 border-b-2 px-3 pb-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
 			<div class="col-auto">Log</div>
-			<div class="col-auto">Duration</div>
-			<div class="col-auto">Aircraft</div>
-			<div class="col-auto">Rating</div>
-			<div class="col-auto">Pilot in Command</div>
+			<div class="col-auto hidden md:block">Duration</div>
+			<div class="col-auto hidden sm:block">Aircraft</div>
+			<div class="col-auto hidden lg:block">Rating</div>
+			<div class="col-auto hidden lg:block">Pilot in Command</div>
 			<div class="col-auto">Options</div>
 			<div class="col-auto">Date Logged</div>
 		</div>
