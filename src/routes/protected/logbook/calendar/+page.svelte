@@ -7,6 +7,8 @@
 
 	const { data } = $props();
 	const { logs } = data;
+	// Logs come in sorted, but need to be reversed so that times on the calendar appear in order
+	logs.reverse();
 	let current: SvelteDate = $state(new SvelteDate());
 
 	function change(dir: 'next' | ' previous'): void {
