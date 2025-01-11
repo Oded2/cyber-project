@@ -69,6 +69,15 @@
 					<li>
 						Visibility: {format(log.visibility)}
 					</li>
+					<li>
+						Logged: {log.created_at.toLocaleString('en-US', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric'
+						})}
+					</li>
 				</ul>
 			</div>
 		</LogViewerCard>
