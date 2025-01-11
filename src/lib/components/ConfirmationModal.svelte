@@ -3,14 +3,18 @@
 
 	const {
 		id,
+		title = 'Are you sure you want to do this?',
 		message = '',
 		text = '',
-		onconfirmation
+		href = '',
+		onconfirmation = () => {}
 	}: {
 		id: string;
+		title?: string;
 		message?: string;
 		text?: string;
-		onconfirmation: () => Promise<void> | void;
+		href?: string;
+		onconfirmation?: () => Promise<void> | void;
 	} = $props();
 
 	let value: string = $state('');
@@ -30,7 +34,7 @@
 </script>
 
 <Modal {id} {onclose}>
-	<div class="card-title mb-2 border-b-2 pb-2">Are you sure you want to do this?</div>
+	<div class="card-title mb-2 border-b-2 pb-2">{title}</div>
 	{#if message.length > 0}
 		<div class="mb-4 text-error">{message}</div>
 	{/if}
@@ -43,12 +47,16 @@
 	<form method="dialog" onsubmit={onclose}>
 		<div class="flex justify-end gap-2">
 			<button type="submit" class="btn btn-secondary">Cancel</button>
-			<button
-				type="button"
-				onclick={handleSubmit}
-				class="btn btn-primary"
-				disabled={value !== text || inProgress}>Confirm</button
-			>
+			{#if href.length > 0}
+				<a {href} class="btn btn-primary">Confirm</a>
+			{:else}
+				<button
+					type="button"
+					onclick={handleSubmit}
+					class="btn btn-primary"
+					disabled={value !== text || inProgress}>Confirm</button
+				>
+			{/if}
 		</div>
 	</form>
 </Modal>

@@ -1,16 +1,23 @@
 <script lang="ts">
-	import { addParams, hrefs } from '$lib';
+	import { addParams, formatDateTime, hrefs, showModal } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import { page } from '$app/stores';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	const { data } = $props();
 	const { logs } = data;
 	// Logs come in sorted, but need to be reversed so that times on the calendar appear in order
 	logs.reverse();
-	let current: SvelteDate = $state(new SvelteDate());
+
+	const pageUrl = $page.url;
+
+	let current: SvelteDate = new SvelteDate();
 	current.setDate(1);
+
+	// Variable that allows the user to log a flight by clicking on the calendar
+	let datePicked: SvelteDate = new SvelteDate();
 
 	function change(dir: 'next' | ' previous'): void {
 		const change: number = dir === 'next' ? 1 : -1;
@@ -41,6 +48,12 @@
 	function formatLog(log: Log) {
 		return `${log.dep_time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' })}: ${log.dep_airport.icao} TO ${log.des_airport.icao}`;
 	}
+	function handleNewLog(date: number): void {
+		datePicked.setFullYear(current.getFullYear());
+		datePicked.setMonth(current.getMonth());
+		datePicked.setDate(date);
+		showModal('newLog');
+	}
 </script>
 
 <Container>
@@ -70,27 +83,34 @@
 </Container>
 
 {#snippet box(day: number)}
-	<div class="col-auto h-32 overflow-auto border">
-		<div class="sticky top-0 bg-base-100">
-			<h2 class="text-lg">{day}</h2>
-		</div>
-		<div class="flex flex-col gap-1">
-			{#each logs.filter((item) => filterLogsDate(item, day)) as log}
-				<a
-					href={addParams(
-						hrefs.logView.replace('slug', log.id.toString()),
-						{
-							ref: $page.url.toString()
-						},
-						$page.url.origin
-					)}
-					class="bg-base-200 transition hover:shadow-md"
-				>
-					<span>{formatLog(log)} </span>
-				</a>
-			{/each}
+	<div class="col-auto border">
+		<h2 class="text-lg">{day}</h2>
+		<div class="h-24 overflow-auto">
+			<div class="flex h-full flex-col gap-1">
+				{#each logs.filter((item) => filterLogsDate(item, day)) as log}
+					<a
+						href={addParams(
+							hrefs.logView.replace('slug', log.id.toString()),
+							{
+								ref: pageUrl.toString()
+							},
+							pageUrl.origin
+						)}
+						class="bg-base-200 transition hover:shadow-md"
+					>
+						<span>{formatLog(log)} </span>
+					</a>
+				{/each}
+				<button onclick={() => handleNewLog(day)} class="h-full" aria-label="test"></button>
+			</div>
 		</div>
 	</div>
 {/snippet}
+
+<ConfirmationModal
+	id="newLog"
+	title={`Would you like to create a log entry for ${datePicked.toLocaleString('en-US', { month: 'long', day: 'numeric' })}?`}
+	href={addParams(hrefs.log, { date: formatDateTime(datePicked) }, pageUrl.origin)}
+></ConfirmationModal>
 
 <Title title="Calendar"></Title>
