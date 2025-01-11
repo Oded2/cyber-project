@@ -10,6 +10,7 @@
 	// Logs come in sorted, but need to be reversed so that times on the calendar appear in order
 	logs.reverse();
 	let current: SvelteDate = $state(new SvelteDate());
+	current.setDate(1);
 
 	function change(dir: 'next' | ' previous'): void {
 		const change: number = dir === 'next' ? 1 : -1;
