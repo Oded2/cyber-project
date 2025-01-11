@@ -41,7 +41,7 @@
 		</h1>
 		<h2 class="text-center">{formatSpecificDate(depTime)}</h2>
 	</div>
-	<div class="mb-10 grid grid-cols-3 gap-4">
+	<div class="mb-10 grid gap-4 lg:grid-cols-3">
 		<LogViewerCard title="Basic Info">
 			<div class="prose">
 				<ul>
