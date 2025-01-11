@@ -116,17 +116,10 @@ export function handleLogs(logs: Log[]): void {
 	// Helper function to ensure that logs fetched from the database are in the correct format
 	// Transforms the departure and destination time to Date objects
 
-	const handleTimeZoneOffset = (date: Date) =>
-		date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-
 	logs.forEach((item) => {
 		item.dep_time = new Date(item.dep_time);
 		item.des_time = new Date(item.des_time);
 		item.created_at = new Date(item.created_at);
-		// Handle the timezone offsets
-		handleTimeZoneOffset(item.dep_time);
-		handleTimeZoneOffset(item.des_time);
-		handleTimeZoneOffset(item.created_at);
 	});
 	// Sorts the array based on the date
 	logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());

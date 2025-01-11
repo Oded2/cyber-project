@@ -66,6 +66,9 @@ export const actions: Actions = {
 		obj['des_weather'] = await getWeatherData(desDate, desAirport.longitude, desAirport.latitude);
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
+		// Ensure that the dates are inserted properly
+		obj['dep_time'] = depDate.toISOString();
+		obj['des_time'] = desDate.toISOString();
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
 		redirect(303, hrefs.logbook);
