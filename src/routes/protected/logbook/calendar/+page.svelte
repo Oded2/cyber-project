@@ -52,6 +52,8 @@
 		datePicked.setFullYear(current.getFullYear());
 		datePicked.setMonth(current.getMonth());
 		datePicked.setDate(date);
+		datePicked.setHours(0);
+		datePicked.setMinutes(0);
 		showModal('newLog');
 	}
 </script>

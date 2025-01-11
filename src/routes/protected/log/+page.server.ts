@@ -2,9 +2,11 @@ import { APININJAS } from '$env/static/private';
 import { addParams, hrefs, toUTC } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-export async function load({ parent }) {
+export async function load({ parent, url }) {
 	const { aircrafts } = await parent();
+	const predefinedDate = url.searchParams.get('date');
 	if (aircrafts.length == 0) error(400, { message: 'No registered aircrafts' });
+	return { predefinedDate: predefinedDate ? new Date(predefinedDate) : new Date() };
 }
 
 interface WeatherData {

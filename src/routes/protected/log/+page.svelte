@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatDateTime } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
@@ -9,7 +10,7 @@
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { profile, aircrafts } = data;
+	const { profile, aircrafts, predefinedDate } = data;
 	const aircraftValues: { display: string; id: string }[] = aircrafts.map((item) => ({
 		display: item.nickname,
 		id: item.id.toString()
@@ -53,6 +54,7 @@
 						maxlength={4}
 					></LogInput>
 					<LogDateInput
+						value={formatDateTime(predefinedDate)}
 						name="dep_time"
 						attributeChange={{ id: 'des_time', attribute: 'min' }}
 						displayName="Date & Time"
@@ -69,6 +71,7 @@
 						maxlength={4}
 					></LogInput>
 					<LogDateInput
+						value={formatDateTime(predefinedDate)}
 						name="des_time"
 						attributeChange={{ id: 'dep_time', attribute: 'max' }}
 						displayName="Date & Time"
