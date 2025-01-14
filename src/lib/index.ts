@@ -65,6 +65,12 @@ export function showModal(id: string): void {
 	modal.showModal();
 }
 
+export function closeMOdal(id: string): void {
+	// Closes any modal by ID
+	const modal = document.getElementById(id) as HTMLDialogElement;
+	modal.close();
+}
+
 export function formatDateTime(date: Date): string {
 	// Helper function to format date and time as YYYY-MM-DDTHH:MM
 	const year = date.getFullYear();

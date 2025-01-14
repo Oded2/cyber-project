@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { closeMOdal } from '$lib';
 	import Modal from './Modal.svelte';
 
 	const {
@@ -27,14 +28,12 @@
 		inProgress = true;
 		await onconfirmation();
 		inProgress = false;
-		const modal = document.getElementById(id) as HTMLDialogElement;
 		onclose();
-		modal.close();
+		closeMOdal(id);
 	}
 </script>
 
-<Modal {id} {onclose}>
-	<div class="card-title mb-2 border-b-2 pb-2">{title}</div>
+<Modal {id} {title} {onclose}>
 	{#if message.length > 0}
 		<div class="mb-4 text-error">{message}</div>
 	{/if}

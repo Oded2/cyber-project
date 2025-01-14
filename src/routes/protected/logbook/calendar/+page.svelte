@@ -5,9 +5,10 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { page } from '$app/stores';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 
 	const { data } = $props();
-	const { logs } = data;
+	const { logs, supabase } = data;
 	// Logs come in sorted, but need to be reversed so that times on the calendar appear in order
 	logs.reverse();
 
@@ -18,6 +19,8 @@
 
 	// Variable that allows the user to log a flight by clicking on the calendar
 	let datePicked: SvelteDate = new SvelteDate();
+	// Same purpose as datePicked, but for log Id
+	let currentLog: Log = $state(logs[0]);
 
 	function change(dir: 'next' | ' previous'): void {
 		const change: number = dir === 'next' ? 1 : -1;
@@ -89,25 +92,25 @@
 		<h2 class="text-lg">{day}</h2>
 		<div class="h-24 overflow-auto">
 			<div class="flex h-full flex-col gap-1">
+				<!-- Filter all of the logs that much that specific day -->
 				{#each logs.filter((item) => filterLogsDate(item, day)) as log}
-					<a
-						href={addParams(
-							hrefs.logView.replace('slug', log.id.toString()),
-							{
-								ref: pageUrl.toString()
-							},
-							pageUrl.origin
-						)}
-						class="bg-base-200 transition hover:shadow-md"
+					<button
+						onclick={() => {
+							currentLog = log;
+							showModal('logOptions');
+						}}
+						class="bg-base-200 text-start transition hover:shadow-md"
 					>
 						<span>{formatLog(log)} </span>
-					</a>
+					</button>
 				{/each}
-				<button onclick={() => handleNewLog(day)} class="h-full" aria-label="test"></button>
+				<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
 			</div>
 		</div>
 	</div>
 {/snippet}
+
+<LogOptionsModal id="logOptions" log={currentLog} {supabase}></LogOptionsModal>
 
 <ConfirmationModal
 	id="newLog"
