@@ -23,7 +23,7 @@
 	<h1 class="border-b-2 pb-2 text-xl font-bold">Welcome back, {profile.display}</h1>
 	<div class="mb-2 flex gap-2 border-b-2 p-2">
 		<div class="dropdown-start dropdown">
-			<button class="btn">Sort By</button>
+			<div role="button" tabindex="0" class="btn">Sort By</div>
 			<Dropdown automaticClose>
 				<li>
 					<button onclick={() => logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime())}

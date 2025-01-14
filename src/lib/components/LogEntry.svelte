@@ -29,7 +29,12 @@
 	class:bg-base-200={shade}
 >
 	<div class="col-auto flex flex-col justify-center gap-1">
-		<h2 class="font-bold">{log.dep_airport.icao} TO {log.des_airport.icao}</h2>
+		<h2 class="font-bold">
+			{#if log.favorite}
+				<i class="fa-solid fa-star text-info"></i>
+			{/if}
+			{log.dep_airport.icao} TO {log.des_airport.icao}
+		</h2>
 		<h6 class="text-sm font-light">{formatDate(log.dep_time)}</h6>
 	</div>
 	<div class="col-auto hidden items-center md:flex">
