@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addParams, formatDateTime, hrefs, maxDate, showModal } from '$lib';
+	import { addParams, formatDateTime, hrefs, maxDate, minDate, showModal } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
@@ -121,7 +121,7 @@
 						<span>{formatLog(log)} </span>
 					</button>
 				{/each}
-				{#if getExactDate(day).getTime() <= maxDate.getTime()}
+				{#if getExactDate(day).getTime() <= maxDate.getTime() && getExactDate(day).getTime() >= minDate.getTime()}
 					<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
 				{/if}
 			</div>

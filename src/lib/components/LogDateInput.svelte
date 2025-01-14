@@ -1,15 +1,9 @@
 <script lang="ts">
-	import { format, toInputElement, formatDateTime, formatDate, maxDate } from '$lib';
+	import { format, toInputElement, formatDateTime, formatDate, maxDate, minDate } from '$lib';
 	import { onMount } from 'svelte';
 
 	// Get the current date
 	const today = new Date();
-
-	// Calculate the date 2 weeks ago
-	const minDate = new Date(today);
-	minDate.setDate(today.getDate() - 14);
-	// Set to midnight to allow slightly more than exactly 2 weeks
-	minDate.setHours(0, 0, 0, 0);
 
 	const {
 		name,
