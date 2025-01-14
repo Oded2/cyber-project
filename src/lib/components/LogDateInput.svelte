@@ -15,7 +15,7 @@
 	const maxDate = new Date(today);
 	maxDate.setDate(today.getDate() + 14);
 	// Half an hour ahead to avoid edge cases error messages
-	maxDate.setMinutes(maxDate.getMinutes() + 30);
+	maxDate.setMinutes(maxDate.getMinutes() + 60);
 
 	const {
 		name,
