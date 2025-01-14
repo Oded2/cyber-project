@@ -4,7 +4,11 @@
 	import { addParams, formatDate, hrefs } from '$lib';
 	import { page } from '$app/stores';
 
-	const { id, log, supabase }: { id: string; log: Log; supabase: SupabaseClient } = $props();
+	const {
+		id,
+		log = $bindable(),
+		supabase
+	}: { id: string; log: Log; supabase: SupabaseClient } = $props();
 	// Get the current URL
 	const pageUrl = $page.url;
 	const visibilities = {
@@ -13,9 +17,6 @@
 		unlisted: 'Unlist'
 	};
 
-	// This is a variable that stores any visibility changes so the user doesn't have to reload
-	let visibilityCache: { id: number; visibility: keyof typeof visibilities }[] = $state([]);
-
 	// Variable to disable the buttons while an asynchronous function is happening
 	let inProgress: boolean = $state(false);
 
@@ -23,17 +24,15 @@
 		inProgress = true;
 		await supabase.from('logs').update({ visibility: action }).eq('id', log.id);
 		inProgress = false;
-		const exists = visibilityCache.some((item) => item.id == log.id);
-		if (exists)
-			visibilityCache = visibilityCache.map((item) =>
-				item.id == log.id ? { ...item, visibility: action } : item
-			);
-		else visibilityCache = [...visibilityCache, { id: log.id, visibility: action }];
+		log.visibility = action;
 	}
-
-	function determineVisibility(): keyof typeof visibilities {
-		for (const item of visibilityCache) if (item.id == log.id) return item.visibility;
-		return log.visibility;
+	async function changeFavorite() {
+		// Since favorite is simply a toggle, the new value will simply be the opposite of the old one
+		const action = !log.favorite;
+		inProgress = true;
+		await supabase.from('logs').update({ favorite: action }).eq('id', log.id);
+		inProgress = false;
+		log.favorite = action;
 	}
 </script>
 
@@ -42,7 +41,7 @@
 		{@render visibilityButton('private')}
 		{@render visibilityButton('public')}
 		{@render visibilityButton('unlisted')}
-
+		{@render favoriteButton()}
 		<a
 			href={addParams(
 				hrefs.logView.replace('slug', log.id.toString()),
@@ -57,11 +56,25 @@
 	</div>
 </Modal>
 
+{#snippet favoriteButton()}
+	<button
+		class="btn btn-outline btn-info w-full max-w-xs"
+		onclick={() => changeFavorite()}
+		disabled={inProgress}
+	>
+		{#if log.favorite}
+			Unfavorite
+		{:else}
+			Favorite
+		{/if}
+	</button>
+{/snippet}
+
 {#snippet visibilityButton(action: keyof typeof visibilities)}
 	<button
 		class="btn btn-outline btn-neutral w-full max-w-xs"
 		onclick={() => changeVisibility(action)}
-		disabled={determineVisibility() === action || inProgress}
+		disabled={log.visibility == action || inProgress}
 	>
 		{visibilities[action]}
 	</button>

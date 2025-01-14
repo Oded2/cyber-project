@@ -6,11 +6,11 @@
 	import { page } from '$app/stores';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
+	import { onMount } from 'svelte';
 
 	const { data } = $props();
-	const { logs, supabase } = data;
-	// Logs come in sorted, but need to be reversed so that times on the calendar appear in order
-	logs.reverse();
+	const { supabase } = data;
+	let { logs } = $state(data);
 
 	const pageUrl = $page.url;
 
@@ -21,6 +21,10 @@
 	let datePicked: SvelteDate = new SvelteDate();
 	// Same purpose as datePicked, but for log Id
 	let currentLog: Log = $state(logs[0]);
+
+	// Logs come in an order from latest to oldest, therefore they need to be reversed so they will show in oldest to latest
+	// inside each calendar block
+	onMount(() => logs.reverse());
 
 	function change(dir: 'next' | ' previous'): void {
 		const change: number = dir === 'next' ? 1 : -1;
@@ -110,7 +114,7 @@
 	</div>
 {/snippet}
 
-<LogOptionsModal id="logOptions" log={currentLog} {supabase}></LogOptionsModal>
+<LogOptionsModal id="logOptions" bind:log={currentLog} {supabase}></LogOptionsModal>
 
 <ConfirmationModal
 	id="newLog"

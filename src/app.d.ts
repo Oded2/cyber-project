@@ -32,6 +32,7 @@ declare global {
 		rating: 'visual' | 'instrument';
 		dep_weather: Weather;
 		des_weather: Weather;
+		favorite: boolean;
 	}
 	interface Aircraft {
 		id: number; // bigint
