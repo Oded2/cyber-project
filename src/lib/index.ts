@@ -12,7 +12,7 @@ min.setDate(min.getDate() - 14);
 // Set to midnight to allow slightly more than exactly 2 weeks
 min.setHours(0, 0, 0, 0);
 const max: Date = new Date();
-max.setDate(max.getDate() + 60);
+max.setDate(max.getDate() + 6);
 max.setMinutes(max.getMinutes() + 30);
 export const minDate = min;
 export const maxDate = max;
