@@ -9,8 +9,10 @@
 	import { onMount } from 'svelte';
 
 	const { data } = $props();
-	const { supabase } = data;
+	const { logs: originalLogs, supabase } = data;
 	let { logs } = $state(data);
+
+	let currentLog: Log = $state(originalLogs[0]);
 
 	const pageUrl = $page.url;
 
@@ -20,11 +22,12 @@
 	// Variable that allows the user to log a flight by clicking on the calendar
 	let datePicked: SvelteDate = new SvelteDate();
 	// Same purpose as datePicked, but for log Id
-	let currentLog: Log = $state(logs[0]);
 
 	// Logs come in an order from latest to oldest, therefore they need to be reversed so they will show in oldest to latest
 	// inside each calendar block
-	onMount(() => logs.reverse());
+	onMount(() => {
+		logs.reverse();
+	});
 
 	function change(dir: 'next' | ' previous'): void {
 		const change: number = dir === 'next' ? 1 : -1;
@@ -62,6 +65,9 @@
 		datePicked.setHours(0);
 		datePicked.setMinutes(0);
 		showModal('newLog');
+	}
+	function handleDelete() {
+		logs = logs.filter((obj) => obj.id != currentLog.id);
 	}
 </script>
 
@@ -114,7 +120,8 @@
 	</div>
 {/snippet}
 
-<LogOptionsModal id="logOptions" bind:log={currentLog} {supabase}></LogOptionsModal>
+<LogOptionsModal id="logOptions" bind:log={currentLog} ondelete={handleDelete} {supabase}
+></LogOptionsModal>
 
 <ConfirmationModal
 	id="newLog"

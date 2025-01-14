@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { closeMOdal } from '$lib';
+	import { closeModal } from '$lib';
 	import Modal from './Modal.svelte';
 
 	const {
@@ -29,7 +29,7 @@
 		await onconfirmation();
 		inProgress = false;
 		onclose();
-		closeMOdal(id);
+		closeModal(id);
 	}
 </script>
 

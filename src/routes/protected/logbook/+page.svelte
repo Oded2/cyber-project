@@ -1,25 +1,19 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { hrefs, showModal } from '$lib';
-	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogEntry from '$lib/components/LogEntry.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 
 	const { data } = $props();
-	const { profile, aircrafts, supabase } = data;
+	const { profile, aircrafts, supabase, logs: orignalLogs } = data;
 	let { logs } = $state(data);
+	let currentLog = $state(orignalLogs[0]);
 
-	let toDelete: number = 0;
-
-	async function handleDelete() {
-		const { error: e } = await supabase.from('logs').delete().eq('id', toDelete);
-		if (e) {
-			alert(`Error: ${e.message}`);
-			return;
-		}
-		logs = logs.filter((obj) => obj.id != toDelete);
+	function handleDelete() {
+		logs = logs.filter((obj) => obj.id != currentLog.id);
 	}
 </script>
 
@@ -63,17 +57,18 @@
 		{#each logs as log, index (log)}
 			<div animate:flip={{ duration: 500 }}>
 				<LogEntry
-					ondelete={() => {
-						toDelete = log.id;
-						showModal('delete');
+					onoptions={() => {
+						currentLog = log;
+						showModal('logOptions');
 					}}
 					{aircrafts}
 					shade={index % 2 != 0}
-					{log}
+					bind:log={logs[logs.findIndex((item) => item.id == log.id)]}
 				></LogEntry>
 			</div>
 		{/each}
 	</div>
 </Container>
 
-<ConfirmationModal id="delete" onconfirmation={handleDelete}></ConfirmationModal>
+<LogOptionsModal id="logOptions" ondelete={handleDelete} bind:log={currentLog} {supabase}
+></LogOptionsModal>

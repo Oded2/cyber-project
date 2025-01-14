@@ -2,12 +2,17 @@
 	import { page } from '$app/stores';
 	import { addParams, hrefs, getDuration, formatDate } from '$lib';
 
-	const {
-		log,
+	let {
+		log = $bindable(),
 		shade,
 		aircrafts,
-		ondelete
-	}: { log: Log; shade: boolean; aircrafts: Aircraft[]; ondelete: () => void } = $props();
+		onoptions
+	}: {
+		log: Log;
+		shade: boolean;
+		aircrafts: Aircraft[];
+		onoptions: () => void;
+	} = $props();
 	const origin: string = $page.url.origin;
 
 	function formatRating(rating: typeof log.rating): string {
@@ -15,8 +20,8 @@
 		return 'VFR';
 	}
 
-	const aircraft: Aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
 	// Finds the aircraft that corresponds to the log
+	const aircraft: Aircraft = aircrafts.find((item) => item.id == log.aircraft)!;
 </script>
 
 <div
@@ -39,18 +44,8 @@
 		<h2>{formatRating(log.rating)}</h2>
 	</div>
 	<div class=" col-auto hidden items-center lg:flex"><h2>{log.pilot_in_command}</h2></div>
-	<div class="join col-auto flex items-center">
-		<a
-			href={addParams(
-				hrefs.logView.replace('slug', log.id.toString()),
-				{ ref: hrefs.logbook },
-				origin
-			)}
-			class="btn btn-info join-item">View</a
-		>
-		<button aria-label="Delete" class="btn btn-outline btn-info join-item" onclick={ondelete}
-			><i class="fa-solid fa-trash"></i></button
-		>
+	<div class="col-auto flex items-center">
+		<button onclick={onoptions} class="btn btn-info">Options</button>
 	</div>
 	<div class=" col-auto flex items-center">
 		<span

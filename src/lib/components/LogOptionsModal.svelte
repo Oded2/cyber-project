@@ -1,14 +1,16 @@
 <script lang="ts">
 	import type { SupabaseClient } from '@supabase/supabase-js';
 	import Modal from './Modal.svelte';
-	import { addParams, formatDate, hrefs } from '$lib';
+	import { addParams, closeModal, formatDate, hrefs, showModal } from '$lib';
 	import { page } from '$app/stores';
+	import ConfirmationModal from './ConfirmationModal.svelte';
 
 	const {
 		id,
 		log = $bindable(),
-		supabase
-	}: { id: string; log: Log; supabase: SupabaseClient } = $props();
+		supabase,
+		ondelete
+	}: { id: string; log: Log; supabase: SupabaseClient; ondelete: () => void } = $props();
 	// Get the current URL
 	const pageUrl = $page.url;
 	const visibilities = {
@@ -16,6 +18,8 @@
 		public: 'Publicize',
 		unlisted: 'Unlist'
 	};
+
+	const uniqueId = `delete${log.id}`;
 
 	// Variable to disable the buttons while an asynchronous function is happening
 	let inProgress: boolean = $state(false);
@@ -34,6 +38,10 @@
 		inProgress = false;
 		log.favorite = action;
 	}
+	async function handleDelete(): Promise<void> {
+		await supabase.from('logs').delete().eq('id', log.id);
+		ondelete();
+	}
 </script>
 
 <Modal {id} title={`Options for log from ${formatDate(log.dep_time)}`}>
@@ -42,6 +50,13 @@
 		{@render visibilityButton('public')}
 		{@render visibilityButton('unlisted')}
 		{@render favoriteButton()}
+		<button
+			class="btn btn-outline btn-error w-full max-w-xs"
+			onclick={() => {
+				closeModal(id);
+				showModal(uniqueId);
+			}}>Delete</button
+		>
 		<a
 			href={addParams(
 				hrefs.logView.replace('slug', log.id.toString()),
@@ -55,6 +70,8 @@
 		>
 	</div>
 </Modal>
+
+<ConfirmationModal id={uniqueId} onconfirmation={handleDelete}></ConfirmationModal>
 
 {#snippet favoriteButton()}
 	<button

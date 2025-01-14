@@ -65,7 +65,7 @@ export function showModal(id: string): void {
 	modal.showModal();
 }
 
-export function closeMOdal(id: string): void {
+export function closeModal(id: string): void {
 	// Closes any modal by ID
 	const modal = document.getElementById(id) as HTMLDialogElement;
 	modal.close();
@@ -129,6 +129,10 @@ export function handleLogs(logs: Log[]): void {
 	});
 	// Sorts the array based on the date
 	logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());
+}
+
+export async function deleteLog(logId: number, supabase: SupabaseClient) {
+	await supabase.from('logs').delete().eq('id', logId);
 }
 
 interface Coordinates {
