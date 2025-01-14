@@ -38,7 +38,11 @@
 					<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 					></LogInput>
 					<LogSelect name="aircraft" values={aircraftValues}></LogSelect>
-					<LogNumberInput name="altitude" displayName="Cruising altitude" min={0} max={200000}
+					<LogNumberInput
+						name="altitude"
+						displayName="Cruising Altitude in Feet"
+						min={0}
+						max={200000}
 					></LogNumberInput>
 					<LogSelect name="rating" values={ratings}></LogSelect>
 					<LogNumberInput name="fuel_usage" displayName="Fuel Used in Gallons" min={0} max={200000}
