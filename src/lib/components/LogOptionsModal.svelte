@@ -19,6 +19,7 @@
 		unlisted: 'Unlist'
 	};
 
+	// This is a unique id for the confirmation modal for deleting logs
 	const uniqueId = `delete${log.id}`;
 
 	// Variable to disable the buttons while an asynchronous function is happening
@@ -50,6 +51,8 @@
 		{@render visibilityButton('public')}
 		{@render visibilityButton('unlisted')}
 		{@render favoriteButton()}
+		<!-- When this button is clicked, it closes the current modal and opens -->
+		<!-- a new confirmation modal ensuring the user is certain about his choice -->
 		<button
 			class="btn btn-outline btn-error w-full max-w-xs"
 			onclick={() => {

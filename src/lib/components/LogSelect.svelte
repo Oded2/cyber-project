@@ -6,7 +6,7 @@
 		name,
 		displayName = format(name)
 	}: {
-		values: { display: string; id: string }[];
+		values: { id: string; display: string }[];
 		name: string;
 		min?: number;
 		max?: number;

@@ -83,8 +83,7 @@ function validateDates(dep: Date, des: Date): void {
 
 function numToNull(form: FormData, name: string): void {
 	// Some inputs that are numbers are allowed to be null
-	// This function deletes the value of the empty numbers in order to pass
-	// a null value to supabase
+	// This function deletes the value of the empty numbers in order to pass a null value to supabase
 	const val = form.get(name) as string;
 	if (val.length == 0) form.delete(name);
 }
@@ -95,9 +94,14 @@ async function getAirportData(code: string): Promise<Airport> {
 	const apiUrl = 'https://api.api-ninjas.com/v1/airports';
 	const length: number = code.length;
 	if (length < 3 || length > 4) error(422, { message: 'Invalid airport code' });
+	// Since the user is able to input both ICAO and IATA codes, this constant
+	// checks to see which one the user meant based on length
 	const param: string = length == 4 ? 'icao' : 'iata';
+	// Builds the API URL
 	const url: string = addParams(apiUrl, { [param]: code });
+	// Fetches the URL with the API key in the header for authentication
 	const response: Response = await fetch(url, { headers: { 'X-Api-Key': APININJAS } });
+	// Error handling
 	if (!response.ok) error(response.status, { message: response.statusText });
 	const json: { [key: string]: any }[] = await response.json();
 	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });

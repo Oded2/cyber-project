@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addParams, formatDateTime, hrefs, showModal } from '$lib';
+	import { addParams, formatDateTime, hrefs, maxDate, showModal } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
@@ -54,6 +54,13 @@
 			depTime.getMonth() == current.getMonth() &&
 			depTime.getDate() == day
 		);
+	}
+	function getExactDate(day: number): Date {
+		// Accepts the current day and returns the exact date based on current
+		// Useful for the calendar
+		const newDate = new Date(current.getTime());
+		newDate.setDate(day);
+		return newDate;
 	}
 	function formatLog(log: Log) {
 		return `${log.dep_time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' })}: ${log.dep_airport.icao} TO ${log.des_airport.icao}`;
@@ -114,7 +121,9 @@
 						<span>{formatLog(log)} </span>
 					</button>
 				{/each}
-				<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
+				{#if getExactDate(day).getTime() <= maxDate.getTime()}
+					<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
+				{/if}
 			</div>
 		</div>
 	</div>

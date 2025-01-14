@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format, toInputElement, formatDateTime, formatDate } from '$lib';
+	import { format, toInputElement, formatDateTime, formatDate, maxDate } from '$lib';
 	import { onMount } from 'svelte';
 
 	// Get the current date
@@ -10,12 +10,6 @@
 	minDate.setDate(today.getDate() - 14);
 	// Set to midnight to allow slightly more than exactly 2 weeks
 	minDate.setHours(0, 0, 0, 0);
-
-	// Calculate the date ~ 2 months ahead
-	const maxDate = new Date(today);
-	maxDate.setDate(today.getDate() + 60);
-	// Half an hour ahead to avoid edge cases error messages
-	maxDate.setMinutes(maxDate.getMinutes() + 30);
 
 	const {
 		name,

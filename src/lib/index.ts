@@ -7,6 +7,11 @@ export const hrefs = hrefsFile;
 export const defaultProfilePicture =
 	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
 
+const max: Date = new Date();
+max.setDate(max.getDate() + 60);
+max.setMinutes(max.getMinutes() + 30);
+export const maxDate = max;
+
 export function createSupabaseClient(key: string) {
 	return createClient(PUBLIC_SUPABASE_URL, key);
 }
