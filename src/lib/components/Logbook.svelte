@@ -11,8 +11,12 @@
 		aircrafts,
 		profile,
 		supabase
-	}: { originalLogs: Log[]; aircrafts: Aircraft[]; profile: Profile; supabase: SupabaseClient } =
-		$props();
+	}: {
+		originalLogs: Log[];
+		aircrafts: Aircraft[];
+		profile: Profile;
+		supabase: SupabaseClient;
+	} = $props();
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
