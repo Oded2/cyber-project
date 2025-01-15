@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/Title.svelte';
-	import Logbook from '$lib/components/Logbook.svelte';
+	import LogEntries from '$lib/components/LogEntries.svelte';
 	import Container from '$lib/components/Container.svelte';
 
 	const { data } = $props();
@@ -10,5 +10,5 @@
 <Title title="Logbook"></Title>
 
 <Container>
-	<Logbook originalLogs={logs} {aircrafts} {supabase} {profile}></Logbook>
+	<LogEntries originalLogs={logs} {aircrafts} {supabase} {profile}></LogEntries>
 </Container>
