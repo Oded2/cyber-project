@@ -112,7 +112,7 @@
 							currentLog = log;
 							showModal('logOptions');
 						}}
-						class="bg-base-200 text-start transition hover:shadow-md"
+						class="select-none bg-base-200 text-start transition hover:shadow-md"
 					>
 						<span
 							>{#if log.favorite}<i class="fa-solid fa-star text-info"></i>

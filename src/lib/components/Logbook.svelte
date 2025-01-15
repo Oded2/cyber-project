@@ -16,9 +16,21 @@
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
+	// Variable that's true if only favorites are shown and false if all logs are shown
+	let onlyFavorites: boolean = $state(false);
 
 	function handleDelete() {
 		logs = logs.filter((obj) => obj.id != currentLog.id);
+		// Remove it from the originalLogs as well
+		const indexToRemove = originalLogs.findIndex((item) => item.id == currentLog.id);
+		originalLogs.splice(indexToRemove, 1);
+	}
+	function filterFavorite(): void {
+		// Toggle the filter
+		onlyFavorites = !onlyFavorites;
+		// To pass the filter, the log needs to either be favorited "obj.favorite" or onlyFavorites
+		// has to be false "!onlyFavorites"
+		logs = originalLogs.filter((obj) => obj.favorite || !onlyFavorites);
 	}
 </script>
 
@@ -42,6 +54,12 @@
 	>
 	<a href={hrefs.calendar} aria-label="Calendar" class="btn"
 		><i class="fa-solid fa-calendar-days"></i></a
+	>
+	<button
+		class="btn btn-info"
+		class:btn-outline={!onlyFavorites}
+		onclick={filterFavorite}
+		aria-label="Favorites Only"><i class="fa-solid fa-star"></i></button
 	>
 </div>
 
