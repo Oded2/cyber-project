@@ -62,15 +62,6 @@
 		{@render visibilityButton('public')}
 		{@render visibilityButton('unlisted')}
 		{@render favoriteButton()}
-		<!-- When this button is clicked, it closes the current modal and opens -->
-		<!-- a new confirmation modal ensuring the user is certain about his choice -->
-		<button
-			class="btn btn-outline btn-error w-full max-w-xs"
-			onclick={() => {
-				closeModal(id);
-				showModal(uniqueId);
-			}}>Delete</button
-		>
 		<a
 			href={addParams(
 				hrefs.logView.replace('slug', log.id.toString()),
@@ -81,6 +72,15 @@
 			)}
 			class="btn btn-primary w-full max-w-xs"
 			class:btn-disabled={inProgress}>View</a
+		>
+		<!-- When this button is clicked, it closes the current modal and opens -->
+		<!-- a new confirmation modal ensuring the user is certain about his choice -->
+		<button
+			class="btn btn-outline btn-error w-full max-w-xs"
+			onclick={() => {
+				closeModal(id);
+				showModal(uniqueId);
+			}}>Delete</button
 		>
 	</div>
 </Modal>
