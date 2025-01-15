@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { formatDateTime } from '$lib';
+	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
@@ -33,7 +34,7 @@
 				<div class="mb-2">
 					<h2 class="card-title">Log Flight</h2>
 				</div>
-				<div class="flex flex-col">
+				<div class="flex flex-col gap-4">
 					<LogSection>Basic Details</LogSection>
 					<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 					></LogInput>
@@ -84,6 +85,7 @@
 					<LogSection>Additional Details</LogSection>
 					<LogTextarea name="notes" maxlength={10000}></LogTextarea>
 					<LogSelect name="visibility" values={visibilities}></LogSelect>
+					<Checkbox name="favorite" text="Favorite"></Checkbox>
 				</div>
 				<div class="card-actions justify-end">
 					<button type="submit" class="btn btn-primary">Submit</button>
