@@ -3,15 +3,6 @@ import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/publi
 import type { LayoutLoad } from './$types';
 import { handleError } from '$lib';
 
-type Profile = {
-	id: string;
-	created_at: string;
-	display: string;
-	username: string;
-	bio: string;
-	image: string;
-};
-
 export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 	/**
 	 * Declare a dependency so the layout can be invalidated, for example, on

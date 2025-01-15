@@ -15,6 +15,14 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	interface Profile {
+		id: string;
+		created_at: string;
+		display: string;
+		username: string;
+		bio: string;
+		image: string;
+	}
 	interface Log {
 		id: number;
 		owner: string;
