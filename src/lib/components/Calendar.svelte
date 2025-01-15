@@ -31,6 +31,7 @@
 		current.setMonth(current.getMonth() + change);
 	}
 	function resetDate(): void {
+		// Resets the calendar to the current day
 		const today = new Date();
 		current.setFullYear(today.getFullYear());
 		current.setMonth(today.getMonth());
@@ -113,7 +114,11 @@
 						}}
 						class="bg-base-200 text-start transition hover:shadow-md"
 					>
-						<span>{formatLog(log)} </span>
+						<span
+							>{#if log.favorite}<i class="fa-solid fa-star text-info"></i>
+							{/if}
+							{formatLog(log)}
+						</span>
 					</button>
 				{/each}
 				{#if getExactDate(day).getTime() <= maxDate.getTime() && getExactDate(day).getTime() >= minDate.getTime()}
