@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Container from '$lib/components/Container.svelte';
-	import { hrefs } from '$lib';
+	import { handleLogs, hrefs } from '$lib';
 	import Card from '$lib/components/Card.svelte';
 	import creativity from '$lib/images/Creativity.svg';
 	import calendar from '$lib/images/Calendar.svg';
@@ -14,13 +14,26 @@
 	const { data } = $props();
 	const description =
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
-	const { user, redirect } = data;
+	const { user, redirect, supabase } = data;
+	const today = new Date();
 	// Daily image
 	const imgUrl = 'https://wallpaperswide.com/download/airplane_3-wallpaper-2560x1440.jpg';
+
+	const futureLogs = fetchLogs();
+
 	onMount(() => {
 		if (redirect.length > 0) goto(redirect);
 		document.getElementById('hero')?.scrollIntoView({ behavior: 'instant' });
 	});
+
+	async function fetchLogs(): Promise<Log[]> {
+		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
+		let logs = temp as Log[];
+		handleLogs(logs);
+		logs = logs.filter((item) => item.dep_time.getTime() > today.getTime());
+		logs.reverse();
+		return logs;
+	}
 </script>
 
 <main>
@@ -31,8 +44,31 @@
 			style="background-image: url({imgUrl});"
 		>
 			<div class="hero-overlay bg-opacity-30"></div>
-			<div class="flex h-full w-full flex-col justify-end p-5 text-center sm:p-10 md:p-40">
-				<div class="mx-auto mb-auto flex max-w-md flex-col">
+			<div class="grid h-full w-full grid-cols-3 gap-20 p-5 text-center sm:p-10 md:p-40">
+				<div class="card glass col-auto max-h-72 p-5">
+					<h1 class="mb-5 text-2xl font-bold text-neutral-content">Upcoming Flights</h1>
+					<div class="flex flex-col overflow-auto">
+						{#await futureLogs}
+							<span class="loading loading-spinner loading-lg mx-auto text-neutral-content"></span>
+						{:then logs}
+							<div class="flex flex-col gap-4">
+								{#each logs as log}
+									<div class="rounded-lg bg-black bg-opacity-20 p-5">
+										<h2 class="font-semibold text-neutral-content">
+											{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
+										</h2>
+										<h4 class="text-sm font-semibold text-neutral-content">
+											{`${log.dep_time.toLocaleString('en-US', { month: 'short', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' })}`}
+										</h4>
+									</div>
+								{/each}
+							</div>
+						{:catch}
+							<h2 class="font-semibold text-neutral-content">Error Encountered</h2>
+						{/await}
+					</div>
+				</div>
+				<div class="col-auto mx-auto flex max-w-md flex-col">
 					<h1 class="mb-5 text-5xl font-bold text-neutral-content">Hello Pilot</h1>
 					<div class="prose mb-5 bg-white bg-opacity-15">
 						<blockquote class="text-white">
