@@ -8,9 +8,16 @@
 	const {
 		id,
 		log = $bindable(),
+		originalLogs,
 		supabase,
 		ondelete
-	}: { id: string; log: Log; supabase: SupabaseClient; ondelete: () => void } = $props();
+	}: {
+		id: string;
+		log: Log;
+		originalLogs: Log[];
+		supabase: SupabaseClient;
+		ondelete: () => void;
+	} = $props();
 	// Get the current URL
 	const pageUrl = $page.url;
 	const visibilities = {
@@ -30,6 +37,7 @@
 		await supabase.from('logs').update({ visibility: action }).eq('id', log.id);
 		inProgress = false;
 		log.visibility = action;
+		originalLogs.find((item) => item.id == log.id)!.visibility = action;
 	}
 	async function changeFavorite() {
 		// Since favorite is simply a toggle, the new value will simply be the opposite of the old one
@@ -38,9 +46,12 @@
 		await supabase.from('logs').update({ favorite: action }).eq('id', log.id);
 		inProgress = false;
 		log.favorite = action;
+		originalLogs.find((item) => item.id == log.id)!.favorite = action;
 	}
 	async function handleDelete(): Promise<void> {
 		await supabase.from('logs').delete().eq('id', log.id);
+		const index = originalLogs.findIndex((item) => item.id == log.id);
+		originalLogs.splice(index, 1);
 		ondelete();
 	}
 </script>

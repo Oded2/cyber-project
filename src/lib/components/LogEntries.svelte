@@ -25,9 +25,6 @@
 
 	function handleDelete() {
 		logs = logs.filter((obj) => obj.id != currentLog.id);
-		// Remove it from the originalLogs as well
-		const indexToRemove = originalLogs.findIndex((item) => item.id == currentLog.id);
-		originalLogs.splice(indexToRemove, 1);
 	}
 	function filterFavorite(): void {
 		// Toggle the filter
@@ -92,5 +89,10 @@
 	{/each}
 </div>
 
-<LogOptionsModal id="logOptions" ondelete={handleDelete} bind:log={currentLog} {supabase}
+<LogOptionsModal
+	id="logOptions"
+	ondelete={handleDelete}
+	bind:log={currentLog}
+	{originalLogs}
+	{supabase}
 ></LogOptionsModal>

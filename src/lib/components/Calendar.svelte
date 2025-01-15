@@ -129,7 +129,12 @@
 	</div>
 {/snippet}
 
-<LogOptionsModal id="logOptions" bind:log={currentLog} ondelete={handleDelete} {supabase}
+<LogOptionsModal
+	id="logOptions"
+	bind:log={currentLog}
+	{originalLogs}
+	ondelete={handleDelete}
+	{supabase}
 ></LogOptionsModal>
 
 <ConfirmationModal
