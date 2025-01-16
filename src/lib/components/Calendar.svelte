@@ -19,6 +19,7 @@
 	let datePicked: SvelteDate = new SvelteDate();
 	// Same purpose as datePicked, but for logs
 	let currentLog: Log = $state(originalLogs[0]);
+	let onlyFavorites: boolean = $state(false);
 
 	onMount(() => {
 		// Logs come in an order from latest to oldest, therefore they need to be reversed so they will show in oldest to latest
@@ -74,10 +75,23 @@
 	function handleDelete() {
 		logs = logs.filter((obj) => obj.id != currentLog.id);
 	}
+	function filterFavorite(): void {
+		// Toggle the filter
+		onlyFavorites = !onlyFavorites;
+		// To pass the filter, the log needs to either be favorited "obj.favorite" or onlyFavorites
+		// has to be false "!onlyFavorites"
+		logs = originalLogs.filter((obj) => obj.favorite || !onlyFavorites);
+	}
 </script>
 
 <div class="mb-2 flex items-center gap-2 border-b-2 pb-2">
 	<div class="join">
+		<button
+			class="btn join-item"
+			class:btn-info={onlyFavorites}
+			onclick={filterFavorite}
+			aria-label="Favorites"><i class="fa-solid fa-star"></i></button
+		>
 		<a href={hrefs.logbook} class="btn join-item" aria-label="Logbook"
 			><i class="fa-solid fa-book"></i></a
 		>
