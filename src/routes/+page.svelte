@@ -27,7 +27,8 @@
 	});
 
 	async function fetchLogs(): Promise<Log[]> {
-		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
+		if (!user) return [];
+		const { data: temp } = await supabase.from('logs').select().eq('owner', user.id);
 		let logs = temp as Log[];
 		handleLogs(logs);
 		logs = logs.filter((item) => item.dep_time.getTime() > today.getTime());
@@ -52,7 +53,7 @@
 							<span class="loading loading-spinner loading-lg mx-auto text-neutral-content"></span>
 						{:then logs}
 							<div class="flex flex-col gap-4">
-								{#each logs as log}
+								{#each logs! as log}
 									<div class="rounded-lg bg-black bg-opacity-20 p-5">
 										<h2 class="font-semibold text-neutral-content">
 											{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
