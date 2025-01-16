@@ -6,6 +6,8 @@
 		capitalizeFirstLetter,
 		defaultProfilePicture,
 		format,
+		getWeatherData,
+		handleLogs,
 		hrefs,
 		isTaken,
 		showModal,
@@ -36,6 +38,7 @@
 	let currentFilter: 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted' =
 		$state('all');
 	let currentVisibility: keyof typeof visibilities = $state('private');
+	let inProgress: boolean = $state(false);
 
 	const errors = $state({
 		invalidUsername: false,
@@ -84,6 +87,36 @@
 		else if (filter === 'favorite') await shortcut().eq('owner', userId).eq('favorite', true);
 		else if (filter === 'unfavorite') await shortcut().eq('owner', userId).eq('favorite', false);
 		else await shortcut().eq('owner', userId).eq('visibility', filter);
+	}
+	async function updateLogs(): Promise<void> {
+		// This function updates the weather in any logs that were logged before they happened
+		const today = new Date();
+		inProgress = true;
+		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
+		const logs = temp as Log[];
+		handleLogs(logs);
+		for (const log of logs) {
+			// Checks to see if the log has true weather and that it was before the current date
+			if (!log.true_weather && log.des_time < today) {
+				const newDepWeather = await getWeatherData(
+					log.dep_time,
+					log.dep_airport.longitude,
+					log.dep_airport.latitude
+				);
+				const newDesWeather = await getWeatherData(
+					log.des_time,
+					log.des_airport.longitude,
+					log.des_airport.latitude
+				);
+				const toUpdate = {
+					dep_weather: newDepWeather,
+					des_weather: newDesWeather,
+					true_weather: true
+				};
+				await supabase.from('logs').update(toUpdate).eq('owner', user!.id);
+			}
+		}
+		inProgress = false;
 	}
 </script>
 
@@ -248,6 +281,11 @@
 				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 			{:else if currentPage === 'logs'}
 				<div class="flex flex-col gap-2">
+					<button
+						class="btn btn-outline btn-primary max-w-xs"
+						onclick={updateLogs}
+						disabled={inProgress}>Update Logs</button
+					>
 					{@render visibilityButton('public')}
 					{@render visibilityButton('unlisted')}
 					{@render visibilityButton('private')}

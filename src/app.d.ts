@@ -41,6 +41,7 @@ declare global {
 		dep_weather: Weather;
 		des_weather: Weather;
 		favorite: boolean;
+		true_weather: boolean;
 	}
 	interface Aircraft {
 		id: number; // bigint
