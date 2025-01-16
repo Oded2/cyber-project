@@ -38,7 +38,10 @@
 	let currentFilter: 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted' =
 		$state('all');
 	let currentVisibility: keyof typeof visibilities = $state('private');
-	let inProgress: boolean = $state(false);
+	let logUpdate = $state({
+		inProgress: false,
+		isFinished: false
+	});
 
 	const errors = $state({
 		invalidUsername: false,
@@ -91,7 +94,7 @@
 	async function updateLogs(): Promise<void> {
 		// This function updates the weather in any logs that were logged before they happened
 		const today = new Date();
-		inProgress = true;
+		logUpdate.inProgress = true;
 		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
 		const logs = temp as Log[];
 		handleLogs(logs);
@@ -116,7 +119,8 @@
 				await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);
 			}
 		}
-		inProgress = false;
+		logUpdate.inProgress = false;
+		logUpdate.isFinished = true;
 	}
 </script>
 
@@ -284,8 +288,16 @@
 					<button
 						class="btn btn-outline btn-primary max-w-xs"
 						onclick={updateLogs}
-						disabled={inProgress}>Update Logs</button
+						disabled={logUpdate.inProgress || logUpdate.isFinished}
 					>
+						{#if logUpdate.inProgress}
+							<span class="loading loading-spinner"></span>
+						{:else if logUpdate.isFinished}
+							Logs are up to date
+						{:else}
+							Update Logs
+						{/if}
+					</button>
 					{@render visibilityButton('public')}
 					{@render visibilityButton('unlisted')}
 					{@render visibilityButton('private')}
