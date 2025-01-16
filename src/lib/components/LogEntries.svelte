@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { hrefs, showModal } from '$lib';
-	import LogEntry from '$lib/components/LogEntry.svelte';
+	import { hrefs, showModal, formatDate, getDuration, addParams } from '$lib';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
+	import { page } from '$app/stores';
 
 	const {
 		originalLogs,
@@ -17,6 +17,8 @@
 		profile: Profile;
 		supabase: SupabaseClient;
 	} = $props();
+
+	const origin = $page.url.origin;
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
@@ -32,6 +34,10 @@
 		// To pass the filter, the log needs to either be favorited "obj.favorite" or onlyFavorites
 		// has to be false "!onlyFavorites"
 		logs = originalLogs.filter((obj) => obj.favorite || !onlyFavorites);
+	}
+	function formatRating(rating: typeof currentLog.rating): string {
+		if (rating === 'instrument') return 'IFR';
+		return 'VFR';
 	}
 </script>
 
@@ -76,18 +82,59 @@
 	</div>
 	{#each logs as log, index (log)}
 		<div animate:flip={{ duration: 500 }}>
-			<LogEntry
-				onoptions={() => {
-					currentLog = log;
-					showModal('logOptions');
-				}}
-				{aircrafts}
-				shade={index % 2 != 0}
-				bind:log={logs[logs.findIndex((item) => item.id == log.id)]}
-			></LogEntry>
+			{@render entry(log, aircrafts.find((item) => item.id == log.aircraft)!, index % 2 != 0)}
 		</div>
 	{/each}
 </div>
+
+{#snippet entry(log: Log, aircraft: Aircraft, shade: boolean)}
+	<div
+		class="grid grid-cols-3 px-3 py-5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7"
+		class:bg-base-200={shade}
+	>
+		<div class="col-auto flex flex-col justify-center gap-1">
+			<h2 class="font-bold">
+				{#if log.favorite}
+					<i class="fa-solid fa-star text-info"></i>
+				{/if}
+				{log.dep_airport.icao} TO {log.des_airport.icao}
+			</h2>
+			<h6 class="text-sm font-light">{formatDate(log.dep_time)}</h6>
+		</div>
+		<div class="col-auto hidden items-center md:flex">
+			<h2>{getDuration(log.dep_time, log.des_time)}</h2>
+		</div>
+		<div class="col-auto hidden items-center sm:flex">
+			<a class="link" href={addParams(hrefs.aircraft, { id: aircraft.id.toString() }, origin)}
+				>{aircraft.nickname}</a
+			>
+		</div>
+		<div class="col-auto hidden items-center lg:flex">
+			<h2>{formatRating(log.rating)}</h2>
+		</div>
+		<div class=" col-auto hidden items-center lg:flex"><h2>{log.pilot_in_command}</h2></div>
+		<div class="col-auto flex items-center">
+			<button
+				onclick={() => {
+					currentLog = log;
+					showModal('logOptions');
+				}}
+				class="btn btn-info">Options</button
+			>
+		</div>
+		<div class=" col-auto flex items-center">
+			<span
+				>{log.created_at.toLocaleString('en-US', {
+					year: 'numeric',
+					month: 'short',
+					day: '2-digit',
+					hour: 'numeric',
+					minute: 'numeric'
+				})}</span
+			>
+		</div>
+	</div>
+{/snippet}
 
 <LogOptionsModal
 	id="logOptions"

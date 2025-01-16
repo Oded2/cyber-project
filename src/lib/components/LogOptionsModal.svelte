@@ -49,7 +49,7 @@
 		originalLogs.find((item) => item.id == log.id)!.favorite = action;
 	}
 	async function handleDelete(): Promise<void> {
-		await supabase.from('logs').delete().eq('id', log.id);
+		// await supabase.from('logs').delete().eq('id', log.id);
 		const index = originalLogs.findIndex((item) => item.id == log.id);
 		originalLogs.splice(index, 1);
 		ondelete();
