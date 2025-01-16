@@ -5,6 +5,7 @@
 		addParams,
 		capitalizeFirstLetter,
 		defaultProfilePicture,
+		format,
 		hrefs,
 		isTaken,
 		showModal,
@@ -16,6 +17,9 @@
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { page } from '$app/stores';
+	import Collapse from '$lib/components/Collapse.svelte';
+
+	type Filters = 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
@@ -26,6 +30,7 @@
 	let currentPage = $state(pageDirect);
 	// When deleting, there needs to be a variable with the ID of the aircraft I would like to delete
 	let currentID: number;
+	let currentFilter: Filters = $state('all');
 
 	const errors = $state({
 		invalidUsername: false,
@@ -69,8 +74,13 @@
 	): Promise<void> {
 		await supabase.from('logs').update({ visibility }).eq('owner', user!.id);
 	}
-	async function handleLogPurge(): Promise<void> {
-		await supabase.from('logs').delete().eq('owner', user!.id);
+	async function handleLogPurge(filter: Filters): Promise<void> {
+		const userId = user!.id;
+		const shortcut = supabase.from('logs').delete;
+		if (filter === 'all') await shortcut().eq('owner', userId);
+		else if (filter === 'favorite') await shortcut().eq('owner', userId).eq('favorite', true);
+		else if (filter === 'unfavorite') await shortcut().eq('owner', userId).eq('favorite', false);
+		else await shortcut().eq('owner', userId).eq('visibility', filter);
 	}
 </script>
 
@@ -242,9 +252,16 @@
 					<button onclick={() => showModal('unlistLogs')} class="btn btn-outline btn-info max-w-xs"
 						>Unlist Logs</button
 					>
-					<button onclick={() => showModal('purgeLogs')} class="btn btn-outline btn-error max-w-xs"
-						>Purge Logs</button
-					>
+					{@render purgeLogsButton('all')}
+					<Collapse title="More Options">
+						<div class="flex flex-col gap-4">
+							{@render purgeLogsButton('unfavorite')}
+							{@render purgeLogsButton('favorite')}
+							{@render purgeLogsButton('private')}
+							{@render purgeLogsButton('unlisted')}
+							{@render purgeLogsButton('public')}
+						</div>
+					</Collapse>
 				</div>
 			{/if}
 		</div>
@@ -283,10 +300,10 @@
 	onconfirmation={() => changeLogsVisibility('unlisted')}
 ></ConfirmationModal>
 <ConfirmationModal
-	message="This action will delete ALL of your logs and cannot be undone."
+	message={`This action will delete ALL of your${currentFilter === 'all' ? ' ' : ` ${currentFilter} `}logs and cannot be undone.`}
 	id="purgeLogs"
-	onconfirmation={handleLogPurge}
-	text={`${profile.username}/logs`}
+	onconfirmation={() => handleLogPurge(currentFilter)}
+	text={`${profile.username}/logs/${currentFilter}`}
 ></ConfirmationModal>
 
 <Alert
@@ -301,4 +318,14 @@
 	<button class="btn btn-outline btn-info justify-start" class:btn-active={active} {onclick}>
 		<i class={icon}></i>{text}
 	</button>
+{/snippet}
+
+{#snippet purgeLogsButton(filter: Filters)}
+	<button
+		onclick={() => {
+			currentFilter = filter;
+			showModal('purgeLogs');
+		}}
+		class="btn btn-outline btn-error max-w-xs">{`Delete ${format(filter)} Logs`}</button
+	>
 {/snippet}
