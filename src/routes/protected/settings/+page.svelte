@@ -113,7 +113,7 @@
 					des_weather: newDesWeather,
 					true_weather: true
 				};
-				await supabase.from('logs').update(toUpdate).eq('owner', user!.id);
+				await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);
 			}
 		}
 		inProgress = false;

@@ -11,7 +11,7 @@ export async function load({ parent, url }) {
 
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase } }) => {
-		// Create an admin supabase client
+		const today = new Date();
 		const formData = await request.formData();
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
@@ -29,6 +29,7 @@ export const actions: Actions = {
 		// Ensure that the dates are inserted properly
 		obj['dep_time'] = depDate.toISOString();
 		obj['des_time'] = desDate.toISOString();
+		obj['true_weather'] = desDate < today;
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) error(500, { message: e.message });
 		redirect(303, hrefs.logbook);
