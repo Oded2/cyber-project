@@ -53,7 +53,7 @@
 		<div class="flex justify-end gap-2">
 			<button type="submit" class="btn btn-secondary">Cancel</button>
 			{#if href.length > 0}
-				<a {href} class="btn btn-primary">Confirm</a>
+				<a {href} class="btn btn-primary" class:btn-disabled={value !== text}>Confirm</a>
 			{:else}
 				<button
 					type="button"

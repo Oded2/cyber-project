@@ -187,7 +187,9 @@
 					}}
 				></ProfileEditor>
 				<div class="max-w-[10rem]">
-					<a href={hrefs.passwordReset} class="btn btn-neutral w-full">Reset Password</a>
+					<button onclick={() => showModal('passwordReset')} class="btn btn-neutral w-full"
+						>Reset Password</button
+					>
 					<button
 						class="btn btn-outline btn-error mt-2 w-full"
 						onclick={() => showModal('deleteAccount')}>Delete Account</button
@@ -270,6 +272,7 @@
 	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
 </form>
 
+<ConfirmationModal id="passwordReset" href={hrefs.passwordReset}></ConfirmationModal>
 <ConfirmationModal
 	message="This action cannot be undone."
 	id="deleteAccount"
