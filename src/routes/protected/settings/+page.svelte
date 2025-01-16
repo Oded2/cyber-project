@@ -338,7 +338,6 @@
 	message={`All of your logs will become ${currentVisibility}.`}
 	id="visibilityModal"
 	onconfirmation={() => changeLogsVisibility(currentVisibility)}
-	text={`${profile.username}/logs/${currentVisibility}`}
 ></ConfirmationModal>
 <ConfirmationModal
 	message={`This action will delete ALL of your${currentFilter === 'all' ? ' ' : ` ${currentFilter} `}logs and cannot be undone.`}
