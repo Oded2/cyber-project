@@ -19,18 +19,23 @@
 	import { page } from '$app/stores';
 	import Collapse from '$lib/components/Collapse.svelte';
 
-	type Filters = 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted';
-
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
-	let { aircrafts } = $state(data);
 	const updatedProfile = $state(profile);
+	const visibilities = {
+		private: 'Privatize',
+		unlisted: 'Unlist',
+		public: 'Publicize'
+	};
+	let { aircrafts } = $state(data);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
 	let currentPage = $state(pageDirect);
 	// When deleting, there needs to be a variable with the ID of the aircraft I would like to delete
 	let currentID: number;
-	let currentFilter: Filters = $state('all');
+	let currentFilter: 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted' =
+		$state('all');
+	let currentVisibility: keyof typeof visibilities = $state('private');
 
 	const errors = $state({
 		invalidUsername: false,
@@ -69,12 +74,10 @@
 		) as HTMLButtonElement;
 		hiddenButton.click();
 	}
-	async function changeLogsVisibility(
-		visibility: 'public' | 'private' | 'unlisted'
-	): Promise<void> {
+	async function changeLogsVisibility(visibility: keyof typeof visibilities): Promise<void> {
 		await supabase.from('logs').update({ visibility }).eq('owner', user!.id);
 	}
-	async function handleLogPurge(filter: Filters): Promise<void> {
+	async function handleLogPurge(filter: typeof currentFilter): Promise<void> {
 		const userId = user!.id;
 		const shortcut = supabase.from('logs').delete;
 		if (filter === 'all') await shortcut().eq('owner', userId);
@@ -243,18 +246,12 @@
 				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 			{:else if currentPage === 'logs'}
 				<div class="flex flex-col gap-2">
-					<button onclick={() => showModal('publicLogs')} class="btn btn-outline btn-info max-w-xs"
-						>Publicize Logs</button
-					>
-					<button onclick={() => showModal('privateLogs')} class="btn btn-outline btn-info max-w-xs"
-						>Privatize Logs</button
-					>
-					<button onclick={() => showModal('unlistLogs')} class="btn btn-outline btn-info max-w-xs"
-						>Unlist Logs</button
-					>
+					{@render visibilityButton('public')}
+					{@render visibilityButton('unlisted')}
+					{@render visibilityButton('private')}
 					{@render purgeLogsButton('all')}
 					<Collapse title="More Options">
-						<div class="flex flex-col gap-4">
+						<div class="flex flex-col gap-2">
 							{@render purgeLogsButton('unfavorite')}
 							{@render purgeLogsButton('favorite')}
 							{@render purgeLogsButton('private')}
@@ -285,19 +282,10 @@
 	onconfirmation={handleAircraftDelete}
 ></ConfirmationModal>
 <ConfirmationModal
-	message="All of your logs will become public."
-	id="publicLogs"
-	onconfirmation={() => changeLogsVisibility('public')}
-></ConfirmationModal>
-<ConfirmationModal
-	message="All of your logs will become private."
-	id="privateLogs"
-	onconfirmation={() => changeLogsVisibility('private')}
-></ConfirmationModal>
-<ConfirmationModal
-	message="All of your logs will become unlisted."
-	id="unlistLogs"
-	onconfirmation={() => changeLogsVisibility('unlisted')}
+	message={`All of your logs will become ${currentVisibility}.`}
+	id="visibilityModal"
+	onconfirmation={() => changeLogsVisibility(currentVisibility)}
+	text={`${profile.username}/logs/${currentVisibility}`}
 ></ConfirmationModal>
 <ConfirmationModal
 	message={`This action will delete ALL of your${currentFilter === 'all' ? ' ' : ` ${currentFilter} `}logs and cannot be undone.`}
@@ -320,7 +308,17 @@
 	</button>
 {/snippet}
 
-{#snippet purgeLogsButton(filter: Filters)}
+{#snippet visibilityButton(visibility: typeof currentVisibility)}
+	<button
+		onclick={() => {
+			currentVisibility = visibility;
+			showModal('visibilityModal');
+		}}
+		class="btn btn-outline btn-info max-w-xs">{`${visibilities[visibility]} Logs`}</button
+	>
+{/snippet}
+
+{#snippet purgeLogsButton(filter: typeof currentFilter)}
 	<button
 		onclick={() => {
 			currentFilter = filter;

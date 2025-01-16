@@ -40,7 +40,13 @@
 	{#if text.length > 0}
 		<label class="mb-4 flex w-full flex-col">
 			<span class="mb-2 px-2 text-sm">{`Type "${text}" to confirm`}</span>
-			<input type="text" bind:value class="input input-sm input-bordered w-full py-5" />
+			<input
+				type="text"
+				bind:value
+				class="input input-sm input-bordered w-full py-5"
+				autocorrect="off"
+				spellcheck="false"
+			/>
 		</label>
 	{/if}
 	<form method="dialog" onsubmit={onclose}>
