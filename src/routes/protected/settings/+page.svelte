@@ -58,7 +58,7 @@
 		setTimeout(() => (errors[key] = false), 5000);
 	}
 
-	async function updateProfile(key: keyof typeof profile) {
+	async function updateProfile(key: keyof Profile) {
 		// Checks if the profile has actually been updated, else it will call a fetch
 		// for no reason
 		if (updatedProfile[key] === profile[key]) return;
@@ -70,7 +70,6 @@
 			console.error(e);
 			return;
 		}
-		// To ensure that the user sees the updated field
 		profile[key] = updatedProfile[key];
 	}
 
@@ -331,7 +330,7 @@
 ></ConfirmationModal>
 <ConfirmationModal
 	id="deleteAircraft"
-	message="This will delete all of the logs related to this aircraft."
+	message="This will also delete all of the logs related to this aircraft."
 	onconfirmation={handleAircraftDelete}
 ></ConfirmationModal>
 <ConfirmationModal
