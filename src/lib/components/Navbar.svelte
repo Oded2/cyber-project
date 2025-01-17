@@ -14,8 +14,8 @@
 	let status = $derived(pageData.status);
 
 	const navItems = [
-		{ href: '/temp', title: 'About' },
 		{ href: hrefs.contact, title: 'Contact' },
+		{ href: hrefs.search, title: 'Search' },
 		{ href: '/temp', title: 'Development' }
 	];
 </script>
@@ -62,7 +62,7 @@
 				<div class="dropdown dropdown-end">
 					<div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
 						<div class="w-10 rounded-full">
-							<img alt="Tailwind CSS Navbar component" src={profileImage} id="profilePicture" />
+							<img alt="Profile" src={profileImage} id="profilePicture" />
 						</div>
 					</div>
 					<Dropdown>

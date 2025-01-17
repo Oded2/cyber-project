@@ -13,5 +13,7 @@
     "registerAircraft": "/protected/registerAircraft",
     "aircraft": "/aircraft",
     "logView": "/log/slug",
-    "calendar": "/protected/logbook/calendar"
+    "calendar": "/protected/logbook/calendar",
+    "search": "/search",
+    "profile": "/profile/slug"
 }
