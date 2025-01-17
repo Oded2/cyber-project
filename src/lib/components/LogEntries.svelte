@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { hrefs, showModal, formatDate, getDuration, addParams } from '$lib';
+	import { hrefs, showModal, formatDate, getDuration } from '$lib';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
-	import { page } from '$app/stores';
 
 	const {
 		originalLogs,
@@ -17,8 +16,6 @@
 		profile: Profile;
 		supabase: SupabaseClient;
 	} = $props();
-
-	const origin = $page.url.origin;
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
@@ -105,7 +102,7 @@
 			<h2>{getDuration(log.dep_time, log.des_time)}</h2>
 		</div>
 		<div class="col-auto hidden items-center sm:flex">
-			<a class="link" href={addParams(hrefs.aircraft, { id: aircraft.id.toString() }, origin)}
+			<a class="link" href={hrefs.aircraft.replace('slug', aircraft.id.toString())}
 				>{aircraft.nickname}</a
 			>
 		</div>
