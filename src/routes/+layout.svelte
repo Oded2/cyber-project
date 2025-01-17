@@ -87,7 +87,7 @@
 					</div>
 					<Dropdown>
 						<li>
-							<a href="/temp"> Profile </a>
+							<a href={hrefs.profile.replace('slug', profile.username)}> Profile </a>
 						</li>
 						<li><a href={hrefs.settings}>Settings</a></li>
 						<li><button onclick={handleSignOut}>Sign Out</button></li>
