@@ -52,18 +52,22 @@
 						{#await futureLogs}
 							<span class="loading loading-spinner loading-lg mx-auto text-neutral-content"></span>
 						{:then logs}
-							<div class="flex flex-col gap-4">
-								{#each logs! as log}
-									<div class="rounded-lg bg-black bg-opacity-20 p-5">
-										<h2 class="font-semibold text-neutral-content">
-											{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
-										</h2>
-										<h4 class="text-sm font-semibold text-neutral-content">
-											{`${log.dep_time.toLocaleString('en-US', { month: 'short', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' })}`}
-										</h4>
-									</div>
-								{/each}
-							</div>
+							{#if logs.length > 0}
+								<div class="flex flex-col gap-4">
+									{#each logs! as log}
+										<div class="rounded-lg bg-black bg-opacity-20 p-5">
+											<h2 class="font-semibold text-neutral-content">
+												{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
+											</h2>
+											<h4 class="text-sm font-semibold text-neutral-content">
+												{`${log.dep_time.toLocaleString('en-US', { month: 'short', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' })}`}
+											</h4>
+										</div>
+									{/each}
+								</div>
+							{:else}
+								<h2 class="font-semibold text-neutral-content">No flights coming up</h2>
+							{/if}
 						{:catch}
 							<h2 class="font-semibold text-neutral-content">Error Encountered</h2>
 						{/await}
