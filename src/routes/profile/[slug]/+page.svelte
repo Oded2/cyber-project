@@ -30,9 +30,10 @@
 			<div class="card-body text-info-content">
 				<h6 class="font-semibold">{profile.username}</h6>
 				<h1 class="text-4xl font-bold">{profile.display}</h1>
-				<h4 class="text-xl font-semibold">{logs.length} Logs</h4>
-				<h4 class="text-xl font-semibold">{aircrafts.length} Aircrafts</h4>
-				<h4 class="text-xl font-semibold">Total Flight Time: {formatDuration(totalFlightTime)}</h4>
+				<h3 class="text-xl font-semibold">{profile.bio}</h3>
+				<h4 class="text-lg font-semibold">{logs.length} Logs</h4>
+				<h4 class="text-lg font-semibold">{aircrafts.length} Aircrafts</h4>
+				<h4 class="text-lg font-semibold">Total Flight Time: {formatDuration(totalFlightTime)}</h4>
 			</div>
 		</div>
 	</div>
