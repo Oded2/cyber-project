@@ -118,9 +118,12 @@ export function toUTC(date: Date): Date {
 		)
 	);
 }
-export function getDuration(date1: Date, date2: Date): string {
-	// This function takes the difference in time between two dates and formats it
-	const miliseconds = Math.abs(date1.getTime() - date2.getTime());
+
+export function getTimeDifference(dateA: Date, dateB: Date): number {
+	return Math.abs(dateA.getTime() - dateB.getTime());
+}
+
+export function formatDuration(miliseconds: number): string {
 	const hours = Math.floor(miliseconds / 3600000);
 	const minutes = (miliseconds / 60000) % 60;
 	if (hours == 0) return `${minutes} minutes`;
@@ -128,17 +131,27 @@ export function getDuration(date1: Date, date2: Date): string {
 	return `${hours} hours and ${minutes} minutes`;
 }
 
-export function handleLogs(logs: Log[]): void {
+export function getDuration(dateA: Date, dateB: Date): string {
+	// This function takes the difference in time between two dates and formats it
+	return formatDuration(getTimeDifference(dateA, dateB));
+}
+
+export function handleLogs(logs: any[]): void {
 	// Helper function to ensure that logs fetched from the database are in the correct format
 	// Transforms the departure and destination time to Date objects
-
-	logs.forEach((item) => {
+	const pointer = logs as Log[];
+	pointer.forEach((item) => {
 		item.dep_time = new Date(item.dep_time);
 		item.des_time = new Date(item.des_time);
 		item.created_at = new Date(item.created_at);
 	});
 	// Sorts the array based on the date
-	logs.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());
+	pointer.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());
+}
+
+export function handleProfiles(profiles: any[]): void {
+	const pointer = profiles as Profile[];
+	pointer.forEach((item) => (item.created_at = new Date(item.created_at)));
 }
 
 export async function deleteLog(logId: number, supabase: SupabaseClient) {

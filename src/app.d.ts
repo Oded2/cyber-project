@@ -17,7 +17,7 @@ declare global {
 	}
 	interface Profile {
 		id: string;
-		created_at: string;
+		created_at: Date;
 		display: string;
 		username: string;
 		bio: string;

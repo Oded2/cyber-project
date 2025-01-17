@@ -4,7 +4,7 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { error } from '@sveltejs/kit';
-	import { defaultProfilePicture, hrefs } from '$lib';
+	import { hrefs } from '$lib';
 	import { page } from '$app/stores';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 
@@ -12,9 +12,9 @@
 	// possible issue
 	const { supabase, session, user, profile } = data;
 
-	const pageData = $page;
+	let pageData = $derived($page);
 	let status = $derived(pageData.status);
-	let pathName = $derived(pageData.url.pathname);
+	let pathname = $derived(pageData.url.pathname);
 
 	const navItems = [
 		{ href: hrefs.contact, title: 'Contact' },
@@ -87,13 +87,18 @@
 					</div>
 					<Dropdown>
 						<li>
-							<a href={hrefs.profile.replace('slug', profile.username)}> Profile </a>
+							<a
+								href={hrefs.profile.replace('slug', profile.username)}
+								data-sveltekit-reload={pathname.startsWith('/profile')}
+							>
+								Profile
+							</a>
 						</li>
 						<li><a href={hrefs.settings}>Settings</a></li>
 						<li><button onclick={handleSignOut}>Sign Out</button></li>
 					</Dropdown>
 				</div>
-			{:else if !pathName.includes(hrefs.login)}
+			{:else if !pathname.includes(hrefs.login)}
 				<div class="join">
 					<div class="join-item me-2">
 						<a href={hrefs.login} class="btn btn-secondary">Log In</a>
