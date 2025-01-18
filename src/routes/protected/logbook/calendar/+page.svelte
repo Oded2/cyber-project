@@ -4,11 +4,17 @@
 	import Logbook from '$lib/components/Logbook.svelte';
 
 	const { data } = $props();
-	const { logs, aircrafts, supabase } = data;
+	const { logs, aircrafts, profile, supabase } = data;
 </script>
 
 <Container>
-	<Logbook {logs} {aircrafts} title="Your Calendar" defaultShowEntries={false} edit {supabase}
+	<Logbook
+		{logs}
+		{aircrafts}
+		title={`Welcome back, ${profile.display}`}
+		defaultShowEntries={false}
+		edit
+		{supabase}
 	></Logbook>
 </Container>
 
