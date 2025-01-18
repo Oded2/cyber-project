@@ -7,7 +7,11 @@
 	import { onMount } from 'svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
 
-	const { originalLogs, supabase }: { originalLogs: Log[]; supabase: SupabaseClient } = $props();
+	const {
+		originalLogs,
+		edit = false,
+		supabase
+	}: { originalLogs: Log[]; edit?: boolean; supabase: SupabaseClient } = $props();
 	let logs = $state(originalLogs);
 
 	const pageUrl = $page.url;
@@ -84,7 +88,7 @@
 	}
 </script>
 
-<div class="mb-2 flex items-center gap-2 border-b-2 pb-2">
+<div class="mb-2 mt-5 flex items-center gap-2 border-b-2 pb-2">
 	<div class="join">
 		<button
 			class="btn join-item"
@@ -135,7 +139,7 @@
 						</span>
 					</button>
 				{/each}
-				{#if getExactDate(day).getTime() <= maxDate.getTime() && getExactDate(day).getTime() >= minDate.getTime()}
+				{#if edit && getExactDate(day).getTime() <= maxDate.getTime() && getExactDate(day).getTime() >= minDate.getTime()}
 					<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
 				{/if}
 			</div>
@@ -143,16 +147,27 @@
 	</div>
 {/snippet}
 
-<LogOptionsModal
-	id="logOptions"
-	bind:log={currentLog}
-	{originalLogs}
-	ondelete={handleDelete}
-	{supabase}
-></LogOptionsModal>
-
-<ConfirmationModal
-	id="newLog"
-	title={`Would you like to create a log entry for ${datePicked.toLocaleString('en-US', { month: 'long', day: 'numeric' })}?`}
-	href={addParams(hrefs.log, { date: formatDateTime(datePicked) }, pageUrl.origin)}
-></ConfirmationModal>
+{#if edit}
+	<LogOptionsModal
+		id="logOptions"
+		bind:log={currentLog}
+		{originalLogs}
+		ondelete={handleDelete}
+		{supabase}
+	></LogOptionsModal>
+	<ConfirmationModal
+		id="newLog"
+		title={`Would you like to create a log entry for ${datePicked.toLocaleString('en-US', { month: 'long', day: 'numeric' })}?`}
+		href={addParams(hrefs.log, { date: formatDateTime(datePicked) }, pageUrl.origin)}
+	></ConfirmationModal>
+{:else}
+	<ConfirmationModal
+		id="logOptions"
+		title="Would you like to view this log?"
+		href={addParams(
+			hrefs.logView.replace('slug', currentLog.id.toString()),
+			{ ref: pageUrl.toString() },
+			pageUrl.origin
+		)}
+	></ConfirmationModal>
+{/if}

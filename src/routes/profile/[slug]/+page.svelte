@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { defaultProfilePicture, formatDuration } from '$lib';
+	import Calendar from '$lib/components/Calendar.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogEntries from '$lib/components/LogEntries.svelte';
 	import ProfileStats from '$lib/components/ProfileStats.svelte';
@@ -9,6 +10,8 @@
 	const { profile, logs, aircrafts, supabase } = data;
 
 	const totalFlightTime = getTotalFlightTime();
+
+	let currentDisplay: 'logbook' | 'calendar' = $state('logbook');
 
 	function getTotalFlightTime(): number {
 		let total: number = 0;
@@ -40,8 +43,24 @@
 	</div>
 	{#if logs.length > 0}
 		<ProfileStats {logs} {aircrafts}></ProfileStats>
-		<LogEntries originalLogs={logs} {aircrafts} title={`${profile.display}'s Logbook`} {supabase}
-		></LogEntries>
+		<div class="join mt-10">
+			<button
+				class="btn join-item"
+				class:btn-active={currentDisplay === 'logbook'}
+				onclick={() => (currentDisplay = 'logbook')}>Logbook</button
+			>
+			<button
+				class="btn join-item"
+				class:btn-active={currentDisplay === 'calendar'}
+				onclick={() => (currentDisplay = 'calendar')}>Calendar</button
+			>
+		</div>
+		{#if currentDisplay === 'logbook'}
+			<LogEntries originalLogs={logs} {aircrafts} title={`${profile.display}'s Logbook`} {supabase}
+			></LogEntries>
+		{:else}
+			<Calendar originalLogs={logs} {supabase}></Calendar>
+		{/if}
 	{/if}
 </Container>
 

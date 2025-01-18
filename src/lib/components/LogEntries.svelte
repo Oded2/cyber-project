@@ -43,7 +43,7 @@
 	}
 </script>
 
-<h1 class="mt-10 border-b-2 pb-2 text-xl font-bold">{title}</h1>
+<h1 class="mt-5 border-b-2 pb-2 text-xl font-bold">{title}</h1>
 <div class="mb-2 flex gap-2 border-b-2 p-2">
 	<div class="dropdown-start dropdown">
 		<div role="button" tabindex="0" class="btn">Sort By</div>
