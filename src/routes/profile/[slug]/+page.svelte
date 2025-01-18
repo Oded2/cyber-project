@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { defaultProfilePicture, formatDuration } from '$lib';
-	import Calendar from '$lib/components/Calendar.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Logbook from '$lib/components/Logbook.svelte';
-	import LogEntries from '$lib/components/LogEntries.svelte';
 	import ProfileStats from '$lib/components/ProfileStats.svelte';
 	import Title from '$lib/components/Title.svelte';
 
