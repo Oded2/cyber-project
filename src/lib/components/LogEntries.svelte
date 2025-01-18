@@ -1,21 +1,26 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { hrefs, showModal, formatDate, getDuration } from '$lib';
+	import { hrefs, showModal, formatDate, getDuration, addParams } from '$lib';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
+	import { page } from '$app/stores';
 
 	const {
 		originalLogs,
 		aircrafts,
-		profile,
+		title,
+		edit = false,
 		supabase
 	}: {
 		originalLogs: Log[];
 		aircrafts: Aircraft[];
-		profile: Profile;
+		title: string;
+		edit?: boolean;
 		supabase: SupabaseClient;
 	} = $props();
+
+	const pageUrl = $page.url;
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
@@ -38,7 +43,7 @@
 	}
 </script>
 
-<h1 class="border-b-2 pb-2 text-xl font-bold">Welcome back, {profile.display}</h1>
+<h1 class="mt-10 border-b-2 pb-2 text-xl font-bold">{title}</h1>
 <div class="mb-2 flex gap-2 border-b-2 p-2">
 	<div class="dropdown-start dropdown">
 		<div role="button" tabindex="0" class="btn">Sort By</div>
@@ -79,12 +84,13 @@
 	</div>
 	{#each logs as log, index (log)}
 		<div animate:flip={{ duration: 500 }}>
-			{@render entry(log, aircrafts.find((item) => item.id == log.aircraft)!, index % 2 != 0)}
+			{@render entry(log, index % 2 != 0)}
 		</div>
 	{/each}
 </div>
 
-{#snippet entry(log: Log, aircraft: Aircraft, shade: boolean)}
+{#snippet entry(log: Log, shade: boolean)}
+	{@const aircraft = aircrafts.find((item) => item.id == log.aircraft)}
 	<div
 		class="grid grid-cols-3 px-3 py-5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7"
 		class:bg-base-200={shade}
@@ -102,22 +108,39 @@
 			<h2>{getDuration(log.dep_time, log.des_time)}</h2>
 		</div>
 		<div class="col-auto hidden items-center sm:flex">
-			<a class="link" href={hrefs.aircraft.replace('slug', aircraft.id.toString())}
-				>{aircraft.nickname}</a
-			>
+			{#if aircraft}
+				<a class="link" href={hrefs.aircraft.replace('slug', aircraft.id.toString())}
+					>{aircraft.nickname}</a
+				>
+			{:else}
+				<span>Unknown</span>
+			{/if}
 		</div>
 		<div class="col-auto hidden items-center lg:flex">
 			<h2>{formatRating(log.rating)}</h2>
 		</div>
 		<div class=" col-auto hidden items-center lg:flex"><h2>{log.pilot_in_command}</h2></div>
 		<div class="col-auto flex items-center">
-			<button
-				onclick={() => {
-					currentLog = log;
-					showModal('logOptions');
-				}}
-				class="btn btn-info">Options</button
-			>
+			{#if edit}
+				<button
+					onclick={() => {
+						currentLog = log;
+						showModal('logOptions');
+					}}
+					class="btn btn-info">Options</button
+				>
+			{:else}
+				<a
+					href={addParams(
+						hrefs.logView.replace('slug', log.id.toString()),
+						{
+							ref: pageUrl.toString()
+						},
+						pageUrl.origin
+					)}
+					class="btn btn-info">View</a
+				>
+			{/if}
 		</div>
 		<div class=" col-auto flex items-center">
 			<span
@@ -133,10 +156,12 @@
 	</div>
 {/snippet}
 
-<LogOptionsModal
-	id="logOptions"
-	ondelete={handleDelete}
-	bind:log={currentLog}
-	{originalLogs}
-	{supabase}
-></LogOptionsModal>
+{#if edit}
+	<LogOptionsModal
+		id="logOptions"
+		ondelete={handleDelete}
+		bind:log={currentLog}
+		{originalLogs}
+		{supabase}
+	></LogOptionsModal>
+{/if}

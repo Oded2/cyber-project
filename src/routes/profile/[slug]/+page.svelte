@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { defaultProfilePicture, formatDuration } from '$lib';
 	import Container from '$lib/components/Container.svelte';
+	import LogEntries from '$lib/components/LogEntries.svelte';
 	import ProfileStats from '$lib/components/ProfileStats.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { profile, logs, aircrafts } = data;
+	const { profile, logs, aircrafts, supabase } = data;
 
 	const totalFlightTime = getTotalFlightTime();
 
@@ -39,6 +40,8 @@
 	</div>
 	{#if logs.length > 0}
 		<ProfileStats {logs} {aircrafts}></ProfileStats>
+		<LogEntries originalLogs={logs} {aircrafts} title={`${profile.display}'s Logbook`} {supabase}
+		></LogEntries>
 	{/if}
 </Container>
 

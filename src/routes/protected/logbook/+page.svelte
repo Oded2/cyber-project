@@ -10,5 +10,6 @@
 <Title title="Logbook"></Title>
 
 <Container>
-	<LogEntries originalLogs={logs} {aircrafts} {supabase} {profile}></LogEntries>
+	<LogEntries originalLogs={logs} {aircrafts} {supabase} title={`Welcome back, ${profile.display}`}
+	></LogEntries>
 </Container>
