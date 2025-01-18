@@ -30,6 +30,30 @@
 		});
 		return formatter.format(date);
 	}
+
+	function getOpenStreetMap(airport: Airport) {
+		// Extract longitude and latitude from the airport object
+		const longitude = airport.longitude;
+		const latitude = airport.latitude;
+		// Calculate a degree offset for a 30km radius around the point
+		// 1 degree of latitude is approximately 111.32 km
+		const degrees = Math.min(distance + 10, 1000) / 111.32;
+		// Create a bounding box (bbox) around the airport location
+		// The bbox defines the map's visible area, extending 30km in each direction
+		const bbox = [
+			longitude - degrees, // Western boundary (longitude - 30km in degrees)
+			latitude - degrees, // Southern boundary (latitude - 30km in degrees)
+			longitude + degrees, // Eastern boundary (longitude + 30km in degrees)
+			latitude + degrees // Northern boundary (latitude + 30km in degrees)
+		].join(','); // Convert the bbox array to a comma-separated string
+		// Create a marker string using the airport's latitude and longitude
+		// This marker will indicate the airport's exact location on the map
+		const marker = `${latitude},${longitude}`;
+		// Construct the embed link for OpenStreetMap
+		// The 'bbox' defines the visible area, and the 'marker' pinpoints the airport's location
+		const embedLink = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${marker}`;
+		return embedLink;
+	}
 </script>
 
 <Container>
@@ -83,14 +107,8 @@
 		<LogViewerCard title="Weather Details">
 			<div class="prose">
 				<ul>
-					<li>
-						<strong>{log.dep_airport.city}</strong>
-						{@render weatherDetails(log.dep_weather)}
-					</li>
-					<li>
-						<strong>{log.des_airport.city}</strong>
-						{@render weatherDetails(log.des_weather)}
-					</li>
+					{@render weatherDetails(log.dep_weather, log.dep_airport.city)}
+					{@render weatherDetails(log.des_weather, log.des_airport.city)}
 				</ul>
 			</div>
 		</LogViewerCard>
@@ -116,6 +134,16 @@
 		{/if}
 	</div>
 </Container>
+<div class="">
+	<Container>
+		<div class="grid gap-4 lg:grid-cols-2">
+			{@render airportDetails(log.dep_airport, 'Departure Airport')}
+			{#if log.dep_airport.icao !== log.des_airport.icao}
+				{@render airportDetails(log.des_airport, 'Destination Airport')}
+			{/if}
+		</div>
+	</Container>
+</div>
 
 {#if ref.length > 0}
 	<Float>
@@ -125,15 +153,38 @@
 
 <Title title="Log Viewer"></Title>
 
-{#snippet weatherDetails(weather: Weather)}
-	<ul>
-		<li>Wind: {weather.wind_direction}&deg;/{weather.wind_speed}KN</li>
-		<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
-		<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
-		<li>Relative Humidity: {weather.humidity}%</li>
-		<li>Pressure: {weather.pressure}</li>
-		<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
-		<li>Cloud Cover: {weather.cloud_cover}/100</li>
-		<li>Precipation: {weather.precipation.toLocaleString()}ml</li>
-	</ul>
+{#snippet airportDetails(airport: Airport, title: string)}
+	<div class="col-auto flex justify-around gap-4">
+		<div class="prose">
+			<strong>{airport.name}</strong>
+			<ul>
+				<li>
+					{`ICAO: ${airport.icao}`}
+				</li>
+				<li>{`IATA: ${airport.iata}`}</li>
+				<li>{`City: ${airport.city}`}</li>
+				<li>{`Region: ${airport.region}`}</li>
+				<li>{`Country: ${airport.country}`}</li>
+				<li>{`Timezone: ${airport.timezone}`}</li>
+				<li>{`Elevation: ${airport.elevation_ft} feet`}</li>
+			</ul>
+		</div>
+		<iframe src={getOpenStreetMap(airport)} title={airport.name} frameborder="0"></iframe>
+	</div>
+{/snippet}
+
+{#snippet weatherDetails(weather: Weather, title: string)}
+	<li>
+		<strong>{title}</strong>
+		<ul>
+			<li>Wind: {weather.wind_direction}&deg;/{weather.wind_speed}KN</li>
+			<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
+			<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
+			<li>Relative Humidity: {weather.humidity}%</li>
+			<li>Pressure: {weather.pressure}</li>
+			<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
+			<li>Cloud Cover: {weather.cloud_cover}/100</li>
+			<li>Precipation: {weather.precipation.toLocaleString()}ml</li>
+		</ul>
+	</li>
 {/snippet}

@@ -242,11 +242,10 @@ interface Coordinates {
 export function haversineDistance(pointA: Coordinates, pointB: Coordinates): number {
 	// Mathematical function to calculate the distance between two points
 	// Taken from the internet
-	let radius = 6371; // km
-	//convert latitude and longitude to radians
+	const radius = 6371; // km
+	// Convert latitude and longitude to radians
 	const deltaLatitude = ((pointB.latitude - pointA.latitude) * Math.PI) / 180;
 	const deltaLongitude = ((pointB.longitude - pointA.longitude) * Math.PI) / 180;
-
 	const halfChordLength =
 		Math.cos((pointA.latitude * Math.PI) / 180) *
 			Math.cos((pointB.latitude * Math.PI) / 180) *
