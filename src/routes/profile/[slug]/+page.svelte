@@ -10,8 +10,6 @@
 
 	const totalFlightTime = getTotalFlightTime();
 
-	let currentDisplay: 'logbook' | 'calendar' = $state('logbook');
-
 	function getTotalFlightTime(): number {
 		let total: number = 0;
 		for (const log of logs) total += log.des_time.getTime() - log.dep_time.getTime();
