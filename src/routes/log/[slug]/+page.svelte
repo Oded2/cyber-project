@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format, getDuration, haversineDistance } from '$lib';
+	import { countries, format, getDuration, haversineDistance } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Float from '$lib/components/Float.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
@@ -37,7 +37,7 @@
 		const latitude = airport.latitude;
 		// Calculate a degree offset for a 30km radius around the point
 		// 1 degree of latitude is approximately 111.32 km
-		const degrees = Math.min(distance + 10, 1000) / 111.32;
+		const degrees = Math.min(distance + 20, 1000) / 111.32;
 		// Create a bounding box (bbox) around the airport location
 		// The bbox defines the map's visible area, extending 30km in each direction
 		const bbox = [
@@ -137,9 +137,9 @@
 <div class="">
 	<Container>
 		<div class="grid gap-4 lg:grid-cols-2">
-			{@render airportDetails(log.dep_airport, 'Departure Airport')}
+			{@render airportDetails(log.dep_airport)}
 			{#if log.dep_airport.icao !== log.des_airport.icao}
-				{@render airportDetails(log.des_airport, 'Destination Airport')}
+				{@render airportDetails(log.des_airport)}
 			{/if}
 		</div>
 	</Container>
@@ -153,20 +153,22 @@
 
 <Title title="Log Viewer"></Title>
 
-{#snippet airportDetails(airport: Airport, title: string)}
+{#snippet airportDetails(airport: Airport)}
 	<div class="col-auto flex justify-around gap-4">
 		<div class="prose">
-			<strong>{airport.name}</strong>
+			<strong class="text-lg">{airport.name}</strong>
 			<ul>
 				<li>
 					{`ICAO: ${airport.icao}`}
 				</li>
-				<li>{`IATA: ${airport.iata}`}</li>
+				{#if airport.iata.length > 0}
+					<li>{`IATA: ${airport.iata}`}</li>
+				{/if}
 				<li>{`City: ${airport.city}`}</li>
 				<li>{`Region: ${airport.region}`}</li>
-				<li>{`Country: ${airport.country}`}</li>
+				<li>{`Country: ${countries[airport.country]}`}</li>
 				<li>{`Timezone: ${airport.timezone}`}</li>
-				<li>{`Elevation: ${airport.elevation_ft} feet`}</li>
+				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
 			</ul>
 		</div>
 		<iframe src={getOpenStreetMap(airport)} title={airport.name} frameborder="0"></iframe>
