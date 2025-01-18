@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Container from '$lib/components/Container.svelte';
 	import { handleLogs, hrefs } from '$lib';
-	import Card from '$lib/components/Card.svelte';
 	import creativity from '$lib/images/Creativity.svg';
 	import calendar from '$lib/images/Calendar.svg';
 	import map from '$lib/images/Map.svg';
@@ -109,29 +108,41 @@
 		<Container>
 			<div class="place-items-center md:grid md:grid-cols-2 xl:grid-cols-3" id="info">
 				<div class="col-auto h-full">
-					<Card
-						img={creativity}
-						title="Log your flights, fast and easy."
-						description="With Aerologger, you can log your flights in a very simple and quick process. Aerologger's technology will then get as much information about your flight as it can, such as weather, flight route, and more!"
-					></Card>
+					{@render Card(
+						creativity,
+						'Log your flights, fast and easy.',
+						"With Aerologger, you can log your flights in a very simple and quick process. Aerologger's technology will then get as much information about your flight as it can, such as weather, flight route, and more!"
+					)}
 				</div>
 				<div class="col-auto h-full">
-					<Card
-						img={calendar}
-						title="Stay updated."
-						description="Have a flight in a few days? No problem. Simply plan a future flight and your pilot's calendar will update. Want to know your past flights? They will show up there as well."
-					></Card>
+					{@render Card(
+						calendar,
+						'Stay updated.',
+						"Have a flight in a few days? No problem. Simply plan a future flight and your pilot's calendar will update. Want to know your past flights? They will show up there as well."
+					)}
 				</div>
 				<div class="col-span-2 h-full xl:col-auto">
-					<Card
-						img={map}
-						title="Plan future flights."
-						description="This isn't just a logbook. Aerologger is also a flight planning application. Given your future takeoff time and date, Aerologger will automatically add it to your calendar, plan a route for you based on weather and airspace restrictions, and alert you of any possible delays."
-					></Card>
+					{@render Card(
+						map,
+						'Plan for future flights.',
+						"This isn't just a logbook. Aerologger is also a flight planning application. Given your future takeoff time and date, Aerologger will automatically add it to your calendar, plan a route for you based on weather and airspace restrictions, and alert you of any possible delays."
+					)}
 				</div>
 			</div>
 		</Container>
 	{/if}
 </main>
+
+{#snippet Card(img: string, title: string, description: string)}
+	<div class="card h-full w-full">
+		<figure class="h-1/2 w-full">
+			<img class="max-w-md" src={img} alt={title} />
+		</figure>
+		<div class="card-body">
+			<h2 class="card-title">{title}</h2>
+			<p>{description}</p>
+		</div>
+	</div>
+{/snippet}
 
 <Title title={'Aerologger'}></Title>
