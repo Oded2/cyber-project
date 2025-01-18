@@ -96,9 +96,6 @@
 			onclick={filterFavorite}
 			aria-label="Favorites"><i class="fa-solid fa-star"></i></button
 		>
-		<a href={hrefs.logbook} class="btn join-item" aria-label="Logbook"
-			><i class="fa-solid fa-book"></i></a
-		>
 		<button onclick={resetDate} class="btn join-item" aria-label="Reset"
 			><i class="fa-solid fa-clock-rotate-left"></i></button
 		>

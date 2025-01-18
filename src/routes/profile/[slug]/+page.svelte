@@ -2,6 +2,7 @@
 	import { defaultProfilePicture, formatDuration } from '$lib';
 	import Calendar from '$lib/components/Calendar.svelte';
 	import Container from '$lib/components/Container.svelte';
+	import Logbook from '$lib/components/Logbook.svelte';
 	import LogEntries from '$lib/components/LogEntries.svelte';
 	import ProfileStats from '$lib/components/ProfileStats.svelte';
 	import Title from '$lib/components/Title.svelte';
@@ -43,24 +44,7 @@
 	</div>
 	{#if logs.length > 0}
 		<ProfileStats {logs} {aircrafts}></ProfileStats>
-		<div class="join mt-10">
-			<button
-				class="btn join-item"
-				class:btn-active={currentDisplay === 'logbook'}
-				onclick={() => (currentDisplay = 'logbook')}>Logbook</button
-			>
-			<button
-				class="btn join-item"
-				class:btn-active={currentDisplay === 'calendar'}
-				onclick={() => (currentDisplay = 'calendar')}>Calendar</button
-			>
-		</div>
-		{#if currentDisplay === 'logbook'}
-			<LogEntries originalLogs={logs} {aircrafts} title={`${profile.display}'s Logbook`} {supabase}
-			></LogEntries>
-		{:else}
-			<Calendar originalLogs={logs} {supabase}></Calendar>
-		{/if}
+		<Logbook {logs} {aircrafts} title={`${profile.display}'s Logs`} {supabase}></Logbook>
 	{/if}
 </Container>
 

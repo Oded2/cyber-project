@@ -43,7 +43,6 @@
 	}
 </script>
 
-<h1 class="mt-5 border-b-2 pb-2 text-xl font-bold">{title}</h1>
 <div class="mb-2 flex gap-2 border-b-2 p-2">
 	<div class="dropdown-start dropdown">
 		<div role="button" tabindex="0" class="btn">Sort By</div>
@@ -60,9 +59,6 @@
 	</div>
 	<button class="btn" onclick={() => logs.reverse()} aria-label="Reverse"
 		><i class="fa-solid fa-arrow-right-arrow-left"></i></button
-	>
-	<a href={hrefs.calendar} aria-label="Calendar" class="btn"
-		><i class="fa-solid fa-calendar-days"></i></a
 	>
 	<button
 		class="btn btn-info"
