@@ -22,7 +22,7 @@
 	let showEntries: boolean = $state(defaultShowEntries);
 </script>
 
-<div class="join mt-10">
+<div class="join">
 	<button
 		class="btn join-item"
 		class:btn-active={showEntries}

@@ -44,6 +44,7 @@
 	</div>
 	{#if logs.length > 0}
 		<ProfileStats {logs} {aircrafts}></ProfileStats>
+		<div class="mb-10"></div>
 		<Logbook {logs} {aircrafts} title={`${profile.display}'s Logs`} {supabase}></Logbook>
 	{/if}
 </Container>
