@@ -6,21 +6,23 @@
 	const { data } = $props();
 	const { supabase, user } = data;
 
-	const userId = user ? user.id : '';
-
 	let input: string = $state('');
 	let searchResults: Profile[] = $state([]);
 	let inProgress: boolean = $state(false);
 
 	async function search(e: Event): Promise<void> {
 		e.preventDefault();
-		inProgress = true;
-		const { data: results, error } = await supabase
+		// Build the SQL query
+		let query = supabase
 			.from('profiles')
 			.select()
-			.or(`display.ilike.%${input}%,username.ilike.%${input}%`)
-			.not('id', 'eq', userId)
-			.limit(10);
+			.or(`display.ilike.%${input}%,username.ilike.%${input}%`);
+		// Ensure that the user doesn't show up in the search results
+		if (user) query = query.not('id', 'eq', user.id);
+		// Limit to the first 10 results
+		query.limit(10);
+		inProgress = true;
+		const { data: results, error } = await query;
 		inProgress = false;
 		if (error) {
 			console.error(error);
