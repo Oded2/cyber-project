@@ -24,6 +24,7 @@
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
 	const updatedProfile = $state(profile);
+	const pageUrl = $page.url;
 	const visibilities = {
 		private: 'Privatize',
 		unlisted: 'Unlist',
@@ -246,16 +247,22 @@
 									</div>
 									<div class="card-actions justify-end">
 										<a
-											aria-label="Edit"
+											href={addParams(
+												hrefs.aircraft.replace('slug', aircraft.id.toString()),
+												{ ref: pageUrl.toString() },
+												pageUrl.origin
+											)}
+											class="btn btn-outline btn-secondary">View</a
+										>
+										<a
 											href={addParams(
 												hrefs.registerAircraft,
 												{ id: aircraft.id.toString() },
-												$page.url.origin
+												pageUrl.origin
 											)}
-											class="btn btn-outline btn-accent">Edit</a
+											class="btn btn-outline btn-info">Edit</a
 										>
 										<button
-											aria-label="Delete"
 											class="btn btn-outline btn-error"
 											onclick={() => {
 												currentID = aircraft.id;
