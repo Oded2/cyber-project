@@ -11,11 +11,10 @@
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
-	const distance =
-		haversineDistance(
-			{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
-			{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
-		) / 1.852;
+	const distanceKm = haversineDistance(
+		{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
+		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
+	);
 	function formatSpecificDate(date: Date): string {
 		return date.toLocaleString('en-US', {
 			year: 'numeric',
@@ -38,14 +37,14 @@
 		const latitude = airport.latitude;
 		// Calculate a degree offset for a 30km radius around the point
 		// 1 degree of latitude is approximately 111.32 km
-		const degrees = Math.min(distance * 1.852, 1000) / 111.32;
+		const degrees = Math.min(distanceKm + 1, 1000) / 111.32;
 		// Create a bounding box (bbox) around the airport location
 		// The bbox defines the map's visible area, extending 30km in each direction
 		const bbox = [
-			longitude - degrees, // Western boundary (longitude - 30km in degrees)
-			latitude - degrees, // Southern boundary (latitude - 30km in degrees)
-			longitude + degrees, // Eastern boundary (longitude + 30km in degrees)
-			latitude + degrees // Northern boundary (latitude + 30km in degrees)
+			longitude - degrees, // Western boundary
+			latitude - degrees, // Southern boundary
+			longitude + degrees, // Eastern boundary
+			latitude + degrees // Northern boundary
 		].join(','); // Convert the bbox array to a comma-separated string
 		// Create a marker string using the airport's latitude and longitude
 		// This marker will indicate the airport's exact location on the map
@@ -71,7 +70,7 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
-					<li>Distance: {Math.round(distance).toLocaleString()}NM</li>
+					<li>Distance: {Math.round(distanceKm / 1.852).toLocaleString()}NM</li>
 					<li>
 						<strong>Departure & Landing</strong>
 						<ul>
@@ -155,7 +154,11 @@
 <Title title="Log Viewer"></Title>
 
 {#snippet airportDetails(airport: Airport)}
-	<div class="flex justify-between gap-4" class:col-auto={!roundTrip} class:col-span-2={roundTrip}>
+	<div
+		class="flex flex-col justify-between gap-4 sm:flex-row"
+		class:col-auto={!roundTrip}
+		class:col-span-2={roundTrip}
+	>
 		<div class="prose">
 			<strong class="text-lg">{airport.name}</strong>
 			<ul>
@@ -172,7 +175,7 @@
 				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
 			</ul>
 		</div>
-		<iframe src={getOpenStreetMap(airport)} title={airport.name} class="w-full" frameborder="0"
+		<iframe src={getOpenStreetMap(airport)} title={airport.name} class="sm:w-3/4" frameborder="0"
 		></iframe>
 	</div>
 {/snippet}
