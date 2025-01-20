@@ -3,10 +3,11 @@
 	import Container from '$lib/components/Container.svelte';
 	import Logbook from '$lib/components/Logbook.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
+	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { aircraft, profile, logs, supabase } = data;
+	const { aircraft, profile, logs, supabase, ref } = data;
 </script>
 
 <Container>
@@ -62,5 +63,7 @@
 		></Logbook>
 	{/if}
 </Container>
+
+<Ref {ref}></Ref>
 
 <Title title="Aircraft Viewer"></Title>

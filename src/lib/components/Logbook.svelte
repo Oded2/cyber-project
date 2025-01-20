@@ -44,7 +44,7 @@
 	<h1 class="mt-5 border-b-2 pb-2 text-xl font-bold">{title}</h1>
 </div>
 {#if showEntries}
-	<LogEntries originalLogs={logs} {aircrafts} {title} {supabase} {edit}></LogEntries>
+	<LogEntries originalLogs={logs} {aircrafts} {supabase} {edit}></LogEntries>
 {:else}
 	<Calendar originalLogs={logs} {supabase} {edit}></Calendar>
 {/if}

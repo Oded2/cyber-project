@@ -9,13 +9,11 @@
 	const {
 		originalLogs,
 		aircrafts,
-		title,
 		edit = false,
 		supabase
 	}: {
 		originalLogs: Log[];
 		aircrafts: Aircraft[];
-		title: string;
 		edit?: boolean;
 		supabase: SupabaseClient;
 	} = $props();
@@ -105,8 +103,13 @@
 		</div>
 		<div class="col-auto hidden items-center sm:flex">
 			{#if aircraft}
-				<a class="link" href={hrefs.aircraft.replace('slug', aircraft.id.toString())}
-					>{aircraft.nickname}</a
+				<a
+					class="link"
+					href={addParams(
+						hrefs.aircraft.replace('slug', aircraft.id.toString()),
+						{ ref: pageUrl.toString() },
+						pageUrl.origin
+					)}>{aircraft.nickname}</a
 				>
 			{:else}
 				<span>Unknown</span>

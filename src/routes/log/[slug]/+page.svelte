@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { countries, format, getDuration, haversineDistance } from '$lib';
+	import { page } from '$app/stores';
+	import { addParams, countries, format, getDuration, haversineDistance, hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
-	import Float from '$lib/components/Float.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
+	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
 
+	const pageUrl = $page.url;
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
@@ -128,6 +130,16 @@
 						{/if}
 					</ul>
 				</div>
+				<a
+					class="btn btn-outline btn-info me-auto"
+					href={addParams(
+						hrefs.aircraft.replace('slug', aircraft.id.toString()),
+						{
+							ref: pageUrl.toString()
+						},
+						pageUrl.origin
+					)}>View</a
+				>
 			</LogViewerCard>
 		{:else}
 			<LogViewerCard title="Private Aircraft">This aircraft is private</LogViewerCard>
@@ -145,11 +157,7 @@
 	</Container>
 </div>
 
-{#if ref.length > 0}
-	<Float>
-		<a href={ref} aria-label="Back" class="btn shadow"><i class="fa-solid fa-arrow-left"></i></a>
-	</Float>
-{/if}
+<Ref {ref}></Ref>
 
 <Title title="Log Viewer"></Title>
 

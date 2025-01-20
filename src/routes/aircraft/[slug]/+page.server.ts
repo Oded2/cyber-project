@@ -1,7 +1,7 @@
 import { handleLogs, publicOnly } from '$lib';
 import { error } from '@sveltejs/kit';
 
-export async function load({ params, locals: { user, supabase } }) {
+export async function load({ params, locals: { user, supabase }, url }) {
 	// Get the aircraft's id
 	const id = params.slug;
 	// Fetch the aircraft
@@ -22,5 +22,5 @@ export async function load({ params, locals: { user, supabase } }) {
 	if (eL) error(500, { message: eL.message });
 	handleLogs(logs);
 	if (!user || user.id !== owner) publicOnly(logs);
-	return { aircraft, profile, logs: logs as Log[] };
+	return { aircraft, profile, logs: logs as Log[], ref: url.searchParams.get('ref') ?? '' };
 }
