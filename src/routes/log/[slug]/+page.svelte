@@ -169,7 +169,9 @@
 					<li>{`IATA: ${airport.iata}`}</li>
 				{/if}
 				<li>{`City: ${airport.city}`}</li>
-				<li>{`Region: ${airport.region}`}</li>
+				{#if airport.region.length > 0}
+					<li>{`Region: ${airport.region}`}</li>
+				{/if}
 				<li>{`Country: ${countries[airport.country]}`}</li>
 				<li>{`Timezone: ${airport.timezone}`}</li>
 				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
