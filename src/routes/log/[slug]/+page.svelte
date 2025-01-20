@@ -138,7 +138,7 @@
 	<Container>
 		<div class="grid gap-4 lg:grid-cols-2">
 			{@render airportDetails(log.dep_airport)}
-			{#if log.dep_airport.icao !== log.des_airport.icao}
+			{#if !roundTrip}
 				{@render airportDetails(log.des_airport)}
 			{/if}
 		</div>
