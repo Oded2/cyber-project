@@ -8,6 +8,7 @@
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
 
+	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
 	const distance =
@@ -37,7 +38,7 @@
 		const latitude = airport.latitude;
 		// Calculate a degree offset for a 30km radius around the point
 		// 1 degree of latitude is approximately 111.32 km
-		const degrees = Math.min(distance + 20, 1000) / 111.32;
+		const degrees = Math.min(distance * 1.852, 1000) / 111.32;
 		// Create a bounding box (bbox) around the airport location
 		// The bbox defines the map's visible area, extending 30km in each direction
 		const bbox = [
@@ -154,7 +155,7 @@
 <Title title="Log Viewer"></Title>
 
 {#snippet airportDetails(airport: Airport)}
-	<div class="col-auto flex justify-around gap-4">
+	<div class="flex justify-between gap-4" class:col-auto={!roundTrip} class:col-span-2={roundTrip}>
 		<div class="prose">
 			<strong class="text-lg">{airport.name}</strong>
 			<ul>
@@ -171,7 +172,8 @@
 				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
 			</ul>
 		</div>
-		<iframe src={getOpenStreetMap(airport)} title={airport.name} frameborder="0"></iframe>
+		<iframe src={getOpenStreetMap(airport)} title={airport.name} class="w-full" frameborder="0"
+		></iframe>
 	</div>
 {/snippet}
 
