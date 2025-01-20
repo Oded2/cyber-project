@@ -1,4 +1,4 @@
-import { handleLogs, handleProfiles } from '$lib';
+import { handleLogs, handleProfiles, publicOnly } from '$lib';
 import { error } from '@sveltejs/kit';
 
 export async function load({ params, locals: { supabase, user } }) {
@@ -20,7 +20,7 @@ export async function load({ params, locals: { supabase, user } }) {
 		.eq('owner', profile.id);
 	if (eA) error(500, { message: eA.message });
 	// If the user is viewing his own profile, then all logs will be accounted for, else only the public ones
-	if ((user && user.id !== profile.id) || !user) {
+	if (!user || user.id !== profile.id) {
 		publicOnly(logs);
 		publicOnly(aircrafts);
 	}
@@ -28,11 +28,4 @@ export async function load({ params, locals: { supabase, user } }) {
 	// has access to them, the unlisted ones will still get fetched
 	// While unlisted logs are accessible by anyone, they shouldn't be accounted for in a public profile page
 	return { profile, logs: logs as Log[], aircrafts: aircrafts as Aircraft[] };
-}
-
-function publicOnly(items: any[]): void {
-	const pointer = items as Log[] | Aircraft[];
-	pointer.forEach((item, index) => {
-		if (item.visibility !== 'public') pointer.splice(index, 1);
-	});
 }

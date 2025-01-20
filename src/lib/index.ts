@@ -237,11 +237,17 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 	};
 }
 
-interface Coordinates {
-	latitude: number;
-	longitude: number;
+export function publicOnly(items: any[]): void {
+	const pointer = items as Log[] | Aircraft[];
+	pointer.forEach((item, index) => {
+		if (item.visibility !== 'public') pointer.splice(index, 1);
+	});
 }
-export function haversineDistance(pointA: Coordinates, pointB: Coordinates): number {
+
+export function haversineDistance(
+	pointA: { latitude: number; longitude: number },
+	pointB: { latitude: number; longitude: number }
+): number {
 	// Mathematical function to calculate the distance between two points
 	// Taken from the internet
 	const radius = 6371; // km
