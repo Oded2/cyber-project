@@ -67,7 +67,7 @@
 		<h2 class="text-center">{formatSpecificDate(depTime)}</h2>
 	</div>
 	<div class="mb-10 grid gap-4 lg:grid-cols-3">
-		<LogViewerCard title="Basic Info">
+		<LogViewerCard title="Basic Information">
 			<div class="prose">
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
