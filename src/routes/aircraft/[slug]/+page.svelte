@@ -48,7 +48,9 @@
 					<li>{`Owner: ${aircraft.owner_name}`}</li>
 					<li>{`Seating Capacity: ${aircraft.seating_capacity}`}</li>
 					<li>{`Visibility: ${format(aircraft.visibility)}`}</li>
-					<li>{`Notes: ${aircraft.notes}`}</li>
+					{#if aircraft.notes.length > 0}
+						<li>{`Notes: ${aircraft.notes}`}</li>
+					{/if}
 				</ul>
 			</div>
 		</LogViewerCard>
