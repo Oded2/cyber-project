@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { format } from '$lib';
+	import { format, hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import Logbook from '$lib/components/Logbook.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
@@ -14,6 +14,11 @@
 	<h1 class="text-center text-3xl font-medium">
 		Aircraft: <span class="italic">{aircraft.nickname}</span>
 	</h1>
+	<h3 class="text-center font-medium">
+		Registered to: <a href={hrefs.profile.replace('slug', profile.username)} class="link"
+			>{profile.display}</a
+		>
+	</h3>
 	<div class="mt-10 grid gap-4 lg:grid-cols-3">
 		<LogViewerCard title="Basic Info" image={aircraft.image_url}>
 			<div class="prose">
