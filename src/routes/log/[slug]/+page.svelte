@@ -56,6 +56,16 @@
 		const embedLink = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${marker}`;
 		return embedLink;
 	}
+	function getRouteMap(): string {
+		const endpoint = 'https://aerologger-maps.onrender.com/map';
+		const URL = addParams(endpoint, {
+			start_lat: log.dep_airport.latitude.toString(),
+			start_lon: log.dep_airport.longitude.toString(),
+			end_lat: log.des_airport.latitude.toString(),
+			end_lon: log.des_airport.longitude.toString()
+		});
+		return URL;
+	}
 </script>
 
 <Container>
@@ -153,6 +163,9 @@
 			{#if !roundTrip}
 				{@render airportDetails(log.des_airport)}
 			{/if}
+		</div>
+		<div class="mt-5 w-full">
+			<iframe class="h-96 w-full" src={getRouteMap()} title="Route Map" frameborder="0"></iframe>
 		</div>
 	</Container>
 </div>
