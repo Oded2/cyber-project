@@ -10,6 +10,7 @@
 		handleLogs,
 		hrefs,
 		isTaken,
+		showAlert,
 		showModal,
 		validUsername
 	} from '$lib';
@@ -52,11 +53,6 @@
 	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
 		aircrafts = aircrafts.filter((obj) => obj.id != currentID);
-	}
-
-	function showAlert(key: keyof typeof errors) {
-		errors[key] = true;
-		setTimeout(() => (errors[key] = false), 5000);
 	}
 
 	async function updateProfile(key: keyof Profile) {
@@ -352,11 +348,8 @@
 	text={`${profile.username}/logs/${currentFilter}`}
 ></ConfirmationModal>
 
-<Alert
-	visible={errors.invalidUsername}
-	message="Username can only contain latin letters and numbers."
-></Alert>
-<Alert visible={errors.usernameTaken} message="Username already taken"></Alert>
+<Alert id="invalidUsername" text="Username can only contain latin letters and numbers."></Alert>
+<Alert id="usernameTaken" text="Username already taken"></Alert>
 
 <Title title="Settings"></Title>
 
