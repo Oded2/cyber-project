@@ -37,7 +37,6 @@
 		// Extract longitude and latitude from the airport object
 		const longitude = airport.longitude;
 		const latitude = airport.latitude;
-		// Calculate a degree offset for a 30km radius around the point
 		// 1 degree of latitude is approximately 111.32 km
 		const degrees = Math.min(distanceKm + 1, 1000) / 111.32;
 		// Create a bounding box (bbox) around the airport location
