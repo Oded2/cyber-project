@@ -197,8 +197,6 @@
 				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
 			</ul>
 		</div>
-		<iframe src={getOpenStreetMap(airport)} title={airport.name} class="sm:w-3/4" frameborder="0"
-		></iframe>
 	</div>
 {/snippet}
 
