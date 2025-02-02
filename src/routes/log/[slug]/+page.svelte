@@ -33,35 +33,15 @@
 		return formatter.format(date);
 	}
 
-	function getOpenStreetMap(airport: Airport) {
-		// Extract longitude and latitude from the airport object
-		const longitude = airport.longitude;
-		const latitude = airport.latitude;
-		// 1 degree of latitude is approximately 111.32 km
-		const degrees = Math.min(distanceKm + 1, 1000) / 111.32;
-		// Create a bounding box (bbox) around the airport location
-		// The bbox defines the map's visible area, extending 30km in each direction
-		const bbox = [
-			longitude - degrees, // Western boundary
-			latitude - degrees, // Southern boundary
-			longitude + degrees, // Eastern boundary
-			latitude + degrees // Northern boundary
-		].join(','); // Convert the bbox array to a comma-separated string
-		// Create a marker string using the airport's latitude and longitude
-		// This marker will indicate the airport's exact location on the map
-		const marker = `${latitude},${longitude}`;
-		// Construct the embed link for OpenStreetMap
-		// The 'bbox' defines the visible area, and the 'marker' pinpoints the airport's location
-		const embedLink = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${marker}`;
-		return embedLink;
-	}
 	function getRouteMap(): string {
 		const endpoint = 'https://aerologger-maps.onrender.com/map';
 		const URL = addParams(endpoint, {
 			start_lat: log.dep_airport.latitude.toString(),
 			start_lon: log.dep_airport.longitude.toString(),
 			end_lat: log.des_airport.latitude.toString(),
-			end_lon: log.des_airport.longitude.toString()
+			end_lon: log.des_airport.longitude.toString(),
+			dep: log.dep_airport.icao,
+			des: log.des_airport.icao
 		});
 		return URL;
 	}
