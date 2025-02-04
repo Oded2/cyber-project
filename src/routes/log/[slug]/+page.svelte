@@ -137,14 +137,15 @@
 </Container>
 <div class="">
 	<Container>
-		<div class="grid gap-4 lg:grid-cols-2">
-			{@render airportDetails(log.dep_airport)}
-			{#if !roundTrip}
-				{@render airportDetails(log.des_airport)}
-			{/if}
-		</div>
-		<div class="mt-5 w-full">
-			<iframe class="h-96 w-full" src={getRouteMap()} title="Route Map" frameborder="0"></iframe>
+		<div class="flex flex-col gap-2 lg:flex-row">
+			<div class="flex justify-around gap-2 lg:flex-col">
+				{@render airportDetails(log.dep_airport)}
+				{#if !roundTrip}
+					{@render airportDetails(log.des_airport)}
+				{/if}
+			</div>
+			<iframe class="h-[75vh] w-full" src={getRouteMap()} title="Route Map" frameborder="0"
+			></iframe>
 		</div>
 	</Container>
 </div>
@@ -188,7 +189,7 @@
 			<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
 			<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
 			<li>Relative Humidity: {weather.humidity}%</li>
-			<li>Pressure: {weather.pressure}</li>
+			<li>Pressure: {weather.pressure} Milibars</li>
 			<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
 			<li>Cloud Cover: {weather.cloud_cover}/100</li>
 			<li>Precipation: {weather.precipation.toLocaleString()}ml</li>

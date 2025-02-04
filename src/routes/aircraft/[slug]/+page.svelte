@@ -7,7 +7,8 @@
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
-	const { aircraft, profile, logs, supabase, ref } = data;
+	const { aircraft, profile, logs, supabase, ref, user } = data;
+	const isOwner = user?.id === aircraft.owner;
 </script>
 
 <Container>
@@ -64,6 +65,7 @@
 		<div class="mt-10"></div>
 		<Logbook
 			title={`Logs taken with '${aircraft.nickname}'`}
+			edit={isOwner}
 			{logs}
 			aircrafts={[aircraft]}
 			{supabase}
