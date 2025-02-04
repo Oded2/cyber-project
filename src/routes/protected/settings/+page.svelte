@@ -4,6 +4,7 @@
 	import {
 		addParams,
 		capitalizeFirstLetter,
+		countries,
 		defaultProfilePicture,
 		format,
 		getWeatherData,
@@ -196,6 +197,12 @@
 						const pfp = document.getElementById('profilePicture') as HTMLImageElement;
 						pfp.src = profile.image.length > 0 ? profile.image : defaultProfilePicture;
 					}}
+				></ProfileEditor>
+				<ProfileEditor
+					title="Country"
+					values={countries}
+					bind:value={updatedProfile.country}
+					action={() => updateProfile('country')}
 				></ProfileEditor>
 			{:else if currentPage === 'account'}
 				<ProfileEditor

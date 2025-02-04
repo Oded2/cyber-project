@@ -2,6 +2,7 @@
 	let {
 		title,
 		value = $bindable(),
+		values = {},
 		action,
 		min = 0,
 		max = 50,
@@ -11,6 +12,7 @@
 	}: {
 		title: string;
 		value: string;
+		values?: { [key: string]: string };
 		action: () => Promise<void>;
 		min?: number;
 		max?: number;
@@ -18,6 +20,9 @@
 		required?: boolean;
 		allowPaste?: boolean;
 	} = $props();
+
+	const keys = Object.keys(values);
+
 	let edit = $state(false);
 	let progress = $state(false);
 
@@ -56,15 +61,28 @@
 		</button>
 	</div>
 	{#if edit}
-		<input
-			name={title}
-			bind:value
-			type={inputType}
-			class="input input-xs border-0 text-base !outline-none"
-			{required}
-			minlength={min}
-			maxlength={max}
-		/>
+		{#if keys.length > 0}
+			<select
+				name={title}
+				bind:value
+				class="select select-sm !border-none !outline-none"
+				{required}
+			>
+				{#each keys as key, index}
+					<option value={key} selected={index == 0}>{values[key]}</option>
+				{/each}
+			</select>
+		{:else}
+			<input
+				name={title}
+				bind:value
+				type={inputType}
+				class="input input-xs border-0 text-base !outline-none"
+				{required}
+				minlength={min}
+				maxlength={max}
+			/>
+		{/if}
 	{:else}
 		<div class="px-2">
 			<h6 class="whitespace-nowrap font-light">
