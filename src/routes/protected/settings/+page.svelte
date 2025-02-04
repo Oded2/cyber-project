@@ -45,11 +45,6 @@
 		isFinished: false
 	});
 
-	const errors = $state({
-		invalidUsername: false,
-		usernameTaken: false
-	});
-
 	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
 		aircrafts = aircrafts.filter((obj) => obj.id != currentID);
@@ -190,6 +185,7 @@
 					max={50}
 					required
 				></ProfileEditor>
+				<!-- <ProfileEditor title="Country of Residence" bind:value={updatedProfile.country} ></ProfileEditor> -->
 				<ProfileEditor
 					title="Profile Picture URL"
 					bind:value={updatedProfile.image}

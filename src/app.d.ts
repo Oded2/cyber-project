@@ -22,6 +22,7 @@ declare global {
 		username: string;
 		bio: string;
 		image: string;
+		country: string;
 		[key: string]: string | Date;
 	}
 	interface Log {
