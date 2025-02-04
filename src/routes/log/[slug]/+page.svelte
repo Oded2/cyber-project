@@ -34,6 +34,7 @@
 	}
 
 	function getRouteMap(): string {
+		if (roundTrip) return '';
 		const endpoint = 'https://aerologger-maps.onrender.com/map';
 		const URL = addParams(endpoint, {
 			start_lat: log.dep_airport.latitude.toString(),
@@ -44,6 +45,29 @@
 			des: log.des_airport.icao
 		});
 		return URL;
+	}
+
+	function getOpenStreetMap() {
+		// Extract longitude and latitude from the airport object
+		const longitude = log.dep_airport.longitude;
+		const latitude = log.dep_airport.latitude;
+		// 1 degree of latitude is approximately 111.32 km
+		const degrees = 30 / 111.32;
+		// Create a bounding box (bbox) around the airport location
+		// The bbox defines the map's visible area, extending 30km in each direction
+		const bbox = [
+			longitude - degrees, // Western boundary
+			latitude - degrees, // Southern boundary
+			longitude + degrees, // Eastern boundary
+			latitude + degrees // Northern boundary
+		].join(','); // Convert the bbox array to a comma-separated string
+		// Create a marker string using the airport's latitude and longitude
+		// This marker will indicate the airport's exact location on the map
+		const marker = `${latitude},${longitude}`;
+		// Construct the embed link for OpenStreetMap
+		// The 'bbox' defines the visible area, and the 'marker' pinpoints the airport's location
+		const embedLink = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${marker}`;
+		return embedLink;
 	}
 </script>
 
@@ -144,7 +168,11 @@
 					{@render airportDetails(log.des_airport)}
 				{/if}
 			</div>
-			<iframe class="h-[75vh] w-full" src={getRouteMap()} title="Route Map" frameborder="0"
+			<iframe
+				class="h-[75vh] w-full"
+				src={roundTrip ? getOpenStreetMap() : getRouteMap()}
+				title="Route Map"
+				frameborder="0"
 			></iframe>
 		</div>
 	</Container>
@@ -189,7 +217,7 @@
 			<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
 			<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
 			<li>Relative Humidity: {weather.humidity}%</li>
-			<li>Pressure: {weather.pressure} Milibars</li>
+			<li>Pressure: {weather.pressure} Millibars</li>
 			<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
 			<li>Cloud Cover: {weather.cloud_cover}/100</li>
 			<li>Precipation: {weather.precipation.toLocaleString()}ml</li>
