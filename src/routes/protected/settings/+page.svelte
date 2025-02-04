@@ -186,7 +186,12 @@
 					max={50}
 					required
 				></ProfileEditor>
-				<!-- <ProfileEditor title="Country of Residence" bind:value={updatedProfile.country} ></ProfileEditor> -->
+				<ProfileEditor
+					title="Country"
+					values={countries}
+					bind:value={updatedProfile.country}
+					action={() => updateProfile('country')}
+				></ProfileEditor>
 				<ProfileEditor
 					title="Profile Picture URL"
 					bind:value={updatedProfile.image}
@@ -197,12 +202,6 @@
 						const pfp = document.getElementById('profilePicture') as HTMLImageElement;
 						pfp.src = profile.image.length > 0 ? profile.image : defaultProfilePicture;
 					}}
-				></ProfileEditor>
-				<ProfileEditor
-					title="Country"
-					values={countries}
-					bind:value={updatedProfile.country}
-					action={() => updateProfile('country')}
 				></ProfileEditor>
 			{:else if currentPage === 'account'}
 				<ProfileEditor
