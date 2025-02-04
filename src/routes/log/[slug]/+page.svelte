@@ -17,6 +17,8 @@
 		{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
 		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
 	);
+	const map = getRouteMap();
+
 	function formatSpecificDate(date: Date): string {
 		return date.toLocaleString('en-US', {
 			year: 'numeric',
@@ -34,7 +36,7 @@
 	}
 
 	function getRouteMap(): string {
-		if (roundTrip) return '';
+		if (roundTrip) return getOpenStreetMap();
 		const endpoint = 'https://aerologger-maps.onrender.com/map';
 		const URL = addParams(endpoint, {
 			start_lat: log.dep_airport.latitude.toString(),
@@ -48,6 +50,8 @@
 	}
 
 	function getOpenStreetMap() {
+		// Get endpoint
+		const endpoint = 'https://www.openstreetmap.org/export/embed.html';
 		// Extract longitude and latitude from the airport object
 		const longitude = log.dep_airport.longitude;
 		const latitude = log.dep_airport.latitude;
@@ -66,8 +70,7 @@
 		const marker = `${latitude},${longitude}`;
 		// Construct the embed link for OpenStreetMap
 		// The 'bbox' defines the visible area, and the 'marker' pinpoints the airport's location
-		const embedLink = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${marker}`;
-		return embedLink;
+		return addParams(endpoint, { bbox, marker });
 	}
 </script>
 
@@ -162,18 +165,13 @@
 <div class="">
 	<Container>
 		<div class="flex flex-col gap-2 lg:flex-row">
-			<div class="flex justify-around gap-2 lg:flex-col">
+			<div class="flex gap-2 lg:flex-col" class:justify-around={!roundTrip}>
 				{@render airportDetails(log.dep_airport)}
 				{#if !roundTrip}
 					{@render airportDetails(log.des_airport)}
 				{/if}
 			</div>
-			<iframe
-				class="h-[75vh] w-full"
-				src={roundTrip ? getOpenStreetMap() : getRouteMap()}
-				title="Route Map"
-				frameborder="0"
-			></iframe>
+			<iframe class="h-[75vh] w-full" src={map} title="Route Map" frameborder="0"></iframe>
 		</div>
 	</Container>
 </div>
