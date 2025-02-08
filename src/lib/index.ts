@@ -244,11 +244,6 @@ export function publicOnly(items: any[]): void {
 	});
 }
 
-export function showAlert(id: string) {
-	const alert = document.getElementById(id) as HTMLButtonElement;
-	alert.click();
-}
-
 export function haversineDistance(
 	pointA: { latitude: number; longitude: number },
 	pointB: { latitude: number; longitude: number }

@@ -11,17 +11,17 @@
 		handleLogs,
 		hrefs,
 		isTaken,
-		showAlert,
 		showModal,
 		validUsername
 	} from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { page } from '$app/stores';
 	import Collapse from '$lib/components/Collapse.svelte';
+	import Toasts from '$lib/components/Toasts.svelte';
+	import { addToast } from '$lib/toasts.js';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
@@ -171,12 +171,20 @@
 					action={async () => {
 						if (updatedProfile.username === profile.username) return;
 						if (!validUsername(updatedProfile.username)) {
-							showAlert('invalidUsername');
+							addToast({
+								text: 'Username can only contain latin letters and numbers.',
+								duration: 5000,
+								type: 'error'
+							});
 							updatedProfile.username = profile.username;
 							return;
 						}
 						if (await isTaken(updatedProfile.username, supabase)) {
-							showAlert('usernameTaken');
+							addToast({
+								text: 'Username already taken',
+								duration: 5000,
+								type: 'error'
+							});
 							updatedProfile.username = profile.username;
 							return;
 						}
@@ -349,9 +357,7 @@
 	onconfirmation={() => handleLogPurge(currentFilter)}
 	text={`${profile.username}/logs/${currentFilter}`}
 ></ConfirmationModal>
-
-<Alert id="invalidUsername" text="Username can only contain latin letters and numbers."></Alert>
-<Alert id="usernameTaken" text="Username already taken"></Alert>
+<Toasts></Toasts>
 
 <Title title="Settings"></Title>
 
