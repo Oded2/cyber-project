@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
 	import { addParams, countries, format, getDuration, haversineDistance, hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
@@ -37,14 +38,15 @@
 
 	function getRouteMap(): string {
 		if (roundTrip) return getOpenStreetMap();
-		const endpoint = 'https://aerologger-maps.onrender.com/map';
-		const URL = addParams(endpoint, {
+		const URL = addParams(PUBLIC_MAP_ENDPOINT, {
 			start_lat: log.dep_airport.latitude.toString(),
 			start_lon: log.dep_airport.longitude.toString(),
 			end_lat: log.des_airport.latitude.toString(),
 			end_lon: log.des_airport.longitude.toString(),
 			dep: log.dep_airport.icao,
-			des: log.des_airport.icao
+			des: log.des_airport.icao,
+			dep_weather: JSON.stringify(log.dep_weather),
+			des_weather: JSON.stringify(log.des_weather)
 		});
 		return URL;
 	}
