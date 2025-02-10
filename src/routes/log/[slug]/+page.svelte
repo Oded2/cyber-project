@@ -164,19 +164,20 @@
 		{/if}
 	</div>
 </Container>
-<div class="">
-	<Container>
-		<div class="flex flex-col gap-2 lg:flex-row">
-			<div class="flex gap-2 lg:flex-col" class:justify-around={!roundTrip}>
-				{@render airportDetails(log.dep_airport)}
-				{#if !roundTrip}
-					{@render airportDetails(log.des_airport)}
-				{/if}
-			</div>
-			<iframe class="h-[75vh] w-full" src={map} title="Route Map" frameborder="0"></iframe>
+<Container>
+	<div class="flex flex-col gap-2 lg:flex-row">
+		<div class="flex gap-2 lg:flex-col" class:justify-around={!roundTrip}>
+			{@render airportDetails(log.dep_airport)}
+			{#if !roundTrip}
+				{@render airportDetails(log.des_airport)}
+			{/if}
 		</div>
-	</Container>
-</div>
+		<div class="flex w-full flex-col">
+			<iframe class="h-[75vh] w-full" src={map} title="Route Map" frameborder="0"></iframe>
+			<a href={map} target="_blank" class="link px-4">Open map in new tab</a>
+		</div>
+	</div>
+</Container>
 
 <Ref {ref}></Ref>
 
