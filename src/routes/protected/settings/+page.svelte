@@ -77,11 +77,12 @@
 	}
 	async function handleLogPurge(filter: typeof currentFilter): Promise<void> {
 		const userId = user!.id;
-		const shortcut = supabase.from('logs').delete;
-		if (filter === 'all') await shortcut().eq('owner', userId);
-		else if (filter === 'favorite') await shortcut().eq('owner', userId).eq('favorite', true);
-		else if (filter === 'unfavorite') await shortcut().eq('owner', userId).eq('favorite', false);
-		else await shortcut().eq('owner', userId).eq('visibility', filter);
+		if (filter === 'all') await supabase.from('logs').delete().eq('owner', userId);
+		else if (filter === 'favorite')
+			await supabase.from('logs').delete().eq('owner', userId).eq('favorite', true);
+		else if (filter === 'unfavorite')
+			await supabase.from('logs').delete().eq('owner', userId).eq('favorite', false);
+		else await supabase.from('logs').delete().eq('owner', userId).eq('visibility', filter);
 	}
 	async function updateLogs(): Promise<void> {
 		// This function updates the weather in any logs that were logged before they happened
@@ -96,7 +97,8 @@
 				const newWeather = await getWeather(
 					[log.dep_airport.longitude, log.dep_airport.latitude],
 					[log.des_airport.longitude, log.des_airport.latitude],
-					log.dep_time
+					log.dep_time,
+					log.des_time
 				);
 				const toUpdate = {
 					weather_data: newWeather,

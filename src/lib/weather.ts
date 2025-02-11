@@ -1,4 +1,4 @@
-import { addParams, toUTC } from '$lib';
+import { addParams, getDatesBetween, toUTC } from '$lib';
 import { error } from '@sveltejs/kit';
 import { greatCircle } from '@turf/turf';
 
@@ -45,12 +45,14 @@ interface WeatherData {
 export async function getWeather(
 	start: [number, number],
 	end: [number, number],
-	time: Date
+	timeStart: Date,
+	timeEnd: Date
 ): Promise<Weather[]> {
 	const coords = greatCircle(start, end, { npoints: 10 }).geometry.coordinates;
+	const dates = getDatesBetween(timeStart, timeEnd, 10);
 	const weatherData = await Promise.all(
-		coords.map((coord) =>
-			getWeatherData(time, coord[0].valueOf() as number, coord[1].valueOf() as number)
+		coords.map((coord, index) =>
+			getWeatherData(dates[index], coord[0].valueOf() as number, coord[1].valueOf() as number)
 		)
 	);
 	return weatherData;

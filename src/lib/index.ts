@@ -167,6 +167,33 @@ export function publicOnly(items: any[]): void {
 	});
 }
 
+export function getDatesBetween(start: Date, end: Date, n: number): Date[] {
+	/**
+	 * Returns an array of Date objects between the start and end dates (inclusive),
+	 * evenly spaced so that the resulting array is of length n.
+	 *
+	 * @param start - The starting Date.
+	 * @param end - The ending Date.
+	 * @param n - The total number of dates you want (including start and end).
+	 * @returns An array of Date objects.
+	 */
+	if (n < 2) {
+		// If n is less than 2, return only the start date (or choose how to handle this case)
+		return [new Date(start)];
+	}
+
+	const startTime = start.getTime();
+	const endTime = end.getTime();
+	const interval = (endTime - startTime) / (n - 1);
+	const dates: Date[] = [];
+	for (let i = 0; i < n; i++) {
+		// Create a new Date by adding i * interval milliseconds to the start date
+		dates.push(new Date(startTime + i * interval));
+	}
+
+	return dates;
+}
+
 export function haversineDistance(
 	pointA: { latitude: number; longitude: number },
 	pointB: { latitude: number; longitude: number }

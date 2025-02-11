@@ -23,7 +23,8 @@ export const actions: Actions = {
 		const weather = await getWeather(
 			[depAirport.longitude, depAirport.latitude],
 			[desAirport.longitude, desAirport.latitude],
-			depDate
+			depDate,
+			desDate
 		);
 		validateDates(depDate, desDate);
 		numToNull(formData, 'fuel_usage');
