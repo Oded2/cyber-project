@@ -37,6 +37,10 @@ export function addParams(
 	return url.toString();
 }
 
+export function formatCoords(airport: Airport): [number, number] {
+	return [airport.longitude, airport.latitude];
+}
+
 export async function isTaken(username: string, supabase: SupabaseClient): Promise<boolean> {
 	// Checks to see if a username is taken
 	const { data, error } = await supabase.from('profiles').select().eq('username', username);

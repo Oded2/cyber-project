@@ -1,11 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
-	import { addParams, countries, format, getDuration, haversineDistance, hrefs } from '$lib';
+	import {
+		addParams,
+		countries,
+		format,
+		formatCoords,
+		getDuration,
+		haversineDistance,
+		hrefs
+	} from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import { getCountriesFlownOver } from '$lib/weather.js';
+	import { onMount } from 'svelte';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
@@ -22,6 +32,10 @@
 		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
 	);
 	const map = getRouteMap();
+	const countriesFlown = getCountriesFlownOver(
+		formatCoords(log.dep_airport),
+		formatCoords(log.des_airport)
+	);
 
 	function formatSpecificDate(date: Date): string {
 		return date.toLocaleString('en-US', {
@@ -127,6 +141,18 @@
 							minute: 'numeric'
 						})}
 					</li>
+					{#await countriesFlown then countries}
+						<li>
+							<strong>Countries Flown Over</strong>
+							<ul>
+								{#each countries as country}
+									<li>
+										{country}
+									</li>
+								{/each}
+							</ul>
+						</li>
+					{/await}
 				</ul>
 			</div>
 		</LogViewerCard>

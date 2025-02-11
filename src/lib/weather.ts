@@ -1,45 +1,29 @@
 import { addParams, getDatesBetween, toUTC } from '$lib';
 import { error } from '@sveltejs/kit';
-import { greatCircle } from '@turf/turf';
+import { greatCircle, booleanPointInPolygon, point } from '@turf/turf';
 
-interface WeatherData {
-	latitude: number;
-	longitude: number;
-	generationtime_ms: number;
-	utc_offset_seconds: number;
-	timezone: string;
-	timezone_abbreviation: string;
-	elevation: number;
-	hourly_units: {
-		time: string;
-		temperature_2m: string;
-		relative_humidity_2m: string;
-		dew_point_2m: string;
-		precipitation: string;
-		weather_code: string;
-		pressure_msl: string;
-		surface_pressure: string;
-		cloud_cover: string;
-		visibility: string;
-		wind_speed_180m: string;
-		wind_direction_180m: string;
-		temperature_180m: string;
-	};
-	hourly: {
-		time: string[];
-		temperature_2m: number[];
-		relative_humidity_2m: number[];
-		dew_point_2m: number[];
-		precipitation: number[];
-		weather_code: number[];
-		pressure_msl: number[];
-		surface_pressure: number[];
-		cloud_cover: number[];
-		visibility: number[];
-		wind_speed_180m: number[];
-		wind_direction_180m: number[];
-		temperature_180m: number[];
-	};
+export async function getCountriesFlownOver(
+	start: [number, number],
+	end: [number, number]
+): Promise<Set<string>> {
+	// Function to determine which countries a path flies over
+	const countryData = (await fetch('/countries.geojson').then((response) =>
+		response.json()
+	)) as CountryGeoJSON;
+	const pathCoords = greatCircle(start, end, { npoints: 50 }).geometry;
+	const flownOver = new Set<string>();
+	const multi: boolean = pathCoords.type === 'MultiLineString';
+	let arr: [number, number][];
+	if (pathCoords.type === 'MultiLineString')
+		arr = pathCoords.coordinates.flat().map((val) => [val[0], val[1]]);
+	else arr = pathCoords.coordinates.map((val) => [val[0], val[1]]);
+	for (const coord of arr) {
+		const countryFeature = countryData.features.find((feature: any) => {
+			return booleanPointInPolygon(point(coord), feature);
+		});
+		if (countryFeature) flownOver.add(countryFeature.properties.NAME);
+	}
+	return flownOver;
 }
 
 export async function getWeather(
@@ -92,5 +76,63 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 		visibility: hourlyData.visibility[hourlyIndex],
 		wind_speed: hourlyData.wind_speed_180m[hourlyIndex],
 		wind_direction: hourlyData.wind_direction_180m[hourlyIndex]
+	};
+}
+
+type CountryFeature = {
+	type: 'Feature';
+	properties: {
+		NAME: string; // Country name
+		ISO_A2?: string; // 2-letter ISO code (optional)
+		ISO_A3?: string; // 3-letter ISO code (optional)
+		POP_EST?: number; // Population estimate (optional)
+		CONTINENT?: string; // Continent (optional)
+		[key: string]: any; // Allow other properties
+	};
+	geometry: {
+		type: 'Polygon' | 'MultiPolygon'; // Country boundaries
+		coordinates: number[][][][]; // GeoJSON coordinates
+	};
+};
+
+type CountryGeoJSON = { type: 'FeatureCollection'; features: CountryFeature[] };
+
+interface WeatherData {
+	latitude: number;
+	longitude: number;
+	generationtime_ms: number;
+	utc_offset_seconds: number;
+	timezone: string;
+	timezone_abbreviation: string;
+	elevation: number;
+	hourly_units: {
+		time: string;
+		temperature_2m: string;
+		relative_humidity_2m: string;
+		dew_point_2m: string;
+		precipitation: string;
+		weather_code: string;
+		pressure_msl: string;
+		surface_pressure: string;
+		cloud_cover: string;
+		visibility: string;
+		wind_speed_180m: string;
+		wind_direction_180m: string;
+		temperature_180m: string;
+	};
+	hourly: {
+		time: string[];
+		temperature_2m: number[];
+		relative_humidity_2m: number[];
+		dew_point_2m: number[];
+		precipitation: number[];
+		weather_code: number[];
+		pressure_msl: number[];
+		surface_pressure: number[];
+		cloud_cover: number[];
+		visibility: number[];
+		wind_speed_180m: number[];
+		wind_direction_180m: number[];
+		temperature_180m: number[];
 	};
 }
