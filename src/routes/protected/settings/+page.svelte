@@ -7,7 +7,6 @@
 		countries,
 		defaultProfilePicture,
 		format,
-		getWeatherData,
 		handleLogs,
 		hrefs,
 		isTaken,
@@ -18,15 +17,16 @@
 	import Container from '$lib/components/Container.svelte';
 	import ProfileEditor from '$lib/components/ProfileEditor.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Collapse from '$lib/components/Collapse.svelte';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import { addToast } from '$lib/toasts.js';
+	import { getWeather, getWeatherData } from '$lib/weather.js';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
 	const updatedProfile = $state(profile);
-	const pageUrl = $page.url;
+	const pageUrl = page.url;
 	const visibilities = {
 		private: 'Privatize',
 		unlisted: 'Unlist',
@@ -93,19 +93,13 @@
 		for (const log of logs) {
 			// Checks to see if the log has true weather and that it was before the current date
 			if (!log.true_weather && log.des_time < today) {
-				const newDepWeather = await getWeatherData(
-					log.dep_time,
-					log.dep_airport.longitude,
-					log.dep_airport.latitude
-				);
-				const newDesWeather = await getWeatherData(
-					log.des_time,
-					log.des_airport.longitude,
-					log.des_airport.latitude
+				const newWeather = await getWeather(
+					[log.dep_airport.longitude, log.dep_airport.latitude],
+					[log.des_airport.longitude, log.des_airport.latitude],
+					log.dep_time
 				);
 				const toUpdate = {
-					dep_weather: newDepWeather,
-					des_weather: newDesWeather,
+					weather_data: newWeather,
 					true_weather: true
 				};
 				await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);

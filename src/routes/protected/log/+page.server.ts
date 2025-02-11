@@ -1,5 +1,6 @@
 import { APININJAS } from '$env/static/private';
-import { addParams, hrefs, getWeatherData } from '$lib';
+import { addParams, hrefs } from '$lib';
+import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
 export async function load({ parent, url }) {
@@ -13,17 +14,24 @@ export const actions: Actions = {
 	default: async ({ request, locals: { supabase } }) => {
 		const today = new Date();
 		const formData = await request.formData();
-		// Get data for the airports and check that they are real
+		// Get data for the airpo\rts and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
+		// Get the weather data from the departure airport to the destination airport
+		const weather = await getWeather(
+			[depAirport.longitude, depAirport.latitude],
+			[desAirport.longitude, desAirport.latitude],
+			depDate
+		);
 		validateDates(depDate, desDate);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
-		obj['dep_weather'] = await getWeatherData(depDate, depAirport.longitude, depAirport.latitude);
-		obj['des_weather'] = await getWeatherData(desDate, desAirport.longitude, desAirport.latitude);
+		obj['weather_data'] = weather;
+		obj['dep_weather'] = weather[0];
+		obj['des_weather'] = weather[weather.length - 1];
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
 		// Ensure that the dates are inserted properly

@@ -40,8 +40,7 @@ declare global {
 		visibility: 'public' | 'unlisted' | 'private';
 		fuel_usage?: number;
 		rating: 'visual' | 'instrument';
-		dep_weather: Weather;
-		des_weather: Weather;
+		weather_data: Weather[];
 		favorite: boolean;
 		true_weather: boolean;
 	}

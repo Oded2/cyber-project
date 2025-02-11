@@ -6,6 +6,8 @@
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import { getWeather } from '$lib/weather.js';
+	import { onMount } from 'svelte';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
@@ -14,6 +16,9 @@
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
+	const weather = log.weather_data;
+	const dep_weather = weather[0];
+	const des_weather = weather[weather.length - 1];
 	const distanceKm = haversineDistance(
 		{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
 		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
@@ -45,8 +50,8 @@
 			end_lon: log.des_airport.longitude.toString(),
 			dep: log.dep_airport.icao,
 			des: log.des_airport.icao,
-			dep_weather: JSON.stringify(log.dep_weather),
-			des_weather: JSON.stringify(log.des_weather)
+			dep_weather: JSON.stringify(dep_weather),
+			des_weather: JSON.stringify(des_weather)
 		});
 		return URL;
 	}
@@ -127,8 +132,8 @@
 		<LogViewerCard title="Weather Details">
 			<div class="prose">
 				<ul>
-					{@render weatherDetails(log.dep_weather, log.dep_airport.city)}
-					{@render weatherDetails(log.des_weather, log.des_airport.city)}
+					{@render weatherDetails(dep_weather, log.dep_airport.city)}
+					{@render weatherDetails(des_weather, log.des_airport.city)}
 				</ul>
 			</div>
 		</LogViewerCard>
