@@ -1,18 +1,16 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
 	import { addParams, countries, format, getDuration, haversineDistance, hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { getWeather } from '$lib/weather.js';
-	import { onMount } from 'svelte';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
 
-	const pageUrl = $page.url;
+	const pageUrl = page.url;
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const depTime = log.dep_time;
 	const desTime = log.des_time;
