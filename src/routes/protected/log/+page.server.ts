@@ -31,8 +31,6 @@ export const actions: Actions = {
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
 		obj['weather_data'] = weather;
-		obj['dep_weather'] = weather[0];
-		obj['des_weather'] = weather[weather.length - 1];
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
 		// Ensure that the dates are inserted properly
