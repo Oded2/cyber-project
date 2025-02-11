@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { hrefs } from '$lib';
 	import Container from '$lib/components/Container.svelte';
 	import { onMount } from 'svelte';
-	const url = $page;
+	const url = page;
 
 	onMount(() => {
 		document.title = `${url.status} Error`;

@@ -2,7 +2,7 @@
 	import type { SupabaseClient } from '@supabase/supabase-js';
 	import Modal from './Modal.svelte';
 	import { addParams, closeModal, formatDate, hrefs, showModal } from '$lib';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import ConfirmationModal from './ConfirmationModal.svelte';
 
 	const {
@@ -19,7 +19,7 @@
 		ondelete: () => void;
 	} = $props();
 	// Get the current URL
-	const pageUrl = $page.url;
+	const pageUrl = page.url;
 	const visibilities = {
 		private: 'Privatize',
 		public: 'Publicize',

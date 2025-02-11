@@ -5,7 +5,7 @@
 	import Title from '$lib/components/Title.svelte';
 	import NumberInput from '$lib/components/NumberInput.svelte';
 	import { addParams, hrefs } from '$lib';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const { data } = $props();
 	const { inputs, aircraft } = data;
@@ -53,7 +53,7 @@
 					<h2 class="card-title">
 						<a
 							aria-label="Back"
-							href={addParams(hrefs.settings, { page: 'aircraft' }, $page.url.origin)}
+							href={addParams(hrefs.settings, { page: 'aircraft' }, page.url.origin)}
 							><i class="fa-solid fa-chevron-left"></i></a
 						> Register Aircraft
 					</h2>

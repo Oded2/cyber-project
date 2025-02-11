@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { addParams, formatDateTime, hrefs, maxDate, minDate, showModal } from '$lib';
 	import { SvelteDate } from 'svelte/reactivity';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import { onMount } from 'svelte';
@@ -14,7 +14,7 @@
 	}: { originalLogs: Log[]; edit?: boolean; supabase: SupabaseClient } = $props();
 	let logs = $state(originalLogs);
 
-	const pageUrl = $page.url;
+	const pageUrl = page.url;
 
 	let current: SvelteDate = new SvelteDate();
 	current.setDate(1);

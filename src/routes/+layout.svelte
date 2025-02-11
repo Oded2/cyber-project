@@ -5,16 +5,15 @@
 	import { onMount } from 'svelte';
 	import { error } from '@sveltejs/kit';
 	import { hrefs } from '$lib';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 
 	const { children, data } = $props();
 	// possible issue
 	const { supabase, session, user, profile } = data;
 
-	let pageData = $derived($page);
-	let status = $derived(pageData.status);
-	let pathname = $derived(pageData.url.pathname);
+	let status = $derived(page.status);
+	let pathname = $derived(page.url.pathname);
 
 	const navItems = [
 		{ href: hrefs.contact, title: 'Contact' },

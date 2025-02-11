@@ -4,7 +4,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const {
 		originalLogs,
@@ -18,7 +18,7 @@
 		supabase: SupabaseClient;
 	} = $props();
 
-	const pageUrl = $page.url;
+	const pageUrl = page.url;
 
 	let logs = $state(originalLogs);
 	let currentLog = $state(originalLogs[0]);
