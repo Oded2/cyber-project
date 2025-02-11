@@ -55,9 +55,10 @@
 
 	function getRouteMap(): string {
 		if (roundTrip) return getOpenStreetMap();
-		const weatherFiltered = weather.map(({ wind_speed, wind_direction }) => ({
+		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
-			wind_direction
+			wind_direction,
+			coord
 		}));
 		const URL = addParams(PUBLIC_MAP_ENDPOINT, {
 			start_lat: log.dep_airport.latitude.toString(),

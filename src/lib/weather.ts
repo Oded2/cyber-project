@@ -3,8 +3,8 @@ import { error } from '@sveltejs/kit';
 import { greatCircle, booleanPointInPolygon, point } from '@turf/turf';
 
 export async function getCountriesFlownOver(
-	start: [number, number],
-	end: [number, number]
+	start: Coordinate,
+	end: Coordinate
 ): Promise<Set<string>> {
 	// Function to determine which countries a path flies over
 	const countryData = (await fetch('/countries.geojson').then((response) =>
@@ -12,7 +12,6 @@ export async function getCountriesFlownOver(
 	)) as CountryGeoJSON;
 	const pathCoords = greatCircle(start, end, { npoints: 50 }).geometry;
 	const flownOver = new Set<string>();
-	const multi: boolean = pathCoords.type === 'MultiLineString';
 	let arr: [number, number][];
 	if (pathCoords.type === 'MultiLineString')
 		arr = pathCoords.coordinates.flat().map((val) => [val[0], val[1]]);
@@ -27,8 +26,8 @@ export async function getCountriesFlownOver(
 }
 
 export async function getWeather(
-	start: [number, number],
-	end: [number, number],
+	start: Coordinate,
+	end: Coordinate,
 	timeStart: Date,
 	timeEnd: Date
 ): Promise<Weather[]> {
@@ -75,7 +74,8 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 		cloud_cover: hourlyData.cloud_cover[hourlyIndex],
 		visibility: hourlyData.visibility[hourlyIndex],
 		wind_speed: hourlyData.wind_speed_180m[hourlyIndex],
-		wind_direction: hourlyData.wind_direction_180m[hourlyIndex]
+		wind_direction: hourlyData.wind_direction_180m[hourlyIndex],
+		coord: [long, lat]
 	};
 }
 

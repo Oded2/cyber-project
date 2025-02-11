@@ -15,6 +15,8 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	// Longitude, Latitude
+	type Coordinate = [number, number];
 	interface Profile {
 		id: string;
 		created_at: Date;
@@ -91,6 +93,7 @@ declare global {
 		visibility: number;
 		wind_speed: number;
 		wind_direction: number;
+		coord: Coordinate;
 	}
 }
 
