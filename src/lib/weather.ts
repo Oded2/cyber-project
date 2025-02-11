@@ -12,7 +12,7 @@ export async function getCountriesFlownOver(
 	)) as CountryGeoJSON;
 	const pathCoords = greatCircle(start, end, { npoints: 50 }).geometry;
 	const flownOver = new Set<string>();
-	let arr: [number, number][];
+	let arr: Coordinate[];
 	if (pathCoords.type === 'MultiLineString')
 		arr = pathCoords.coordinates.flat().map((val) => [val[0], val[1]]);
 	else arr = pathCoords.coordinates.map((val) => [val[0], val[1]]);
