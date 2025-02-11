@@ -41,6 +41,10 @@
 
 	function getRouteMap(): string {
 		if (roundTrip) return getOpenStreetMap();
+		const weatherFiltered = weather.map(({ wind_speed, wind_direction }) => ({
+			wind_speed,
+			wind_direction
+		}));
 		const URL = addParams(PUBLIC_MAP_ENDPOINT, {
 			start_lat: log.dep_airport.latitude.toString(),
 			start_lon: log.dep_airport.longitude.toString(),
@@ -48,8 +52,7 @@
 			end_lon: log.des_airport.longitude.toString(),
 			dep: log.dep_airport.icao,
 			des: log.des_airport.icao,
-			dep_weather: JSON.stringify(dep_weather),
-			des_weather: JSON.stringify(des_weather)
+			weather_data: JSON.stringify(weatherFiltered)
 		});
 		return URL;
 	}
