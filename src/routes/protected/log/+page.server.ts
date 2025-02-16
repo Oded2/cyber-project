@@ -14,7 +14,7 @@ export const actions: Actions = {
 	default: async ({ request, locals: { supabase } }) => {
 		const today = new Date();
 		const formData = await request.formData();
-		// Get data for the airpo\rts and check that they are real
+		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const depDate = new Date(formData.get('dep_time') as string);
