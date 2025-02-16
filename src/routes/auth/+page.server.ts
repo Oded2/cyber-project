@@ -25,8 +25,8 @@ export const actions: Actions = {
 		validate(displayName, 'Display Name', 0, 50);
 		validate(username, 'Username', 0, 50);
 		// At this stage all inputs are within sufficient length
-		if (!validUsername(username)) error(422, { message: 'Invalid Username' });
-		if (!validEmail(email)) error(422, { message: 'Invalid Email' });
+		if (!validUsername(username)) throw error(422, { message: 'Invalid Username' });
+		if (!validEmail(email)) throw error(422, { message: 'Invalid Email' });
 		// At this stage all non-asynchronous validation functions have ran
 		if (await isTaken(username, supabase)) {
 			// Checks if the username is taken, and if it is, it returns the user to the
@@ -46,7 +46,7 @@ export const actions: Actions = {
 			// Email and password are sent off to supabase, which then validates
 			// the values, and if the values are invalid, the user is met with an
 			// error
-			error(e.status ?? 400, { message: e.message });
+			throw error(e.status ?? 400, { message: e.message });
 		}
 		// At this stage the user has been signed up to supabase and is given an id
 		const { error: profileFetchError } = await admin
@@ -55,7 +55,7 @@ export const actions: Actions = {
 		if (profileFetchError) {
 			// Error shouldn't occur due to previous validation, but if
 			// it does then the user is met with an error
-			error(400, { message: profileFetchError.message });
+			throw error(400, { message: profileFetchError.message });
 		}
 		// The user now has an account and profile, and is redirected to a page with instructions
 		redirect(
@@ -72,7 +72,7 @@ export const actions: Actions = {
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
 		// Collected all form data, and conveniently stores them as a string
-		if (!validEmail(email)) error(422, { message: 'Invalid Email' });
+		if (!validEmail(email)) throw error(422, { message: 'Invalid Email' });
 		// Email has gone through non-asynchronous validation
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
@@ -87,7 +87,7 @@ export const actions: Actions = {
 			// At this stage the user has encountered an uncommon error, and is met with the error
 			// status and message
 			console.error(e);
-			error(e.status ?? 400, { message: message });
+			throw error(e.status ?? 400, { message: message });
 		}
 		// User has successfully logged in, and is redirected to the home page
 		redirect(303, hrefs.home);
@@ -100,7 +100,7 @@ export const actions: Actions = {
 		const { error: e } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
 		if (e) {
 			// User has encountered an uncommon error
-			error(e.status ?? 400, { message: e.message });
+			throw error(e.status ?? 400, { message: e.message });
 		}
 		// User is now given instructions
 		redirect(
@@ -117,6 +117,7 @@ export const actions: Actions = {
 function validate(input: string, inputName: string, min: number = 0, max: number = 500): void {
 	// Simple validation function to check that inputs are not empty nor are they too long
 	if (input.length < min)
-		error(422, { message: `${inputName} must be at least ${min} characters long.` });
-	if (input.length > max) error(422, { message: `${inputName} cannot exceed ${max} characters.` });
+		throw error(422, { message: `${inputName} must be at least ${min} characters long.` });
+	if (input.length > max)
+		throw error(422, { message: `${inputName} cannot exceed ${max} characters.` });
 }

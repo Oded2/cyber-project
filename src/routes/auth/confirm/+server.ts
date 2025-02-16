@@ -25,5 +25,5 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 			redirect(303, redirectTo);
 		}
 	}
-	error(500, { message: 'Internal Server Error' });
+	throw error(500, { message: 'Internal Server Error' });
 };

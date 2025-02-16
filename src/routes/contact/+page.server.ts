@@ -7,10 +7,10 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const message = formData.get('message') as string;
-		if (!validEmail(email)) error(422, { message: 'Invalid Email' });
+		if (!validEmail(email)) throw error(422, { message: 'Invalid Email' });
 		if (message.length < 10) {
 			// Ensures that the message isn't too short to have any meaning
-			error(422, { message: 'Message must be at least 10 characters' });
+			throw error(422, { message: 'Message must be at least 10 characters' });
 		}
 		const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
 			method: 'POST',
@@ -26,6 +26,6 @@ export const actions: Actions = {
 		// Response has been sent to formspree
 		if (response.ok) return { success: true };
 		// Error encountered
-		error(response.status, { message: 'Unable to send form' });
+		throw error(response.status, { message: 'Unable to send form' });
 	}
 };

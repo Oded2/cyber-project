@@ -6,7 +6,7 @@ import { error, redirect, type Actions } from '@sveltejs/kit';
 export async function load({ parent, url }) {
 	const { aircrafts } = await parent();
 	const predefinedDate = url.searchParams.get('date');
-	if (aircrafts.length == 0) error(400, { message: 'No registered aircrafts' });
+	if (aircrafts.length == 0) throw error(400, { message: 'No registered aircrafts' });
 	return { predefinedDate: predefinedDate ? new Date(predefinedDate) : new Date() };
 }
 
@@ -38,7 +38,7 @@ export const actions: Actions = {
 		obj['des_time'] = desDate.toISOString();
 		obj['true_weather'] = desDate < today;
 		const { error: e } = await supabase.from('logs').insert(obj);
-		if (e) error(500, { message: e.message });
+		if (e) throw error(500, { message: e.message });
 		redirect(303, hrefs.logbook);
 	}
 };
@@ -46,7 +46,7 @@ export const actions: Actions = {
 function validateDates(dep: Date, des: Date): void {
 	// Ensures that the dates are not the same and that the takeoff happened before the landing
 	const difference: number = des.getTime() - dep.getTime();
-	if (difference <= 0) error(422, { message: 'Invalid dates' });
+	if (difference <= 0) throw error(422, { message: 'Invalid dates' });
 }
 
 function numToNull(form: FormData, name: string): void {
@@ -61,7 +61,7 @@ async function getAirportData(code: string): Promise<Airport> {
 	// If the code is invalid the function returns an error
 	const apiUrl = 'https://api.api-ninjas.com/v1/airports';
 	const length: number = code.length;
-	if (length < 3 || length > 4) error(422, { message: 'Invalid airport code' });
+	if (length < 3 || length > 4) throw error(422, { message: 'Invalid airport code' });
 	// Since the user is able to input both ICAO and IATA codes, this constant
 	// checks to see which one the user meant based on length
 	const param: string = length == 4 ? 'icao' : 'iata';
@@ -70,9 +70,9 @@ async function getAirportData(code: string): Promise<Airport> {
 	// Fetches the URL with the API key in the header for authentication
 	const response: Response = await fetch(url, { headers: { 'X-Api-Key': APININJAS } });
 	// Error handling
-	if (!response.ok) error(response.status, { message: response.statusText });
+	if (!response.ok) throw error(response.status, { message: response.statusText });
 	const json: { [key: string]: any }[] = await response.json();
-	if (json.length == 0) error(422, { message: `API could not fetch airport code ${code}` });
+	if (json.length == 0) throw error(422, { message: `API could not fetch airport code ${code}` });
 	const airport = json[0];
 	// Converts the longitude and latitude coordinates to number
 	airport['longitude'] = parseFloat(airport['longitude']);

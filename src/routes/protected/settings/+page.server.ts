@@ -12,7 +12,7 @@ export const actions: Actions = {
 	deleteAccount: async ({ locals: { user } }) => {
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const { error: e } = await admin.auth.admin.deleteUser(user!.id);
-		if (e) error(e.status ?? 500, { message: e.message });
+		if (e) throw error(e.status ?? 500, { message: e.message });
 		redirect(303, hrefs.home);
 	}
 };

@@ -7,18 +7,18 @@ export async function load({ params, locals: { supabase, user } }) {
 		.from('profiles')
 		.select()
 		.eq('username', username);
-	if (eP) error(500, { message: eP.message });
-	if (profiles.length == 0) error(404, { message: "Username doesn't exist" });
+	if (eP) throw error(500, { message: eP.message });
+	if (profiles.length == 0) throw error(404, { message: "Username doesn't exist" });
 	handleProfiles(profiles);
 	const profile = profiles[0] as Profile;
 	const { data: logs, error: eL } = await supabase.from('logs').select().eq('owner', profile.id);
-	if (eL) error(500, { message: eL.message });
+	if (eL) throw error(500, { message: eL.message });
 	handleLogs(logs);
 	const { data: aircrafts, error: eA } = await supabase
 		.from('aircrafts')
 		.select()
 		.eq('owner', profile.id);
-	if (eA) error(500, { message: eA.message });
+	if (eA) throw error(500, { message: eA.message });
 	// If the user is viewing his own profile, then all logs will be accounted for, else only the public ones
 	if (!user || user.id !== profile.id) {
 		publicOnly(logs);

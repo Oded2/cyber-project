@@ -61,7 +61,7 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 	};
 	const url: string = addParams(apiUrl, params);
 	const response: Response = await fetch(url);
-	if (!response.ok) error(response.status, { message: response.statusText });
+	if (!response.ok) throw error(response.status, { message: response.statusText });
 	const json: WeatherData = (await response.json()) as WeatherData;
 	const hourlyData = json.hourly;
 	const hourlyIndex = hourlyData.time.findIndex((item) => oneHourDiff(new Date(item), time));

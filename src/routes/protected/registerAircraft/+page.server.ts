@@ -6,7 +6,7 @@ export async function load({ url, locals: { supabase } }) {
 	let aircraft: Aircraft | undefined;
 	if (id.length > 0) {
 		const { data, error: e } = await supabase.from('aircrafts').select().eq('id', id);
-		if (e) error(400, { message: e.message });
+		if (e) throw error(400, { message: e.message });
 		aircraft = data ? data[0] : undefined;
 	}
 	return { inputs, aircraft };
@@ -20,14 +20,14 @@ export const actions: Actions = {
 			const inputName = input.name;
 			const value = formData.get(inputName) as string;
 			if ((input.required && value.length == 0) || value.length > (input.max ?? 100)) {
-				error(422, { message: `${format(inputName)} is invalid` });
+				throw error(422, { message: `${format(inputName)} is invalid` });
 			}
 		}
 		const obj = Object.fromEntries(formData.entries());
 		if (id.length > 0) obj['id'] = id;
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row
 		const { error: e } = await supabase.from('aircrafts').upsert([obj]);
-		if (e) error(500, { message: e.message });
+		if (e) throw error(500, { message: e.message });
 		redirect(303, addParams(hrefs.settings, { page: 'aircraft' }, url.origin));
 	}
 };
