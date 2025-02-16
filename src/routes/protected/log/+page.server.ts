@@ -39,7 +39,7 @@ export const actions: Actions = {
 		obj['true_weather'] = desDate < today;
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) throw error(500, { message: e.message });
-		redirect(303, hrefs.logbook);
+		throw redirect(303, hrefs.logbook);
 	}
 };
 

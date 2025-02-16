@@ -13,6 +13,6 @@ export const actions: Actions = {
 		const admin = createSupabaseClient(SERVICE_ROLE);
 		const { error: e } = await admin.auth.admin.deleteUser(user!.id);
 		if (e) throw error(e.status ?? 500, { message: e.message });
-		redirect(303, hrefs.home);
+		throw redirect(303, hrefs.home);
 	}
 };

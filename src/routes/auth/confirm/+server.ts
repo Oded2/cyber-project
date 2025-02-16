@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 		const { error } = await supabase.auth.verifyOtp({ type, token_hash });
 		if (!error) {
 			redirectTo.searchParams.delete('next');
-			redirect(303, redirectTo);
+			throw redirect(303, redirectTo);
 		}
 	}
 	throw error(500, { message: 'Internal Server Error' });

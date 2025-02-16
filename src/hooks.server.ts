@@ -59,11 +59,11 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	event.locals.user = user;
 
 	if (!event.locals.user && pathname.startsWith('/protected')) {
-		redirect(303, hrefs.signup);
+		throw redirect(303, hrefs.signup);
 	}
 
 	if (event.locals.user && pathname.startsWith('/auth')) {
-		redirect(303, hrefs.home);
+		throw redirect(303, hrefs.home);
 	}
 
 	return resolve(event);

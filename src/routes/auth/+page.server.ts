@@ -58,7 +58,7 @@ export const actions: Actions = {
 			throw error(400, { message: profileFetchError.message });
 		}
 		// The user now has an account and profile, and is redirected to a page with instructions
-		redirect(
+		throw redirect(
 			303,
 			addParams(
 				hrefs.message,
@@ -90,7 +90,7 @@ export const actions: Actions = {
 			throw error(e.status ?? 400, { message: message });
 		}
 		// User has successfully logged in, and is redirected to the home page
-		redirect(303, hrefs.home);
+		throw redirect(303, hrefs.home);
 	},
 	reset: async ({ request, locals: { supabase }, url }) => {
 		const formData = await request.formData();
@@ -103,7 +103,7 @@ export const actions: Actions = {
 			throw error(e.status ?? 400, { message: e.message });
 		}
 		// User is now given instructions
-		redirect(
+		throw redirect(
 			303,
 			addParams(
 				hrefs.message,
