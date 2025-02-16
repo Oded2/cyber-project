@@ -19,6 +19,7 @@ export const actions: Actions = {
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
+		const notes = formData.get('notes') as string;
 		// Get the weather data from the departure airport to the destination airport
 		const weather = await getWeather(
 			[depAirport.longitude, depAirport.latitude],
@@ -37,6 +38,8 @@ export const actions: Actions = {
 		obj['dep_time'] = depDate.toISOString();
 		obj['des_time'] = desDate.toISOString();
 		obj['true_weather'] = desDate < today;
+		// Remove any whitespace from the notes
+		obj['notes'] = notes.trim();
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) throw error(500, { message: e.message });
 		throw redirect(303, hrefs.logbook);

@@ -23,8 +23,10 @@ export const actions: Actions = {
 				throw error(422, { message: `${format(inputName)} is invalid` });
 			}
 		}
-		const obj = Object.fromEntries(formData.entries());
+		const notes = formData.get('notes') as string;
+		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
 		if (id.length > 0) obj['id'] = id;
+		obj['notes'] = notes.trim();
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row
 		const { error: e } = await supabase.from('aircrafts').upsert([obj]);
 		if (e) throw error(500, { message: e.message });
