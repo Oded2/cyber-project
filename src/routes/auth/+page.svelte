@@ -201,19 +201,19 @@
 						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 							<h2 class="card-title mx-auto">Log In</h2>
 							{#if form?.invalidCredentials}
-								<h2 class="card-title mx-auto text-error">Incorrect email or password</h2>
+								<h2 class="card-title mx-auto text-error">Incorrect login credentials</h2>
 							{/if}
 						</div>
 						<div class="grid gap-4">
 							<label class="input input-bordered flex items-center gap-2">
-								<div class="tooltip" data-tip="Email">
-									<i class="fa-solid fa-envelope opacity-70"></i>
+								<div class="tooltip" data-tip="Email or Username">
+									<i class="fa-solid fa-circle-user opacity-70"></i>
 								</div>
 								<input
-									type="email"
-									name="email"
+									type="text"
+									name="identifier"
 									class="grow"
-									placeholder="Email"
+									placeholder="Email or Username"
 									maxlength="500"
 									required
 									bind:value={email}

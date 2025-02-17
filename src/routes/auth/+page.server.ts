@@ -3,6 +3,8 @@ import { SERVICE_ROLE } from '$env/static/private';
 import type { Actions } from './$types';
 import { addParams, createSupabaseClient, hrefs, isTaken, validEmail, validUsername } from '$lib';
 
+const admin = createSupabaseClient(SERVICE_ROLE);
+
 export function load({ url }) {
 	// Since the login and sign up page are technically on the same page,
 	// the server will tell the page which form to display
@@ -13,7 +15,6 @@ export const actions: Actions = {
 	signup: async ({ request, locals: { supabase }, url }) => {
 		// Creating an admin supabase client in order to bypass RLS and insert
 		// a profile
-		const admin = createSupabaseClient(SERVICE_ROLE);
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
@@ -68,26 +69,43 @@ export const actions: Actions = {
 		);
 	},
 	login: async ({ request, locals: { supabase } }) => {
+		const invalidCredentials = { invalidCredentials: true };
 		const formData = await request.formData();
-		const email = formData.get('email') as string;
+		// "identifier" is either an email or username
+		const identifier = formData.get('identifier') as string;
 		const password = formData.get('password') as string;
 		// Collected all form data, and conveniently stores them as a string
-		if (!validEmail(email)) throw error(422, { message: 'Invalid Email' });
-		// Email has gone through non-asynchronous validation
+		const isEmail = validEmail(identifier);
+		let email: string = identifier;
+		if (!isEmail) {
+			if (!validUsername(identifier)) throw error(422, { message: 'Invalid email/username' });
+			// At this point the identifier is definitely a username
+			const { data: userId, error: eI } = await supabase
+				.from('profiles')
+				.select('id')
+				.eq('username', identifier)
+				.single();
+			if (eI) throw error(400, { message: eI.message });
+			const { data: userData, error: eM } = await admin.auth.admin.getUserById(userId.id);
+			if (eM) throw error(400, { message: eM.message });
+			const { user } = userData;
+			if (!user) return invalidCredentials;
+			email = user.email!;
+		}
+		// Email has been identified
 		const { error: e } = await supabase.auth.signInWithPassword({ email, password });
 		if (e) {
 			// Two main types of possible errors: invalid credentials (common), or server-side
 			// issue at supabase level (uncommon)
-			const message = e.message;
-			if (message === 'Invalid login credentials') {
+			if (e.code === 'invalid_credentials') {
 				// If the user has simply entered the wrong email or password, the server returns
 				// the user back to the login page
-				return { invalidCredentials: true };
+				return invalidCredentials;
 			}
 			// At this stage the user has encountered an uncommon error, and is met with the error
 			// status and message
 			console.error(e);
-			throw error(e.status ?? 400, { message: message });
+			throw error(e.status ?? 400, { message: e.message });
 		}
 		// User has successfully logged in, and is redirected to the home page
 		throw redirect(303, hrefs.home);
