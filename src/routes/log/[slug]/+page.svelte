@@ -31,11 +31,18 @@
 		{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
 		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
 	);
-	const map = getRouteMap();
 	const countriesFlown = getCountriesFlownOver(
 		formatCoords(log.dep_airport),
 		formatCoords(log.des_airport)
 	);
+
+	onMount(() => {
+		const mapContainer = document.getElementById('mapContainer') as HTMLDivElement;
+		const mapHTML = getRouteMap();
+		mapHTML.then((m) => {
+			mapContainer.innerHTML = m;
+		});
+	});
 
 	function formatSpecificDate(date: Date): string {
 		return date.toLocaleString('en-US', {
@@ -53,47 +60,28 @@
 		return formatter.format(date);
 	}
 
-	function getRouteMap(): string {
-		if (roundTrip) return getOpenStreetMap();
+	async function getRouteMap(): Promise<string> {
 		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
 			wind_direction,
 			coord
 		}));
-		const URL = addParams(PUBLIC_MAP_ENDPOINT, {
-			start_lat: log.dep_airport.latitude.toString(),
-			start_lon: log.dep_airport.longitude.toString(),
-			end_lat: log.des_airport.latitude.toString(),
-			end_lon: log.des_airport.longitude.toString(),
-			dep: log.dep_airport.icao,
-			des: log.des_airport.icao,
-			weather_data: JSON.stringify(weatherFiltered)
+		const response = await fetch(PUBLIC_MAP_ENDPOINT, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				start_lat: log.dep_airport.latitude,
+				start_lon: log.dep_airport.longitude,
+				end_lat: log.des_airport.latitude,
+				end_lon: log.des_airport.longitude,
+				dep: log.dep_airport.icao,
+				des: log.dep_airport.icao,
+				weather_data: weatherFiltered
+			})
 		});
-		return URL;
-	}
-
-	function getOpenStreetMap() {
-		// Get endpoint
-		const endpoint = 'https://www.openstreetmap.org/export/embed.html';
-		// Extract longitude and latitude from the airport object
-		const longitude = log.dep_airport.longitude;
-		const latitude = log.dep_airport.latitude;
-		// 1 degree of latitude is approximately 111.32 km
-		const degrees = 30 / 111.32;
-		// Create a bounding box (bbox) around the airport location
-		// The bbox defines the map's visible area, extending 30km in each direction
-		const bbox = [
-			longitude - degrees, // Western boundary
-			latitude - degrees, // Southern boundary
-			longitude + degrees, // Eastern boundary
-			latitude + degrees // Northern boundary
-		].join(','); // Convert the bbox array to a comma-separated string
-		// Create a marker string using the airport's latitude and longitude
-		// This marker will indicate the airport's exact location on the map
-		const marker = `${latitude},${longitude}`;
-		// Construct the embed link for OpenStreetMap
-		// The 'bbox' defines the visible area, and the 'marker' pinpoints the airport's location
-		return addParams(endpoint, { bbox, marker });
+		return await response.text();
 	}
 </script>
 
@@ -205,10 +193,7 @@
 				{@render airportDetails(log.des_airport)}
 			{/if}
 		</div>
-		<div class="flex w-full flex-col">
-			<iframe class="h-[75vh] w-full" src={map} title="Route Map" frameborder="0"></iframe>
-			<a href={map} target="_blank" class="link px-4">Open map in new tab</a>
-		</div>
+		<div class="flex w-full flex-col" id="mapContainer"></div>
 	</div>
 </Container>
 

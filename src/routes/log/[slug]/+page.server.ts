@@ -5,7 +5,7 @@ export async function load({ params, url, locals: { supabase } }) {
 	const ref = url.searchParams.get('ref') ?? '';
 	const id: number = parseInt(params.slug);
 	if (isNaN(id)) throw error(400, { message: 'Invalid Log Id' });
-	const { data: l, error: eL } = await supabase.from('logs').select().eq('id', id);
+	const { data: l, error: eL } = await supabase.from('logs').select().eq('id', id).limit(1);
 	if (eL) throw error(500, { message: eL.message });
 	if (l.length == 0) throw error(404, { message: 'Log not found' });
 	handleLogs(l);
