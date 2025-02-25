@@ -1,0 +1,33 @@
+{
+	"IL": [
+		"AF",
+		"DZ",
+		"BH",
+		"BD",
+		"BN",
+		"IR",
+		"IQ",
+		"KW",
+		"LB",
+		"LY",
+		"MY",
+		"MA",
+		"OM",
+		"PK",
+		"QA",
+		"SA",
+		"SO",
+		"SD",
+		"SY",
+		"TN",
+		"AE",
+		"YE"
+	],
+	"US": ["IR", "SY", "UA", "BY", "RU"],
+	"CA": ["IR", "SY", "UA", "BY", "RU"],
+	"FR": ["IR", "SY", "UA", "BY", "RU"],
+	"DE": ["IR", "SY", "UA", "BY", "RU"],
+	"ES": ["IR", "SY", "UA", "BY", "RU"],
+	"BR": ["IR", "SY", "UA", "BY", "RU"],
+	"UA": ["RU", "BY", "MD"]
+}
