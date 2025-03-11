@@ -36,7 +36,10 @@
 	<div class="my-10 w-full">
 		{#if signup}
 			<form method="POST" action="?/signup">
-				<AuthCard authType="signup">
+				<AuthCard
+					authType="signup"
+					errorMessage={usernameTaken ? 'Username already in use' : undefined}
+				>
 					<InputLabel validatorText="Enter a valid email address">
 						{@render Icon('envelope', 'You will be asked to verify this email')}
 						<input
@@ -78,13 +81,6 @@
 								bind:value={username}
 							/>
 						</InputLabel>
-						<span
-							class="text-error validator-hint"
-							class:invisible={!usernameTaken}
-							class:visible={usernameTaken}
-						>
-							Username already taken
-						</span>
 					</div>
 					<InputLabel validatorText="Password must be at least 8 characters long">
 						{@render Icon('key', 'Secure access key')}
@@ -143,7 +139,10 @@
 			</form>
 		{:else}
 			<form method="POST" action="?/login">
-				<AuthCard authType="login">
+				<AuthCard
+					authType="login"
+					errorMessage={form?.invalidCredentials ? 'Invalid Credentials' : undefined}
+				>
 					<InputLabel validatorText="Field cannot be empty">
 						{@render Icon('circle-user', 'Email or username')}
 						<input
@@ -160,7 +159,12 @@
 						<PasswordInput name="password" placeholder="Password" required bind:password
 						></PasswordInput>
 					</InputLabel>
-					<button class="link me-auto" onclick={() => (forgotPassword = true)} value={password}>
+					<button
+						class="link me-auto"
+						type="button"
+						onclick={() => (forgotPassword = true)}
+						value={password}
+					>
 						Forgot Password?
 					</button>
 				</AuthCard>
