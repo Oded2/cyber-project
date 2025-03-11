@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { HTMLInputTypeAttribute } from 'svelte/elements';
-	import type { Snippet } from 'svelte';
 
 	let {
 		password = $bindable(),
@@ -10,8 +9,7 @@
 		required,
 		name,
 		oninput,
-		onblur,
-		children
+		onblur
 	}: {
 		password: string;
 		placeholder?: string;
@@ -21,7 +19,6 @@
 		name?: string;
 		oninput?: () => void;
 		onblur?: () => void;
-		children?: Snippet;
 	} = $props();
 
 	let type: HTMLInputTypeAttribute = $state('password');
@@ -57,8 +54,3 @@
 		<i class="fa-solid fa-eye-slash"></i>
 	{/if}
 </button>
-{#if children}
-	<div class="cursor-auto">
-		{@render children()}
-	</div>
-{/if}
