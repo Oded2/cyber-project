@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { usernameRegex, validUsername } from '$lib';
+	import AuthCard from '$lib/components/AuthCard.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import InputLabel from '$lib/components/InputLabel.svelte';
 	import Title from '$lib/components/Title.svelte';
@@ -15,10 +16,8 @@
 	let password: string = $state(form?.password ?? '');
 	let confirmPassword: string = $state(form?.password ?? '');
 	let usernameTaken: boolean = $state(form?.invalidUsername ?? false);
-	let invalidUsername: boolean = $state(false);
 	let passwordMatch = $derived(password === confirmPassword);
 	let mismatchError = $state(false);
-	let passwordLengthError = $state(false);
 	let forgotPassword = $state(false);
 
 	function swap() {
@@ -36,207 +35,144 @@
 	<div class="my-10 w-full">
 		{#if signup}
 			<form method="POST" action="?/signup">
-				<div class="card mx-auto max-w-md shadow-xl">
-					<div class="card-body">
-						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
-							<h2 class="card-title mx-auto">Sign Up</h2>
-						</div>
-						<div class="flex flex-col gap-2">
-							<InputLabel validatorText="Enter a valid email address">
-								{@render Icon('envelope', 'You will be asked to verify this email')}
-								<input
-									type="email"
-									name="email"
-									class="grow"
-									required
-									bind:value={email}
-									placeholder="Email"
-								/>
-							</InputLabel>
-							<InputLabel validatorText="This field cannot be empty">
-								{@render Icon('signature', 'Your public display name')}
-								<input
-									type="text"
-									name="display"
-									class="grow"
-									placeholder="Display Name"
-									dir="auto"
-									maxlength="50"
-									required
-									bind:value={displayName}
-								/>
-							</InputLabel>
-							<InputLabel validatorText="Must only contain latin letters and/or numbers">
-								{@render Icon('id-card', 'Your unique username')}
-								<input
-									type="text"
-									name="username"
-									class="grow"
-									placeholder="Username"
-									maxlength="50"
-									required
-									pattern={usernameRegex.source}
-									oninput={() => {
-										usernameTaken = false;
-									}}
-									bind:value={username}
-								/>
-							</InputLabel>
-							{#if usernameTaken}
-								<span class="text-error">Username already taken.</span>
-							{/if}
-							<InputLabel validatorText="Password must be at least 8 characters long">
-								{@render Icon('key', 'Secure access key')}
-								<input
-									type="password"
-									name="password"
-									class="grow"
-									placeholder="Password"
-									minlength="8"
-									maxlength="128"
-									required
-									oninput={() => {
-										mismatchError = false;
-									}}
-									onblur={() => {
-										mismatchError = !passwordMatch;
-									}}
-									bind:value={password}
-								/>
-							</InputLabel>
-							<InputLabel>
-								{@render Icon('circle-check', 'Confirm your password')}
-								<input
-									type="password"
-									class="grow"
-									placeholder="Confirm Password"
-									minlength="8"
-									maxlength="128"
-									required
-									oninput={() => (mismatchError = false)}
-									onblur={() => (mismatchError = !passwordMatch)}
-									bind:value={confirmPassword}
-								/>
-							</InputLabel>
-							{#if mismatchError}
-								<span class="text-error text-xs">Passwords do not match</span>
-							{/if}
-							<!-- <div>
-								<label
-									class="input input-bordered flex items-center gap-2"
-									class:input-success={password.length > 0 && passwordMatch}
-								>
-									<div class="tooltip" data-tip="Confirm your password">
-										<i class="fa-solid fa-circle-check opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										class="grow"
-										placeholder="Confirm Password"
-										minlength="8"
-										maxlength="128"
-										required
-										oninput={() => (mismatchError = false)}
-										onblur={() => (mismatchError = !passwordMatch)}
-										bind:value={confirmPassword}
-									/>
-								</label>
-
-							</div> -->
-						</div>
-						<div class="card-actions mt-5">
-							<button
-								type="submit"
-								disabled={!(passwordMatch || password.length < 8)}
-								class="btn btn-primary mx-auto w-full max-w-xs"
-								>Create Account
-							</button>
-						</div>
+				<AuthCard authType="signup" disabled={!(passwordMatch || password.length < 8)}>
+					<InputLabel validatorText="Enter a valid email address">
+						{@render Icon('envelope', 'You will be asked to verify this email')}
+						<input
+							type="email"
+							name="email"
+							class="grow"
+							required
+							bind:value={email}
+							placeholder="Email"
+						/>
+					</InputLabel>
+					<InputLabel validatorText="This field cannot be empty">
+						{@render Icon('signature', 'Your public display name')}
+						<input
+							type="text"
+							name="display"
+							class="grow"
+							placeholder="Display Name"
+							dir="auto"
+							maxlength="50"
+							required
+							bind:value={displayName}
+						/>
+					</InputLabel>
+					<div>
+						<InputLabel validatorText="Must only contain latin letters and/or numbers">
+							{@render Icon('id-card', 'Your unique username')}
+							<input
+								type="text"
+								name="username"
+								class="grow"
+								placeholder="Username"
+								maxlength="50"
+								required
+								pattern={usernameRegex.source}
+								oninput={() => {
+									usernameTaken = false;
+								}}
+								bind:value={username}
+							/>
+						</InputLabel>
+						<span
+							class="text-error validator-hint"
+							class:invisible={!usernameTaken}
+							class:visible={usernameTaken}
+						>
+							Username already taken
+						</span>
 					</div>
-				</div>
+					<InputLabel validatorText="Password must be at least 8 characters long">
+						{@render Icon('key', 'Secure access key')}
+						<input
+							type="password"
+							name="password"
+							class="grow"
+							placeholder="Password"
+							minlength="8"
+							maxlength="128"
+							required
+							oninput={() => {
+								mismatchError = false;
+							}}
+							onblur={() => {
+								mismatchError = !passwordMatch;
+							}}
+							bind:value={password}
+						/>
+					</InputLabel>
+					<div>
+						<InputLabel>
+							{@render Icon('circle-check', 'Confirm your password')}
+							<input
+								type="password"
+								class="grow"
+								placeholder="Confirm Password"
+								minlength="8"
+								maxlength="128"
+								required
+								oninput={() => (mismatchError = false)}
+								onblur={() => (mismatchError = !passwordMatch)}
+								bind:value={confirmPassword}
+							/>
+						</InputLabel>
+						<span
+							class="text-error validator-hint"
+							class:invisible={!mismatchError}
+							class:visible={mismatchError}
+							>Passwords do not match
+						</span>
+					</div>
+				</AuthCard>
 			</form>
 		{:else if forgotPassword}
 			<form method="POST" action="?/reset">
-				<div class="card mx-auto max-w-md shadow-xl">
-					<div class="card-body">
-						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
-							<h2 class="card-title mx-auto">Reset Password</h2>
-						</div>
-
-						<label class="input input-bordered flex items-center gap-2">
-							<div class="tooltip" data-tip="Email">
-								<i class="fa-solid fa-envelope opacity-70"></i>
-							</div>
-							<input
-								type="email"
-								name="email"
-								class="grow"
-								placeholder="Email"
-								maxlength="500"
-								required
-								bind:value={email}
-							/>
-						</label>
-
-						<div class="card-actions mt-5">
-							<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs"
-								>Send Reset Link</button
-							>
-						</div>
-					</div>
-				</div>
+				<AuthCard authType="reset">
+					<InputLabel validatorText="Enter a valid email address">
+						{@render Icon('envelope', 'Email')}
+						<input
+							type="email"
+							name="email"
+							class="grow"
+							placeholder="Email"
+							required
+							bind:value={email}
+						/>
+					</InputLabel>
+				</AuthCard>
 			</form>
 		{:else}
 			<form method="POST" action="?/login">
-				<div class="card mx-auto max-w-md shadow-xl">
-					<div class="card-body">
-						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
-							<h2 class="card-title mx-auto">Log In</h2>
-							{#if form?.invalidCredentials}
-								<h2 class="card-title text-error mx-auto">Incorrect login credentials</h2>
-							{/if}
-						</div>
-						<div class="grid gap-4">
-							<label class="input input-bordered flex items-center gap-2">
-								<div class="tooltip" data-tip="Email or Username">
-									<i class="fa-solid fa-circle-user opacity-70"></i>
-								</div>
-								<input
-									type="text"
-									name="identifier"
-									class="grow"
-									placeholder="Email or Username"
-									maxlength="500"
-									required
-									bind:value={email}
-								/>
-							</label>
-							<div>
-								<label class="input input-bordered mb-1 flex items-center gap-2">
-									<div class="tooltip" data-tip="Password">
-										<i class="fa-solid fa-key opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										name="password"
-										class="grow"
-										placeholder="Password"
-										required
-										bind:value={password}
-									/>
-								</label>
-								<button
-									type="button"
-									onclick={() => (forgotPassword = true)}
-									class="link px-4 text-sm">Forgot Password?</button
-								>
-							</div>
-						</div>
-						<div class="card-actions mt-5">
-							<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs">Log In</button>
-						</div>
-					</div>
-				</div>
+				<AuthCard authType="login">
+					<InputLabel validatorText="Field cannot be empty">
+						{@render Icon('circle-user', 'Email or username')}
+						<input
+							type="text"
+							name="identifier"
+							class="grow"
+							placeholder="Email or Username"
+							required
+							bind:value={email}
+						/>
+					</InputLabel>
+					<InputLabel validatorText="Field cannot be empty">
+						{@render Icon('key', 'Password')}
+						<input
+							type="password"
+							name="password"
+							class="grow"
+							placeholder="Password"
+							required
+							bind:value={password}
+						/>
+					</InputLabel>
+					<button class="link me-auto" onclick={() => (forgotPassword = true)} value={password}>
+						Forgot Password?
+					</button>
+				</AuthCard>
 			</form>
 		{/if}
 		<div class="mx-auto mt-7 w-full text-center">
