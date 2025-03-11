@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { HTMLInputTypeAttribute } from 'svelte/elements';
+
 	let {
 		title,
 		value = $bindable(),
@@ -7,7 +9,8 @@
 		min,
 		max,
 		inputType = 'text',
-		required = false
+		required,
+		validatorText
 	}: {
 		title: string;
 		value: string;
@@ -15,8 +18,9 @@
 		action: () => Promise<void>;
 		min?: number;
 		max?: number;
-		inputType?: 'text' | 'email' | 'password';
+		inputType?: HTMLInputTypeAttribute;
 		required?: boolean;
+		validatorText?: string;
 	} = $props();
 
 	const keys = Object.keys(values);
@@ -54,26 +58,31 @@
 					{/each}
 				</select>
 			{:else}
-				<input
-					name={title}
-					bind:value
-					type={inputType}
-					class="input join-item"
-					{required}
-					minlength={min}
-					maxlength={max}
-					disabled={!edit}
-				/>
+				<div class="flex w-full flex-col">
+					<input
+						name={title}
+						bind:value
+						type={inputType}
+						class="input join-item validator"
+						{required}
+						minlength={min}
+						maxlength={max}
+						disabled={!edit}
+					/>
+					{#if validatorText}
+						<p class="validator-hint">{validatorText}</p>
+					{/if}
+				</div>
 			{/if}
 			{#if edit}
-				<button type="submit" class="btn btn-info join-item"> Save </button>
+				<button type="submit" class="btn btn-info join-item w-16">Save</button>
 			{:else}
 				<button
 					type="button"
 					onclick={() => {
 						edit = true;
 					}}
-					class="btn btn-info join-item"
+					class="btn btn-info join-item w-16"
 				>
 					Edit
 				</button>
