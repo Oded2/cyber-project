@@ -15,8 +15,6 @@
 		'A flight logging site like no other. Log past flights, and plan for future flights.';
 	const { user, redirect, supabase } = data;
 	const today = new Date();
-	// Daily image
-	const imgUrl = 'https://wallpaperswide.com/download/airplane_3-wallpaper-2560x1440.jpg';
 
 	const futureLogs = fetchLogs();
 
@@ -41,7 +39,7 @@
 		<div
 			id="hero"
 			class="hero min-h-screen place-items-start"
-			style="background-image: url({imgUrl});"
+			style="background-image: url(/background.jpg);"
 		>
 			<div class="hero-overlay bg-opacity-30"></div>
 			<div class="grid h-full w-full grid-cols-3 gap-20 p-5 text-center sm:p-10 md:p-40">
