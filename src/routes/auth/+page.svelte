@@ -3,6 +3,7 @@
 	import AuthCard from '$lib/components/AuthCard.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import InputLabel from '$lib/components/InputLabel.svelte';
+	import PasswordInput from '$lib/components/PasswordInput.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data, form } = $props();
@@ -87,13 +88,11 @@
 					</div>
 					<InputLabel validatorText="Password must be at least 8 characters long">
 						{@render Icon('key', 'Secure access key')}
-						<input
-							type="password"
+						<PasswordInput
 							name="password"
-							class="grow"
 							placeholder="Password"
-							minlength="8"
-							maxlength="128"
+							min={8}
+							max={128}
 							required
 							oninput={() => {
 								mismatchError = false;
@@ -101,23 +100,21 @@
 							onblur={() => {
 								mismatchError = !passwordMatch;
 							}}
-							bind:value={password}
-						/>
+							bind:password
+						></PasswordInput>
 					</InputLabel>
 					<div>
 						<InputLabel>
 							{@render Icon('circle-check', 'Confirm your password')}
-							<input
-								type="password"
-								class="grow"
+							<PasswordInput
 								placeholder="Confirm Password"
-								minlength="8"
-								maxlength="128"
+								min={8}
+								max={128}
 								required
 								oninput={() => (mismatchError = false)}
 								onblur={() => (mismatchError = !passwordMatch)}
-								bind:value={confirmPassword}
-							/>
+								bind:password={confirmPassword}
+							></PasswordInput>
 						</InputLabel>
 						<span
 							class="text-error validator-hint"
@@ -160,14 +157,8 @@
 					</InputLabel>
 					<InputLabel validatorText="Field cannot be empty">
 						{@render Icon('key', 'Password')}
-						<input
-							type="password"
-							name="password"
-							class="grow"
-							placeholder="Password"
-							required
-							bind:value={password}
-						/>
+						<PasswordInput name="password" placeholder="Password" required bind:password
+						></PasswordInput>
 					</InputLabel>
 					<button class="link me-auto" onclick={() => (forgotPassword = true)} value={password}>
 						Forgot Password?
@@ -177,10 +168,9 @@
 		{/if}
 		<div class="mx-auto mt-7 w-full text-center">
 			{#if signup}
-				<span>Already have an account? <button class="btn-link" onclick={swap}>Log In</button></span
-				>
+				<span>Already have an account? <button class="link" onclick={swap}>Log In</button></span>
 			{:else}
-				<span>Don't have an account? <button class="btn-link" onclick={swap}>Sign Up</button></span>
+				<span>Don't have an account? <button class="link" onclick={swap}>Sign Up</button></span>
 			{/if}
 		</div>
 	</div>
