@@ -1,5 +1,6 @@
 import { addParams, format, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
+import type { HTMLInputTypeAttribute } from 'svelte/elements';
 
 export async function load({ url, locals: { supabase } }) {
 	const id: string = url.searchParams.get('id') ?? '';
@@ -78,8 +79,7 @@ type InputType = {
 	name: keyof Aircraft;
 	placeholder?: string;
 	required: boolean;
-	inputType: 'text' | 'select' | 'number';
-	page: number;
+	inputType: 'select' | HTMLInputTypeAttribute;
 	min?: number;
 	max?: number;
 	values?: string[];
@@ -91,35 +91,30 @@ const inputs: InputType[] = [
 		name: 'nickname',
 		placeholder: 'Bald Eagle',
 		required: true,
-		inputType: 'text',
-		page: 0
+		inputType: 'text'
 	},
 	{
 		name: 'tail_number',
 		placeholder: 'N12345',
 		required: true,
-		inputType: 'text',
-		page: 0
+		inputType: 'text'
 	},
 	{
 		name: 'model',
 		placeholder: 'Cessna 172',
 		required: true,
-		inputType: 'text',
-		page: 0
+		inputType: 'text'
 	},
 	{
 		name: 'manufacturer',
 		placeholder: 'Cessna',
 		required: true,
-		inputType: 'text',
-		page: 0
+		inputType: 'text'
 	},
 	{
 		name: 'year_of_manufacture',
 		required: true,
 		inputType: 'number',
-		page: 0,
 		min: 1903,
 		max: currentYear
 	},
@@ -127,28 +122,24 @@ const inputs: InputType[] = [
 		name: 'aircraft_type',
 		required: true,
 		inputType: 'select',
-		values: aircraftTypes,
-		page: 1
+		values: aircraftTypes
 	},
 	{
 		name: 'category',
 		required: true,
 		inputType: 'select',
-		values: aircraftCategories,
-		page: 1
+		values: aircraftCategories
 	},
 	{
 		name: 'aircraft_engine',
 		required: true,
 		inputType: 'select',
-		values: engineTypes,
-		page: 1
+		values: engineTypes
 	},
 	{
 		name: 'number_of_engines',
 		required: true,
 		inputType: 'number',
-		page: 1,
 		min: 1,
 		max: 999999
 	},
@@ -156,7 +147,6 @@ const inputs: InputType[] = [
 		name: 'maximum_takeoff_weight',
 		required: true,
 		inputType: 'number',
-		page: 1,
 		min: 1,
 		max: 999999,
 		placeholder: '(lbs)'
@@ -165,7 +155,6 @@ const inputs: InputType[] = [
 		name: 'wingspan',
 		required: true,
 		inputType: 'number',
-		page: 2,
 		min: 1,
 		max: 999999,
 		placeholder: '(ft)'
@@ -174,7 +163,6 @@ const inputs: InputType[] = [
 		name: 'range',
 		required: true,
 		inputType: 'number',
-		page: 2,
 		min: 1,
 		max: 999999,
 		placeholder: '(NM)'
@@ -183,7 +171,6 @@ const inputs: InputType[] = [
 		name: 'cruising_speed',
 		required: true,
 		inputType: 'number',
-		page: 2,
 		min: 1,
 		max: 999999,
 		placeholder: '(knots)'
@@ -192,7 +179,6 @@ const inputs: InputType[] = [
 		name: 'fuel_capacity',
 		required: true,
 		inputType: 'number',
-		page: 2,
 		min: 1,
 		max: 999999,
 		placeholder: '(gallons)'
@@ -201,21 +187,18 @@ const inputs: InputType[] = [
 		name: 'fuel_type',
 		required: true,
 		inputType: 'text',
-		page: 2,
 		placeholder: 'Avgas'
 	},
 	{
 		name: 'owner_name',
 		required: true,
 		inputType: 'text',
-		page: 3,
 		placeholder: 'Sully'
 	},
 	{
 		name: 'seating_capacity',
 		required: true,
 		inputType: 'number',
-		page: 3,
 		min: 1,
 		max: 999999
 	},
@@ -223,14 +206,12 @@ const inputs: InputType[] = [
 		name: 'notes',
 		required: false,
 		inputType: 'text',
-		page: 3,
 		placeholder: '"Flown primarily for short-haul routes"'
 	},
 	{
 		name: 'image_url',
 		required: false,
 		inputType: 'text',
-		page: 3,
 		max: 5000,
 		placeholder: 'https://example.com/images/cessna.png'
 	},
@@ -238,7 +219,6 @@ const inputs: InputType[] = [
 		name: 'visibility',
 		required: true,
 		inputType: 'select',
-		page: 3,
 		values: ['private', 'public', 'unlisted'],
 		allowOther: false
 	}

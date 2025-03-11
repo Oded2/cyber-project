@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="join w-full">
+<div class="flex w-full gap-2">
 	<select
 		onchange={(e) => {
 			const select = toInputElement(e);
@@ -53,7 +53,7 @@
 		}}
 		{id}
 		{name}
-		class="join-item select select-bordered w-full"
+		class="select w-full"
 		class:max-w-40={other}
 	>
 		<option disabled value={originalValue.length > 0 ? originalValue : values[0]} selected
@@ -69,7 +69,7 @@
 	{#if other}
 		<input
 			type="text"
-			class="input join-item input-bordered w-full"
+			class="input join-item w-full"
 			placeholder={format(name)}
 			onchange={otherInputChange}
 			oninput={(e) => {
@@ -80,6 +80,8 @@
 		/>
 	{/if}
 </div>
+<p class="validator-hint invisible">Invisible</p>
+
 {#if errorMessage.length > 0}
-	<span class="px-4 text-error">{errorMessage}</span>
+	<span class="text-error px-4">{errorMessage}</span>
 {/if}

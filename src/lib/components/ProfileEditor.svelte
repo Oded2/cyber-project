@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { FormEvent } from '$lib';
 	import type { HTMLInputTypeAttribute } from 'svelte/elements';
 
 	let {
@@ -28,11 +29,7 @@
 	let edit = $state(false);
 	let progress = $state(false);
 
-	async function handleSubmit(
-		e: SubmitEvent & {
-			currentTarget: EventTarget & HTMLFormElement;
-		}
-	) {
+	async function handleSubmit(e: FormEvent) {
 		e.preventDefault();
 		progress = true;
 		await action();

@@ -3,51 +3,47 @@
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import NumberInput from '$lib/components/NumberInput.svelte';
-	import { addParams, hrefs } from '$lib';
+	import { addParams, hrefs, type FormEvent } from '$lib';
 	import { page } from '$app/state';
 
 	const { data } = $props();
 	const { inputs, aircraft } = data;
+	let submitButton: HTMLButtonElement | null = null;
 
 	let currentStep = $state(0);
 	// Boolean to allow instant change of the first option in select attributes from disabled to enabled
 	// as formData won't read it if it's disabled
 	const maxLength = 100;
-	const steps = [
-		'Basic Details',
-		'Technical Specifications (1/2)',
-		'Technical Specifications (2/2)',
-		'More Details'
-	];
-
-	function validate(): void {
-		// Enables all the disabled options as formData doesn't read disabled option elements
-		const disabledOptions = Array.from(document.getElementsByTagName('option'));
-		disabledOptions.forEach((option) => (option.disabled = false));
-		// For loop iterating all of the inputs
-		for (const val of inputs) {
-			const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
-			// Input element
-			const valueLength = element.value.length;
-			if (valueLength > (val.max ?? maxLength) || (valueLength == 0 && val.required)) {
-				// Any input over the maximum length is invalid, but only required inputs cannot be empty
-				element.parentElement?.classList.add('input-error');
-				currentStep = val.page;
-				// Sets the current page to the input's page, so the user automatically navigates to the invalidated input
-				return;
-			}
-		}
-		document.getElementById('submit')?.click();
-		// Formally submits the form
+	function handleSubmit(e: FormEvent) {
+		e.preventDefault();
+		currentStep++;
+		submitButton?.click();
 	}
+
+	// function validate(): void {
+	// 	const submitButton = document.getElementById('submit') as HTMLButtonElement;
+	// 	// Enables all the disabled options as formData doesn't read disabled option elements
+	// 	const disabledOptions = Array.from(document.getElementsByTagName('option'));
+	// 	disabledOptions.forEach((option) => (option.disabled = false));
+	// 	// For loop iterating all of the inputs
+	// 	for (const val of inputs) {
+	// 		const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
+	// 		// Input element
+	// 		const valueLength = element.value.length;
+	// 		if (valueLength > (val.max ?? maxLength) || (valueLength == 0 && val.required)) {
+	// 			// Any input over the maximum length is invalid, but only required inputs cannot be empty
+	// 			currentStep = val.page;
+	// 			// Sets the current page to the input's page, so the user automatically navigates to the invalidated input
+	// 		}
+	// 	}
+	// 	submitButton.click();
+	// 	// Formally submits the form
+	// }
 </script>
 
 <Container>
-	<form method="POST">
-		<!-- Hidden submit button that actually submits the form -->
-		<button class="hidden" aria-label="Submit" id="submit" type="submit"></button>
-		<div class="card mx-auto mb-10 mt-5 max-w-4xl shadow-xl">
+	<form onsubmit={handleSubmit}>
+		<div class="card mx-auto mt-5 mb-10 max-w-4xl shadow-xl">
 			<div class="card-body">
 				<div class="mb-2">
 					<h2 class="card-title">
@@ -58,65 +54,32 @@
 						> Register Aircraft
 					</h2>
 				</div>
-				<ul class="steps mb-2">
-					{#each steps as step, index}
-						<li class="step" class:step-info={index <= currentStep}>{step}</li>
-					{/each}
-				</ul>
 				<div class="flex flex-col gap-4">
 					{#each inputs as input}
-						<div hidden={currentStep != input.page}>
-							<!-- The hidden attribute allows only the questions that are supposed to appear according to the page number appear -->
-							{#if input.inputType === 'text'}
-								<AircraftInput
-									value={aircraft ? aircraft[input.name].toString() : ''}
-									required={input.required}
-									id={input.name}
-									name={input.name}
-									placeholder={input.placeholder!}
-									maxLength={input.max ?? maxLength}
-								></AircraftInput>
-							{:else if input.inputType === 'select'}
-								<AircraftSelect
-									originalValue={aircraft ? aircraft[input.name].toString() : ''}
-									id={input.name}
-									name={input.name}
-									values={input.values!}
-									allowOther={input.allowOther}
-								></AircraftSelect>
-							{:else if input.inputType === 'number'}
-								<NumberInput
-									value={aircraft ? aircraft[input.name].toString() : ''}
-									min={input.min!}
-									max={input.max!}
-									name={input.name}
-									id={input.name}
-									placeholder={input.placeholder}
-								></NumberInput>
-							{/if}
-						</div>
-					{/each}
-					<div class="flex gap-4">
-						{#if currentStep != 0}
-							<button
-								type="button"
-								class="btn btn-outline btn-info me-auto w-full max-w-48"
-								onclick={() => currentStep--}>Back</button
-							>
-						{/if}
-						{#if currentStep == steps.length - 1}
-							<button
-								type="button"
-								class="btn btn-info ms-auto w-full max-w-48"
-								onclick={() => validate()}>Submit</button
-							>
+						{#if input.inputType !== 'select'}
+							<AircraftInput
+								value={aircraft ? aircraft[input.name].toString() : ''}
+								required={input.required}
+								id={input.name}
+								name={input.name}
+								placeholder={input.placeholder!}
+								maxLength={input.max ?? maxLength}
+								type={input.inputType}
+								min={input.min}
+								max={input.max}
+							></AircraftInput>
 						{:else}
-							<button
-								type="button"
-								class="btn btn-info ms-auto w-full max-w-48"
-								onclick={() => currentStep++}>Next</button
-							>
+							<AircraftSelect
+								originalValue={aircraft ? aircraft[input.name].toString() : ''}
+								id={input.name}
+								name={input.name}
+								values={input.values!}
+								allowOther={input.allowOther}
+							></AircraftSelect>
 						{/if}
+					{/each}
+					<div class="flex justify-end gap-4">
+						<button class="btn btn-info w-full max-w-48" type="submit"> Submit </button>
 					</div>
 				</div>
 			</div>
