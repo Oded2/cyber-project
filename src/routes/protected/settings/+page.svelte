@@ -11,6 +11,7 @@
 		hrefs,
 		isTaken,
 		showModal,
+		usernameRegex,
 		validUsername
 	} from '$lib';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
@@ -166,7 +167,7 @@
 					bind:value={updatedProfile.username}
 					action={async () => {
 						if (updatedProfile.username === profile.username) return;
-						if (!validUsername(updatedProfile.username)) {
+						if (!usernameRegex.test(updatedProfile.username)) {
 							addToast({
 								text: 'Username can only contain latin letters and numbers.',
 								duration: 5000,
@@ -199,8 +200,6 @@
 				<ProfileEditor
 					title="Profile Picture URL"
 					bind:value={updatedProfile.image}
-					max={9999}
-					allowPaste
 					action={async () => {
 						await updateProfile('image');
 						const pfp = document.getElementById('profilePicture') as HTMLImageElement;
@@ -274,7 +273,7 @@
 									</div>
 								</div>
 								<div
-									class="tooltip absolute right-2 top-2"
+									class="tooltip absolute top-2 right-2"
 									data-tip={capitalizeFirstLetter(aircraft.visibility)}
 								>
 									{#if aircraft.visibility !== 'private'}

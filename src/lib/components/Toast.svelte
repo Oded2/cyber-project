@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { ToastType } from '$lib/toasts';
 	import { type Snippet } from 'svelte';
 	import { fly } from 'svelte/transition';
 
@@ -8,7 +9,7 @@
 		handleClose,
 		children
 	}: {
-		type: 'info' | 'error';
+		type: ToastType;
 		duration: number;
 		handleClose: () => void;
 		children: Snippet;
@@ -32,13 +33,16 @@
 
 <div
 	role="alert"
-	class="alert flex w-[28rem] max-w-[90vw] flex-col items-stretch"
+	class="alert flex w-[28rem] max-w-[90vw] flex-col items-stretch text-base"
+	class:alert-success={type === 'success'}
 	class:alert-info={type === 'info'}
 	class:alert-error={type === 'error'}
 	transition:fly={{ duration: 200, y: 200 }}
 >
 	<div class="flex items-baseline gap-2">
-		{#if type === 'info'}
+		{#if type === 'success'}
+			<i class="fa-solid fa-check-circle"></i>
+		{:else if type === 'info'}
 			<i class="fa-solid fa-info-circle"></i>
 		{:else if type === 'error'}
 			<i class="fa-solid fa-exclamation-circle"></i>
@@ -47,7 +51,7 @@
 			{@render children()}
 		</span>
 		<button
-			class="btn btn-circle btn-ghost btn-sm ms-auto"
+			class="btn btn-ghost btn-sm btn-circle ms-auto"
 			aria-label="Close"
 			onclick={handleClose}
 		>
