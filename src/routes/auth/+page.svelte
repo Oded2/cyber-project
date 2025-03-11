@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { validUsername } from '$lib';
+	import { usernameRegex, validUsername } from '$lib';
 	import Container from '$lib/components/Container.svelte';
+	import InputLabel from '$lib/components/InputLabel.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data, form } = $props();
@@ -40,94 +41,87 @@
 						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 							<h2 class="card-title mx-auto">Sign Up</h2>
 						</div>
-						<div class="grid gap-4">
-							<label class="input input-bordered flex items-center gap-2">
-								<div class="tooltip" data-tip="You will be asked to verify this email">
-									<i class="fa-solid fa-envelope opacity-70"></i>
-								</div>
+						<div class="flex flex-col gap-2">
+							<InputLabel validatorText="Enter a valid email address">
+								{@render Icon('envelope', 'You will be asked to verify this email')}
 								<input
 									type="email"
 									name="email"
 									class="grow"
-									placeholder="Email"
-									maxlength="500"
 									required
 									bind:value={email}
+									placeholder="Email"
 								/>
-							</label>
-							<label class="input input-bordered flex items-center gap-2">
-								<div class="tooltip" data-tip="Does not have to be unique">
-									<i class="fa-solid fa-signature opacity-70"></i>
-								</div>
+							</InputLabel>
+							<InputLabel validatorText="This field cannot be empty">
+								{@render Icon('signature', 'Your public display name')}
 								<input
 									type="text"
 									name="display"
 									class="grow"
-									placeholder="Name"
+									placeholder="Display Name"
 									dir="auto"
 									maxlength="50"
 									required
 									bind:value={displayName}
 								/>
-							</label>
-							<div>
-								<label class="input input-bordered flex items-center gap-2">
-									<div class="tooltip" data-tip="Must be unique and use the latin alphabet">
-										<i class="fa-solid fa-id-card opacity-70"></i>
-									</div>
-									<input
-										type="text"
-										name="username"
-										class="grow"
-										placeholder="Username"
-										maxlength="50"
-										required
-										oninput={() => {
-											usernameTaken = false;
-											invalidUsername = false;
-										}}
-										onchange={() => (invalidUsername = !validUsername(username))}
-										bind:value={username}
-									/>
-								</label>
-								{#if invalidUsername}
-									<span class="text-error"
-										>Username can only contain latin letters and numbers.</span
-									>
-								{/if}
-								{#if usernameTaken}
-									<span class="text-error">Username already taken.</span>
-								{/if}
-							</div>
-							<div>
-								<label class="input input-bordered flex items-center gap-2">
-									<div class="tooltip" data-tip="Must be at least 8 characters long">
-										<i class="fa-solid fa-key opacity-70"></i>
-									</div>
-									<input
-										type="password"
-										name="password"
-										class="grow"
-										placeholder="Password"
-										minlength="8"
-										maxlength="128"
-										required
-										oninput={() => {
-											mismatchError = false;
-											passwordLengthError = false;
-										}}
-										onblur={() => {
-											mismatchError = !passwordMatch;
-											passwordLengthError = password.length < 8;
-										}}
-										bind:value={password}
-									/>
-								</label>
-								{#if passwordLengthError}
-									<span class="text-error">Password must be at least 8 characters long.</span>
-								{/if}
-							</div>
-							<div>
+							</InputLabel>
+							<InputLabel validatorText="Must only contain latin letters and/or numbers">
+								{@render Icon('id-card', 'Your unique username')}
+								<input
+									type="text"
+									name="username"
+									class="grow"
+									placeholder="Username"
+									maxlength="50"
+									required
+									pattern={usernameRegex.source}
+									oninput={() => {
+										usernameTaken = false;
+									}}
+									bind:value={username}
+								/>
+							</InputLabel>
+							{#if usernameTaken}
+								<span class="text-error">Username already taken.</span>
+							{/if}
+							<InputLabel validatorText="Password must be at least 8 characters long">
+								{@render Icon('key', 'Secure access key')}
+								<input
+									type="password"
+									name="password"
+									class="grow"
+									placeholder="Password"
+									minlength="8"
+									maxlength="128"
+									required
+									oninput={() => {
+										mismatchError = false;
+									}}
+									onblur={() => {
+										mismatchError = !passwordMatch;
+									}}
+									bind:value={password}
+								/>
+							</InputLabel>
+							<InputLabel>
+								{@render Icon('circle-check', 'Confirm your password')}
+								<input
+									type="password"
+									class="grow"
+									placeholder="Confirm Password"
+									minlength="8"
+									maxlength="128"
+									required
+									oninput={() => (mismatchError = false)}
+									onblur={() => (mismatchError = !passwordMatch)}
+									bind:value={confirmPassword}
+								/>
+							</InputLabel>
+							{#if mismatchError}
+								<span class="text-error text-xs">Passwords do not match</span>
+							{/if}
+							<!-- <div>
 								<label
 									class="input input-bordered flex items-center gap-2"
 									class:input-success={password.length > 0 && passwordMatch}
@@ -147,10 +141,8 @@
 										bind:value={confirmPassword}
 									/>
 								</label>
-								{#if mismatchError}
-									<span class="text-error">Passwords do not match</span>
-								{/if}
-							</div>
+
+							</div> -->
 						</div>
 						<div class="card-actions mt-5">
 							<button
@@ -201,7 +193,7 @@
 						<div class="mb-3 flex w-full flex-col border-b-2 pb-2">
 							<h2 class="card-title mx-auto">Log In</h2>
 							{#if form?.invalidCredentials}
-								<h2 class="card-title mx-auto text-error">Incorrect login credentials</h2>
+								<h2 class="card-title text-error mx-auto">Incorrect login credentials</h2>
 							{/if}
 						</div>
 						<div class="grid gap-4">
@@ -259,3 +251,9 @@
 </Container>
 
 <Title title={signup ? 'Sign Up' : 'Login'}></Title>
+
+{#snippet Icon(icon: string, tooltip: string)}
+	<div class="tooltip" data-tip={tooltip}>
+		<i class="fa-solid fa-{icon} cursor-auto opacity-70"></i>
+	</div>
+{/snippet}

@@ -8,6 +8,7 @@ export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
 export const defaultProfilePicture =
 	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
+export const usernameRegex = /^[A-Za-z0-9]+$/;
 
 const min: Date = new Date();
 min.setDate(min.getDate() - 14);
@@ -52,8 +53,7 @@ export function capitalizeFirstLetter(value: string) {
 }
 export function validUsername(username: string): boolean {
 	// Checks to see if a username contains only latin letters and numbers
-	const regex = /^[A-Za-z0-9]+$/;
-	return regex.test(username);
+	return usernameRegex.test(username);
 }
 
 export function validEmail(email: string): boolean {

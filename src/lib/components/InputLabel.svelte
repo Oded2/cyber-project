@@ -1,9 +1,16 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	const { children }: { children: Snippet } = $props();
+	const { validatorText, children }: { validatorText?: string; children: Snippet } = $props();
 </script>
 
-<label class="input input-ghost rounded-md border-1 border-gray-300! font-medium outline-hidden!">
-	{@render children()}
-</label>
+<div>
+	<label class="input w-full" class:validator={validatorText}>
+		{@render children()}
+	</label>
+	{#if validatorText}
+		<p class="validator-hint">
+			{validatorText}
+		</p>
+	{/if}
+</div>
