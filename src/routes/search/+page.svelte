@@ -45,7 +45,7 @@
 		<form class="join shadow-xl" onsubmit={search}>
 			<input
 				type="text"
-				class="join-item mx-auto w-96 bg-transparent px-4 shadow-inner outline-none"
+				class="join-item mx-auto w-96 bg-transparent px-4 shadow-inner outline-hidden"
 				placeholder="Search for a pilot"
 				bind:value={input}
 			/>
@@ -59,7 +59,7 @@
 		<div class="flex w-full max-w-md flex-col gap-4">
 			{#each searchResults as result}
 				<a href={hrefs.profile.replace('slug', result.username)} class="w-full">
-					<div class="flex gap-8 rounded bg-base-200 px-4 py-2 shadow transition hover:shadow-lg">
+					<div class="flex gap-8 rounded-sm bg-base-200 px-4 py-2 shadow-sm transition hover:shadow-lg">
 						<div class="avatar">
 							<div class="w-12 rounded-full bg-white">
 								<img

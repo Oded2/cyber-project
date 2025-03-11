@@ -60,7 +60,7 @@
 					</svg>
 				</div>
 				<ul
-					class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+					class="menu dropdown-content menu-sm z-1 mt-3 w-52 rounded-box bg-base-100 p-2 shadow-sm"
 				>
 					{#each navItems as item}
 						<li><a href={item.href}>{item.title}</a></li>

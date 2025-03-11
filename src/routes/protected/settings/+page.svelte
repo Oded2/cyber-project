@@ -239,7 +239,7 @@
 					<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 						{#each aircrafts as aircraft (aircraft)}
 							<div
-								class="card relative col-auto w-full shadow transition hover:shadow-xl"
+								class="card relative col-auto w-full shadow-sm transition hover:shadow-xl"
 								animate:flip={{ duration: 500 }}
 							>
 								<div class="card-body">

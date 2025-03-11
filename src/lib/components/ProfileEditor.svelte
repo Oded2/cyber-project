@@ -65,7 +65,7 @@
 			<select
 				name={title}
 				bind:value
-				class="select select-sm !border-none !outline-none"
+				class="select select-sm border-none! outline-hidden!"
 				{required}
 			>
 				{#each keys as key, index}
@@ -77,7 +77,7 @@
 				name={title}
 				bind:value
 				type={inputType}
-				class="input input-xs border-0 text-base !outline-none"
+				class="input input-xs border-0 text-base outline-hidden!"
 				{required}
 				minlength={min}
 				maxlength={max}
