@@ -83,10 +83,10 @@ export const actions: Actions = {
 			const { data: userId, error: eI } = await supabase
 				.from('profiles')
 				.select('id')
-				.eq('username', identifier)
-				.single();
+				.eq('username', identifier);
 			if (eI) throw error(400, { message: eI.message });
-			const { data: userData, error: eM } = await admin.auth.admin.getUserById(userId.id);
+			if (userId.length == 0) return invalidCredentials;
+			const { data: userData, error: eM } = await admin.auth.admin.getUserById(userId[0].id);
 			if (eM) throw error(400, { message: eM.message });
 			const { user } = userData;
 			if (!user) return invalidCredentials;
