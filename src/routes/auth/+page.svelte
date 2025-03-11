@@ -35,7 +35,7 @@
 	<div class="my-10 w-full">
 		{#if signup}
 			<form method="POST" action="?/signup">
-				<AuthCard authType="signup" disabled={!(passwordMatch || password.length < 8)}>
+				<AuthCard authType="signup">
 					<InputLabel validatorText="Enter a valid email address">
 						{@render Icon('envelope', 'You will be asked to verify this email')}
 						<input

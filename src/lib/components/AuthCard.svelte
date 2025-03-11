@@ -16,11 +16,7 @@
 		}
 	};
 
-	const {
-		authType,
-		disabled,
-		children
-	}: { authType: keyof typeof texts; disabled?: boolean; children: Snippet } = $props();
+	const { authType, children }: { authType: keyof typeof texts; children: Snippet } = $props();
 </script>
 
 <div class="card mx-auto max-w-md shadow-xl">
@@ -32,7 +28,7 @@
 			{@render children()}
 		</div>
 		<div class="card-actions mt-5">
-			<button type="submit" {disabled} class="btn btn-primary mx-auto w-full max-w-xs">
+			<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs">
 				{texts[authType].submit}
 			</button>
 		</div>
