@@ -44,36 +44,36 @@
 			<div class="hero-overlay bg-opacity-30"></div>
 			<div class="grid h-full w-full grid-cols-3 gap-20 p-5 text-center sm:p-10 md:p-40">
 				<div class="card glass col-auto max-h-72 p-5">
-					<h1 class="mb-5 text-2xl font-bold text-neutral-content">Upcoming Flights</h1>
+					<h1 class="text-neutral-content mb-5 text-2xl font-bold">Upcoming Flights</h1>
 					<div class="flex flex-col overflow-auto">
 						{#await futureLogs}
-							<span class="loading loading-spinner loading-lg mx-auto text-neutral-content"></span>
+							<span class="loading loading-spinner loading-lg text-neutral-content mx-auto"></span>
 						{:then logs}
 							{#if logs.length > 0}
 								<div class="flex flex-col gap-4">
 									{#each logs! as log}
-										<div class="rounded-lg bg-black bg-opacity-20 p-5">
-											<h2 class="font-semibold text-neutral-content">
+										<div class="bg-opacity-20 rounded-lg bg-black p-5">
+											<h2 class="text-neutral-content font-semibold">
 												{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
 											</h2>
-											<h4 class="text-sm font-semibold text-neutral-content">
+											<h4 class="text-neutral-content text-sm font-semibold">
 												{`${log.dep_time.toLocaleString('en-US', { month: 'short', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' })}`}
 											</h4>
 										</div>
 									{/each}
 								</div>
 							{:else}
-								<h2 class="font-semibold text-neutral-content">No flights coming up</h2>
+								<h2 class="text-neutral-content font-semibold">No flights coming up</h2>
 							{/if}
 						{:catch}
-							<h2 class="font-semibold text-neutral-content">Error Encountered</h2>
+							<h2 class="text-neutral-content font-semibold">Error Encountered</h2>
 						{/await}
 					</div>
 				</div>
 				<div class="col-auto mx-auto flex max-w-md flex-col">
-					<h1 class="mb-5 text-5xl font-bold text-neutral-content">Hello Pilot</h1>
-					<div class="prose mb-5 bg-white bg-opacity-15">
-						<blockquote class="text-white">
+					<h1 class="text-neutral-content mb-5 text-5xl font-bold">Hello Pilot</h1>
+					<div class="prose mb-5 bg-white/15">
+						<blockquote class="p-1 text-white">
 							<!-- Daily quote -->
 							"A mile of road takes you a mile. A mile of runaway takes you anywhere."
 						</blockquote>
@@ -87,7 +87,7 @@
 			</div>
 		</div>
 	{:else}
-		<div class="hero mb-10 bg-base-200">
+		<div class="hero bg-base-200 mb-10">
 			<div class="hero-content flex-col lg:flex-row-reverse">
 				<img alt="Logo" src={logo} class="max-w-sm rounded-lg" />
 				<div>
