@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { SERVICE_ROLE } from '$env/static/private';
 import type { Actions } from './$types';
-import { addParams, createSupabaseClient, hrefs, isTaken, validEmail, validUsername } from '$lib';
+import { addParams, createSupabaseClient, hrefs, isTaken, usernameRegex, validEmail } from '$lib';
 
 const admin = createSupabaseClient(SERVICE_ROLE);
 
@@ -26,7 +26,7 @@ export const actions: Actions = {
 		validate(displayName, 'Display Name', 0, 50);
 		validate(username, 'Username', 0, 50);
 		// At this stage all inputs are within sufficient length
-		if (!validUsername(username)) throw error(422, { message: 'Invalid Username' });
+		if (!usernameRegex.test(username)) throw error(422, { message: 'Invalid Username' });
 		if (!validEmail(email)) throw error(422, { message: 'Invalid Email' });
 		// At this stage all non-asynchronous validation functions have ran
 		if (await isTaken(username, supabase)) {
@@ -78,7 +78,7 @@ export const actions: Actions = {
 		const isEmail = validEmail(identifier);
 		let email: string = identifier;
 		if (!isEmail) {
-			if (!validUsername(identifier)) throw error(422, { message: 'Invalid email/username' });
+			if (!usernameRegex.test(identifier)) throw error(422, { message: 'Invalid email/username' });
 			// At this point the identifier is definitely a username
 			const { data: userId, error: eI } = await supabase
 				.from('profiles')

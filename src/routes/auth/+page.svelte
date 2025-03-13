@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { usernameRegex, validUsername } from '$lib';
+	import { usernameRegex } from '$lib';
 	import AuthCard from '$lib/components/AuthCard.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import InputLabel from '$lib/components/InputLabel.svelte';

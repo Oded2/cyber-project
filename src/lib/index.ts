@@ -54,10 +54,6 @@ export async function isTaken(username: string, supabase: SupabaseClient): Promi
 export function capitalizeFirstLetter(value: string) {
 	return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }
-export function validUsername(username: string): boolean {
-	// Checks to see if a username contains only latin letters and numbers
-	return usernameRegex.test(username);
-}
 
 export function validEmail(email: string): boolean {
 	// Checks that an email has an 'at', a dot, and is at least 6 characters long,
