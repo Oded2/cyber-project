@@ -17,6 +17,10 @@ declare global {
 	}
 	// Longitude, Latitude
 	type Coordinate = [number, number];
+	type SelectValues = {
+		id: string;
+		display: string;
+	}[];
 	interface Profile {
 		id: string;
 		created_at: Date;

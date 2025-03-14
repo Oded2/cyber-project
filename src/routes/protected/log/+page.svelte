@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { formatDateTime } from '$lib';
+	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
-	import LogNumberInput from '$lib/components/LogNumberInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
-	import LogSelect from '$lib/components/LogSelect.svelte';
 	import LogTextarea from '$lib/components/LogTextarea.svelte';
 	import Title from '$lib/components/Title.svelte';
 
@@ -29,7 +28,7 @@
 
 <Container>
 	<form method="POST">
-		<div class="card mx-auto mb-10 mt-5 max-w-3xl shadow-xl">
+		<div class="card mx-auto mt-5 mb-10 max-w-3xl shadow-xl">
 			<div class="card-body">
 				<div class="mb-2">
 					<h2 class="card-title">Log Flight</h2>
@@ -38,16 +37,19 @@
 					<LogSection>Basic Details</LogSection>
 					<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 					></LogInput>
-					<LogSelect name="aircraft" values={aircraftValues}></LogSelect>
-					<LogNumberInput
+					<AircraftSelect name="aircraft" values={aircraftValues}></AircraftSelect>
+					<!-- <LogSelect name="aircraft" values={aircraftValues}></LogSelect> -->
+					<LogInput
+						type="number"
 						name="altitude"
 						displayName="Cruising Altitude in Feet"
 						min={0}
 						max={200000}
-					></LogNumberInput>
-					<LogSelect name="rating" values={ratings}></LogSelect>
-					<LogNumberInput name="fuel_usage" displayName="Fuel Used in Gallons" min={0} max={200000}
-					></LogNumberInput>
+					></LogInput>
+					<AircraftSelect name="rating" values={ratings}></AircraftSelect>
+					<!-- <LogSelect name="rating" values={ratings}></LogSelect> -->
+					<LogInput name="fuel_usage" displayName="Fuel Used in Gallons" min={0} max={200000}
+					></LogInput>
 					<LogSection>Departure Details</LogSection>
 					<LogInput
 						name="dep_airport"
@@ -84,7 +86,7 @@
 					></LogDateInput>
 					<LogSection>Additional Details</LogSection>
 					<LogTextarea name="notes" maxlength={10000}></LogTextarea>
-					<LogSelect name="visibility" values={visibilities}></LogSelect>
+					<AircraftSelect name="visibility" values={visibilities}></AircraftSelect>
 					<Checkbox name="favorite" text="Favorite"></Checkbox>
 				</div>
 				<div class="card-actions justify-end">

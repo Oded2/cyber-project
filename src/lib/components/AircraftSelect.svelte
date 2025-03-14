@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { capitalizeFirstLetter, format, toInputElement } from '$lib';
+	import { format, toInputElement } from '$lib';
 
 	let {
 		values,
 		name,
 		id,
-		allowOther = true,
-		originalValue = ''
+		allowOther,
+		originalValue
 	}: {
-		values: string[];
+		values: SelectValues;
 		name: string;
-		id: string;
+		id?: string;
 		allowOther?: boolean;
 		originalValue?: string;
 	} = $props();
 
-	const uniqueId = name + 'other';
 	const max: number = 100;
-	// Creating a unique id to the "other" option without having effect on other elements on the page
 	let errorMessage: string = $state('');
 	let other: boolean = $state(false);
+	let selectInput: HTMLSelectElement;
+	let otherOption: HTMLOptionElement;
 
 	function otherInputChange(event: Event) {
 		const value = toInputElement(event).value;
@@ -30,8 +30,6 @@
 		}
 		errorMessage = '';
 		// Resets the error message
-		const selectInput = document.getElementById(id) as HTMLSelectElement;
-		const otherOption = document.getElementById(uniqueId) as HTMLOptionElement;
 		const changeEvent = new Event('change', { bubbles: true, cancelable: true });
 		// Creates a change event in order to trigger onchnage for the select element
 		// bubbles: Allows parent to listen for events if true
@@ -45,10 +43,10 @@
 
 <div class="flex w-full gap-2">
 	<select
+		bind:this={selectInput}
 		onchange={(e) => {
-			const select = toInputElement(e);
-			const value = select.value;
-			other = !values.includes(value);
+			const value = e.currentTarget.value;
+			other = !values.some((val) => val.id === value);
 			// Will only show text input if other is selected
 		}}
 		{id}
@@ -56,15 +54,13 @@
 		class="select w-full"
 		class:max-w-40={other}
 	>
-		<option disabled value={originalValue.length > 0 ? originalValue : values[0]} selected
+		<option disabled value={originalValue ? originalValue : values[0]} selected
 			>{format(name)}</option
 		>
 		{#each values as value}
-			<option {value}>{capitalizeFirstLetter(value)}</option>
+			<option value={value.id}>{value.display}</option>
 		{/each}
-		{#if allowOther}
-			<option value="other" id={uniqueId}>Other</option>
-		{/if}
+		<option bind:this={otherOption} value="other" disabled={!allowOther}>Other</option>
 	</select>
 	{#if other}
 		<input

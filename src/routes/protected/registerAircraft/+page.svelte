@@ -3,7 +3,7 @@
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { addParams, hrefs, type FormEvent } from '$lib';
+	import { addParams, format, hrefs, type FormEvent } from '$lib';
 	import { page } from '$app/state';
 
 	const { data } = $props();
@@ -14,31 +14,12 @@
 	// Boolean to allow instant change of the first option in select attributes from disabled to enabled
 	// as formData won't read it if it's disabled
 	const maxLength = 100;
+
 	function handleSubmit(e: FormEvent) {
 		e.preventDefault();
 		currentStep++;
 		submitButton?.click();
 	}
-
-	// function validate(): void {
-	// 	const submitButton = document.getElementById('submit') as HTMLButtonElement;
-	// 	// Enables all the disabled options as formData doesn't read disabled option elements
-	// 	const disabledOptions = Array.from(document.getElementsByTagName('option'));
-	// 	disabledOptions.forEach((option) => (option.disabled = false));
-	// 	// For loop iterating all of the inputs
-	// 	for (const val of inputs) {
-	// 		const element = document.getElementById(val.name) as HTMLInputElement | HTMLSelectElement;
-	// 		// Input element
-	// 		const valueLength = element.value.length;
-	// 		if (valueLength > (val.max ?? maxLength) || (valueLength == 0 && val.required)) {
-	// 			// Any input over the maximum length is invalid, but only required inputs cannot be empty
-	// 			currentStep = val.page;
-	// 			// Sets the current page to the input's page, so the user automatically navigates to the invalidated input
-	// 		}
-	// 	}
-	// 	submitButton.click();
-	// 	// Formally submits the form
-	// }
 </script>
 
 <Container>
@@ -56,7 +37,18 @@
 				</div>
 				<div class="flex flex-col gap-4">
 					{#each inputs as input}
-						{#if input.inputType !== 'select'}
+						{#if input.values}
+							<AircraftSelect
+								originalValue={aircraft ? aircraft[input.name].toString() : ''}
+								id={input.name}
+								name={input.name}
+								values={input.values.map((val) => ({
+									id: val,
+									display: format(val)
+								}))}
+								allowOther={input.allowOther}
+							></AircraftSelect>
+						{:else}
 							<AircraftInput
 								value={aircraft ? aircraft[input.name].toString() : ''}
 								required={input.required}
@@ -68,14 +60,6 @@
 								min={input.min}
 								max={input.max}
 							></AircraftInput>
-						{:else}
-							<AircraftSelect
-								originalValue={aircraft ? aircraft[input.name].toString() : ''}
-								id={input.name}
-								name={input.name}
-								values={input.values!}
-								allowOther={input.allowOther}
-							></AircraftSelect>
 						{/if}
 					{/each}
 					<div class="flex justify-end gap-4">

@@ -1,44 +1,63 @@
 <script lang="ts">
-	import { format, toInputElement } from '$lib';
+	import type { FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
+	import InputLabel from './InputLabel.svelte';
+	import { format } from '$lib';
 
 	const {
+		min,
+		max,
+		minlength,
+		maxlength,
+		required,
+		placeholder,
 		name,
-		value = '',
-		minlength = 0,
-		maxlength = 50,
-		required = false,
-		placeholder = 'Type Here',
 		displayName = format(name),
-		autocorrect = 'on'
+		value,
+		type,
+		autocomplete,
+		autocorrect
 	}: {
-		name: string;
-		value?: string;
+		min?: number;
+		max?: number;
 		minlength?: number;
 		maxlength?: number;
 		required?: boolean;
 		placeholder?: string;
 		displayName?: string;
+		name: string;
+		value?: string;
+		type?: HTMLInputTypeAttribute;
+		validatorText?: string;
+		autocomplete?: FullAutoFill;
 		autocorrect?: 'on' | 'off';
 	} = $props();
-
-	let errorMessage: string = $state('');
-
-	function handleChange(e: Event): void {
-		// Simply to assist the user, does not perform any client-side validation
-		const length = toInputElement(e).value.length;
-		if (length > maxlength) {
-			errorMessage = `Length cannot exceed ${maxlength} characters`;
-		} else if (length < minlength) {
-			errorMessage = `Length must be at least ${minlength} characters`;
-		} else if (required && length == 0) {
-			errorMessage = 'Field cannot be empty';
-		} else {
-			errorMessage = '';
-		}
-	}
 </script>
 
-<label class="flex w-full flex-col">
+<InputLabel
+	validatorText={min
+		? `Must be at least ${min.toLocaleString()}`
+		: minlength
+			? `Must be at least ${minlength?.toLocaleString()} characters long`
+			: 'Field cannot be empty'}
+>
+	{displayName}
+	<input
+		{value}
+		{type}
+		{name}
+		class="grow"
+		{placeholder}
+		{min}
+		{max}
+		{minlength}
+		{maxlength}
+		{autocomplete}
+		{autocorrect}
+		{required}
+	/>
+</InputLabel>
+
+<!-- <label class="flex w-full flex-col">
 	<div class="label">
 		<span class="text-lg font-semibold">{displayName}</span>
 	</div>
@@ -48,7 +67,7 @@
 		onchange={handleChange}
 		{placeholder}
 		{autocorrect}
-		class="input input-sm input-bordered w-full py-5"
+		class="input input-sm w-full py-5"
 		{minlength}
 		{maxlength}
 		{required}
@@ -58,6 +77,6 @@
 		<div class="label"><span class="label-text-alt font-light italic">Optional</span></div>
 	{/if}
 	{#if errorMessage.length > 0}
-		<span class="px-3 text-sm text-error">{errorMessage}</span>
+		<span class="text-error px-3 text-sm">{errorMessage}</span>
 	{/if}
-</label>
+</label> -->
