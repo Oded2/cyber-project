@@ -11,8 +11,7 @@
 		hrefs,
 		isTaken,
 		showModal,
-		usernameRegex,
-		validUsername
+		usernameRegex
 	} from '$lib';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
