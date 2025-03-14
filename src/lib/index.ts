@@ -4,9 +4,6 @@ import countriesFile from './countries.json';
 import { error } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 
-export type FormEvent = SubmitEvent & {
-	currentTarget: EventTarget & HTMLFormElement;
-};
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
 export const defaultProfilePicture =

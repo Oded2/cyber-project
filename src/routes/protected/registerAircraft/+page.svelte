@@ -3,27 +3,16 @@
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { addParams, format, hrefs, type FormEvent } from '$lib';
+	import { addParams, format, hrefs } from '$lib';
 	import { page } from '$app/state';
 
 	const { data } = $props();
 	const { inputs, aircraft } = data;
-	let submitButton: HTMLButtonElement | null = null;
-
-	let currentStep = $state(0);
-	// Boolean to allow instant change of the first option in select attributes from disabled to enabled
-	// as formData won't read it if it's disabled
 	const maxLength = 100;
-
-	function handleSubmit(e: FormEvent) {
-		e.preventDefault();
-		currentStep++;
-		submitButton?.click();
-	}
 </script>
 
 <Container>
-	<form onsubmit={handleSubmit}>
+	<form>
 		<div class="card mx-auto mt-5 mb-10 max-w-4xl shadow-xl">
 			<div class="card-body">
 				<div class="mb-2">
@@ -63,7 +52,7 @@
 						{/if}
 					{/each}
 					<div class="flex justify-end gap-4">
-						<button class="btn btn-info w-full max-w-48" type="submit"> Submit </button>
+						<button class="btn btn-info w-full max-w-48" type="submit">Submit</button>
 					</div>
 				</div>
 			</div>
