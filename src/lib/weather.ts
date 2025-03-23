@@ -20,7 +20,7 @@ export async function getCountriesFlownOver(
 		const countryFeature = countryData.features.find((feature: any) => {
 			return booleanPointInPolygon(point(coord), feature);
 		});
-		if (countryFeature) flownOver.add(countryFeature.properties.NAME);
+		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2 ?? 'ERROR');
 	}
 	return flownOver;
 }

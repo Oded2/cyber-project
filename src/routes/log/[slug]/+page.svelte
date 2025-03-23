@@ -36,6 +36,7 @@
 	);
 
 	onMount(() => {
+		getPoints();
 		const mapContainer = document.getElementById('mapContainer') as HTMLDivElement;
 		const mapHTML = getRouteMap();
 		mapHTML.then((m) => {
@@ -59,12 +60,32 @@
 		return formatter.format(date);
 	}
 
+	async function getPoints() {
+		const start: Coordinate = [log.dep_airport.latitude, log.dep_airport.longitude];
+		const end: Coordinate = [log.des_airport.latitude, log.des_airport.longitude];
+		const points = greatCircle(start, end, { npoints: 100 }).geometry.coordinates;
+		const banned = (await fetch('/banned.json').then((response) => response.json())) as {
+			[key: string]: string[];
+		};
+		// Countries in which the owner of the log is not allowed to fly over
+		const ownerBanned = banned['IL'];
+		let countriesFlown = await getCountriesFlownOver(start, end);
+		console.log(countriesFlown);
+		console.log(
+			ownerBanned.forEach((bannedCountry) => {
+				console.log(bannedCountry, countriesFlown);
+			})
+		);
+		while (
+			ownerBanned.some((bannedCountry) => {
+				return countriesFlown.has(bannedCountry);
+			})
+		) {
+			console.log('here');
+		}
+	}
+
 	async function getRouteMap(): Promise<string> {
-		const points = greatCircle(
-			[log.dep_airport.longitude, log.dep_airport.latitude],
-			[log.des_airport.longitude, log.des_airport.latitude],
-			{ npoints: 100 }
-		).geometry.coordinates;
 		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
 			wind_direction,
