@@ -15,6 +15,7 @@
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { getCountriesFlownOver } from '$lib/weather.js';
+	import { greatCircle } from '@turf/turf';
 	import { onMount } from 'svelte';
 
 	const { data } = $props();
@@ -22,9 +23,7 @@
 
 	const pageUrl = page.url;
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
-	const depTime = log.dep_time;
-	const desTime = log.des_time;
-	const weather = log.weather_data;
+	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
 	const dep_weather = weather[0];
 	const des_weather = weather[weather.length - 1];
 	const distanceKm = haversineDistance(
@@ -61,6 +60,11 @@
 	}
 
 	async function getRouteMap(): Promise<string> {
+		const points = greatCircle(
+			[log.dep_airport.longitude, log.dep_airport.latitude],
+			[log.des_airport.longitude, log.des_airport.latitude],
+			{ npoints: 100 }
+		).geometry.coordinates;
 		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
 			wind_direction,
@@ -72,10 +76,6 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				start_lat: log.dep_airport.latitude,
-				start_lon: log.dep_airport.longitude,
-				end_lat: log.des_airport.latitude,
-				end_lon: log.des_airport.longitude,
 				dep: log.dep_airport.icao,
 				des: log.dep_airport.icao,
 				weather_data: weatherFiltered

@@ -75,7 +75,7 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 		visibility: hourlyData.visibility[hourlyIndex],
 		wind_speed: hourlyData.wind_speed_180m[hourlyIndex],
 		wind_direction: hourlyData.wind_direction_180m[hourlyIndex],
-		coord: [long, lat]
+		coord: [lat, long]
 	};
 }
 
