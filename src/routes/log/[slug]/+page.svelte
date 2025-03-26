@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
-	import { addParams, countries, format, formatCoords, getDuration, hrefs } from '$lib';
+	import { addParams, bannedCountries, countries, format, getDuration, hrefs } from '$lib';
 	import { buildRoute, getCountriesFlownOver, haversineDistance } from '$lib/coordinates.js';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
@@ -21,15 +21,29 @@
 	const start: Coordinate = [log.dep_airport.longitude, log.dep_airport.latitude];
 	const end: Coordinate = [log.des_airport.longitude, log.des_airport.latitude];
 	const distanceKm = haversineDistance(start, end);
-	const route: Position[] = buildRoute(start, end);
+	// TODO: Make banned countries specific to the owner of the log
+	const route: Position[] = buildRoute(start, end, bannedCountries.IL);
 
 	const countriesFlown = getCountriesFlownOver(route);
 
 	onMount(() => {
 		const mapContainer = document.getElementById('mapContainer') as HTMLDivElement;
-		const mapHTML = getRouteMap();
-		mapHTML.then((m) => {
-			mapContainer.innerHTML = m;
+		getRouteMap().then((mapContent) => {
+			// Create an iframe to hold the map
+			const iframe = document.createElement('iframe');
+			iframe.style.border = 'none';
+			// Set desired dimensions for the map
+			iframe.style.width = '100%';
+			iframe.style.height = '100%'; // adjust as needed
+			// Append the iframe to the container
+			mapContainer.appendChild(iframe);
+			// Write the fetched HTML content into the iframe's document
+			const doc = iframe.contentWindow?.document;
+			if (doc) {
+				doc.open();
+				doc.write(mapContent);
+				doc.close();
+			}
 		});
 	});
 
@@ -50,23 +64,30 @@
 	}
 
 	async function getRouteMap(): Promise<string> {
+		// Prepare any data you need to send with your request.
+		// This example assumes you have variables like `route`, `log`, and `weather` available in scope.
 		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
 			wind_direction,
 			coord
 		}));
+		// Make a POST request to the endpoint that returns the Folium map HTML
 		const response = await fetch(PUBLIC_MAP_ENDPOINT, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
+				// Reverse the order if your endpoint expects [lat, lon] instead of [lon, lat]
+				points: route.map((val) => [val[1], val[0]]),
 				dep: log.dep_airport.icao,
-				des: log.dep_airport.icao,
+				des: log.des_airport.icao,
 				weather_data: weatherFiltered
 			})
 		});
-		return await response.text();
+		// Return the full HTML string of the map
+		const mapHTML = await response.text();
+		return mapHTML;
 	}
 </script>
 

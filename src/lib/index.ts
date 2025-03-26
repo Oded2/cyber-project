@@ -1,11 +1,13 @@
 import { createClient, type PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
 import countriesFile from './countries.json';
+import bannedCountriesFile from './banned.json';
 import { error } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
+export const bannedCountries = bannedCountriesFile;
 export const defaultProfilePicture =
 	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
 export const usernameRegex = /^[A-Za-z0-9]+$/;

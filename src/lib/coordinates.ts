@@ -1,7 +1,7 @@
 import { booleanPointInPolygon, greatCircle, point } from '@turf/turf';
 import type { Feature, Geometry, LineString, MultiLineString, Position } from 'geojson';
 
-export function buildRoute(pointA: Position, pointB: Position): Position[] {
+export function buildRoute(pointA: Position, pointB: Position, banned: string[]): Position[] {
 	// TODO: Needs to build a route based on banned countries
 	const points = sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
 	return points;
