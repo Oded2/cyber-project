@@ -1,47 +1,25 @@
-import { addParams, getDatesBetween, toUTC } from '$lib';
+import { addParams, divideArray, getDatesBetween, toUTC } from '$lib';
 import { error } from '@sveltejs/kit';
-import { greatCircle, booleanPointInPolygon, point } from '@turf/turf';
-
-export async function getCountriesFlownOver(
-	start: Coordinate,
-	end: Coordinate
-): Promise<Set<string>> {
-	// Function to determine which countries a path flies over
-	const countryData = (await fetch('/countries.geojson').then((response) =>
-		response.json()
-	)) as CountryGeoJSON;
-	const pathCoords = greatCircle(start, end, { npoints: 50 }).geometry;
-	const flownOver = new Set<string>();
-	let arr: Coordinate[];
-	if (pathCoords.type === 'MultiLineString')
-		arr = pathCoords.coordinates.flat().map((val) => [val[0], val[1]]);
-	else arr = pathCoords.coordinates.map((val) => [val[0], val[1]]);
-	for (const coord of arr) {
-		const countryFeature = countryData.features.find((feature: any) => {
-			return booleanPointInPolygon(point(coord), feature);
-		});
-		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2 ?? 'ERROR');
-	}
-	return flownOver;
-}
+import type { Position } from 'geojson';
 
 export async function getWeather(
-	start: Coordinate,
-	end: Coordinate,
+	coordinates: Position[],
 	timeStart: Date,
 	timeEnd: Date
 ): Promise<Weather[]> {
-	const coords = greatCircle(start, end, { npoints: 10 }).geometry.coordinates;
-	const dates = getDatesBetween(timeStart, timeEnd, 10);
+	// Takes in an array of coordinates, then splits them into 10 even points to fetch weather data for
+
+	// The time in which the weather api is going to get the forecast at is dependent on the timeStart and
+	// timeEnd, so that between the 10 even points there will be 10 equal time periods
+	const coords = divideArray(coordinates, 10);
+	const dates = getDatesBetween(timeStart, timeEnd, coords.length);
 	const weatherData = await Promise.all(
-		coords.map((coord, index) =>
-			getWeatherData(dates[index], coord[0].valueOf() as number, coord[1].valueOf() as number)
-		)
+		coords.map((coord, index) => getWeatherData(dates[index], coord))
 	);
 	return weatherData;
 }
 
-export async function getWeatherData(time: Date, long: number, lat: number): Promise<Weather> {
+export async function getWeatherData(time: Date, position: Position): Promise<Weather> {
 	// Retrieves inforamtion about the weather for a specific date
 	const oneHourDiff = (date1: Date, date2: Date): boolean => {
 		// Checks that the difference between two dates is less than an hour
@@ -51,8 +29,8 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 	// Converts the date to UTC to adjust for timezone differences
 	const date = toUTC(time).toISOString().split('T')[0];
 	const params: Record<string, string> = {
-		longitude: long.toString(),
-		latitude: lat.toString(),
+		longitude: position[0].toString(),
+		latitude: position[1].toString(),
 		hourly:
 			'temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,weather_code,pressure_msl,surface_pressure,cloud_cover,visibility,wind_speed_180m,wind_direction_180m,temperature_180m',
 		wind_speed_unit: 'kn',
@@ -75,27 +53,9 @@ export async function getWeatherData(time: Date, long: number, lat: number): Pro
 		visibility: hourlyData.visibility[hourlyIndex],
 		wind_speed: hourlyData.wind_speed_180m[hourlyIndex],
 		wind_direction: hourlyData.wind_direction_180m[hourlyIndex],
-		coord: [lat, long]
+		coord: position
 	};
 }
-
-type CountryFeature = {
-	type: 'Feature';
-	properties: {
-		NAME: string; // Country name
-		ISO_A2?: string; // 2-letter ISO code (optional)
-		ISO_A3?: string; // 3-letter ISO code (optional)
-		POP_EST?: number; // Population estimate (optional)
-		CONTINENT?: string; // Continent (optional)
-		[key: string]: any; // Allow other properties
-	};
-	geometry: {
-		type: 'Polygon' | 'MultiPolygon'; // Country boundaries
-		coordinates: number[][][][]; // GeoJSON coordinates
-	};
-};
-
-type CountryGeoJSON = { type: 'FeatureCollection'; features: CountryFeature[] };
 
 interface WeatherData {
 	latitude: number;

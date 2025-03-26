@@ -1,22 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
-	import {
-		addParams,
-		countries,
-		format,
-		formatCoords,
-		getDuration,
-		haversineDistance,
-		hrefs
-	} from '$lib';
+	import { addParams, countries, format, formatCoords, getDuration, hrefs } from '$lib';
+	import { buildRoute, getCountriesFlownOver, haversineDistance } from '$lib/coordinates.js';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import { getCountriesFlownOver } from '$lib/weather.js';
-	import { greatCircle } from '@turf/turf';
 	import { onMount } from 'svelte';
+	import type { Position } from 'geojson';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
@@ -26,17 +18,14 @@
 	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
 	const dep_weather = weather[0];
 	const des_weather = weather[weather.length - 1];
-	const distanceKm = haversineDistance(
-		{ longitude: log.dep_airport.longitude, latitude: log.dep_airport.latitude },
-		{ longitude: log.des_airport.longitude, latitude: log.des_airport.latitude }
-	);
-	const countriesFlown = getCountriesFlownOver(
-		formatCoords(log.dep_airport),
-		formatCoords(log.des_airport)
-	);
+	const start: Coordinate = [log.dep_airport.longitude, log.dep_airport.latitude];
+	const end: Coordinate = [log.des_airport.longitude, log.des_airport.latitude];
+	const distanceKm = haversineDistance(start, end);
+	const route: Position[] = buildRoute(start, end);
+
+	const countriesFlown = getCountriesFlownOver(route);
 
 	onMount(() => {
-		getPoints();
 		const mapContainer = document.getElementById('mapContainer') as HTMLDivElement;
 		const mapHTML = getRouteMap();
 		mapHTML.then((m) => {
@@ -58,31 +47,6 @@
 			minute: 'numeric'
 		});
 		return formatter.format(date);
-	}
-
-	async function getPoints() {
-		const start: Coordinate = [log.dep_airport.latitude, log.dep_airport.longitude];
-		const end: Coordinate = [log.des_airport.latitude, log.des_airport.longitude];
-		const points = greatCircle(start, end, { npoints: 100 }).geometry.coordinates;
-		const banned = (await fetch('/banned.json').then((response) => response.json())) as {
-			[key: string]: string[];
-		};
-		// Countries in which the owner of the log is not allowed to fly over
-		const ownerBanned = banned['IL'];
-		let countriesFlown = await getCountriesFlownOver(start, end);
-		console.log(countriesFlown);
-		console.log(
-			ownerBanned.forEach((bannedCountry) => {
-				console.log(bannedCountry, countriesFlown);
-			})
-		);
-		while (
-			ownerBanned.some((bannedCountry) => {
-				return countriesFlown.has(bannedCountry);
-			})
-		) {
-			console.log('here');
-		}
 	}
 
 	async function getRouteMap(): Promise<string> {

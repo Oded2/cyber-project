@@ -1,4 +1,5 @@
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+import type { Position } from 'geojson';
 
 declare global {
 	namespace App {
@@ -97,7 +98,7 @@ declare global {
 		visibility: number;
 		wind_speed: number;
 		wind_direction: number;
-		coord: Coordinate;
+		coord: Position;
 	}
 }
 

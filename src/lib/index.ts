@@ -38,7 +38,7 @@ export function addParams(
 	return url.toString();
 }
 
-export function formatCoords(airport: Airport): [number, number] {
+export function formatCoords(airport: Airport): Coordinate {
 	return [airport.longitude, airport.latitude];
 }
 
@@ -167,6 +167,18 @@ export function publicOnly(items: any[]): void {
 	});
 }
 
+export function divideArray<T>(arr: T[], n: number): T[] {
+	// Function to divide a generic array to 'n' equal parts
+	// Does not guarantee that the returned array is of 'n' length
+	const result: T[] = [];
+	const { length } = arr;
+	const jump = Math.floor(length / n);
+	for (let i = 0; i < length; i += jump) {
+		result.push(arr[i]);
+	}
+	return result;
+}
+
 export function getDatesBetween(start: Date, end: Date, n: number): Date[] {
 	/**
 	 * Returns an array of Date objects between the start and end dates (inclusive),
@@ -192,27 +204,4 @@ export function getDatesBetween(start: Date, end: Date, n: number): Date[] {
 	}
 
 	return dates;
-}
-
-export function haversineDistance(
-	pointA: { latitude: number; longitude: number },
-	pointB: { latitude: number; longitude: number }
-): number {
-	// Mathematical function to calculate the distance between two points
-	// Taken from the internet
-	const radius = 6371; // km
-	// Convert latitude and longitude to radians
-	const deltaLatitude = ((pointB.latitude - pointA.latitude) * Math.PI) / 180;
-	const deltaLongitude = ((pointB.longitude - pointA.longitude) * Math.PI) / 180;
-	const halfChordLength =
-		Math.cos((pointA.latitude * Math.PI) / 180) *
-			Math.cos((pointB.latitude * Math.PI) / 180) *
-			Math.sin(deltaLongitude / 2) *
-			Math.sin(deltaLongitude / 2) +
-		Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
-
-	const angularDistance =
-		2 * Math.atan2(Math.sqrt(halfChordLength), Math.sqrt(1 - halfChordLength));
-
-	return radius * angularDistance;
 }
