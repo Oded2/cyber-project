@@ -4,12 +4,12 @@ import countriesFile from './countries.json';
 import bannedCountriesFile from './banned.json';
 import { error } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import defaultPFP from './images/defaultPFP.png';
 
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
 export const bannedCountries = bannedCountriesFile;
-export const defaultProfilePicture =
-	'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
+export const defaultProfilePicture = defaultPFP;
 export const usernameRegex = /^[A-Za-z0-9]+$/;
 
 const min: Date = new Date();
@@ -32,10 +32,6 @@ export function addParams(link: string, params: Record<string, string>): string 
 		searchParams.append(key, value);
 	});
 	return `${link}?${searchParams.toString()}`;
-}
-
-export function formatCoords(airport: Airport): Coordinate {
-	return [airport.longitude, airport.latitude];
 }
 
 export async function isTaken(username: string, supabase: SupabaseClient): Promise<boolean> {
