@@ -88,7 +88,7 @@
 	}
 </script>
 
-<div class="mb-2 mt-5 flex items-center gap-2 border-b-2 pb-2">
+<div class="mt-5 mb-2 flex items-center gap-2 border-b-2 pb-2">
 	<div class="join">
 		<button
 			class="btn join-item"
@@ -127,7 +127,7 @@
 							currentLog = log;
 							showModal('logOptions');
 						}}
-						class="select-none bg-base-200 text-start transition hover:shadow-md"
+						class="bg-base-200 text-start transition select-none hover:shadow-md"
 					>
 						<span
 							>{#if log.favorite}<i class="fa-solid fa-star text-info"></i>
@@ -155,16 +155,14 @@
 	<ConfirmationModal
 		id="newLog"
 		title={`Would you like to create a log entry for ${datePicked.toLocaleString('en-US', { month: 'long', day: 'numeric' })}?`}
-		href={addParams(hrefs.log, { date: formatDateTime(datePicked) }, pageUrl.origin)}
+		href={addParams(hrefs.log, { date: formatDateTime(datePicked) })}
 	></ConfirmationModal>
 {:else}
 	<ConfirmationModal
 		id="logOptions"
 		title="Would you like to view this log?"
-		href={addParams(
-			hrefs.logView.replace('slug', currentLog.id.toString()),
-			{ ref: pageUrl.toString() },
-			pageUrl.origin
-		)}
+		href={addParams(hrefs.logView.replace('slug', currentLog.id.toString()), {
+			ref: pageUrl.toString()
+		})}
 	></ConfirmationModal>
 {/if}

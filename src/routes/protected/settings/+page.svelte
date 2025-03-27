@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import {
 		addParams,
+		bannedCountries,
 		capitalizeFirstLetter,
 		countries,
 		defaultProfilePicture,
@@ -21,7 +22,8 @@
 	import Collapse from '$lib/components/Collapse.svelte';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import { addToast } from '$lib/toasts.js';
-	import { getWeather, getWeatherData } from '$lib/weather.js';
+	import { getWeather } from '$lib/weather.js';
+	import { buildRoute } from '$lib/coordinates.js';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
@@ -94,12 +96,12 @@
 		for (const log of logs) {
 			// Checks to see if the log has true weather and that it was before the current date
 			if (!log.true_weather && log.des_time < today) {
-				const newWeather = await getWeather(
+				const route = buildRoute(
 					[log.dep_airport.longitude, log.dep_airport.latitude],
 					[log.des_airport.longitude, log.des_airport.latitude],
-					log.dep_time,
-					log.des_time
+					bannedCountries.IL
 				);
+				const newWeather = await getWeather(route, log.dep_time, log.des_time);
 				const toUpdate = {
 					weather_data: newWeather,
 					true_weather: true
@@ -247,19 +249,13 @@
 									</div>
 									<div class="card-actions justify-end">
 										<a
-											href={addParams(
-												hrefs.aircraft.replace('slug', aircraft.id.toString()),
-												{ ref: pageUrl.toString() },
-												pageUrl.origin
-											)}
+											href={addParams(hrefs.aircraft.replace('slug', aircraft.id.toString()), {
+												ref: pageUrl.toString()
+											})}
 											class="btn btn-outline btn-secondary">View</a
 										>
 										<a
-											href={addParams(
-												hrefs.registerAircraft,
-												{ id: aircraft.id.toString() },
-												pageUrl.origin
-											)}
+											href={addParams(hrefs.registerAircraft, { id: aircraft.id.toString() })}
 											class="btn btn-outline btn-info">Edit</a
 										>
 										<button

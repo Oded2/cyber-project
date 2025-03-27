@@ -23,11 +23,10 @@
 	const distanceKm = haversineDistance(start, end);
 	// TODO: Make banned countries specific to the owner of the log
 	const route: Position[] = buildRoute(start, end, bannedCountries.IL);
-
 	const countriesFlown = getCountriesFlownOver(route);
+	let mapContainer: HTMLDivElement;
 
 	onMount(() => {
-		const mapContainer = document.getElementById('mapContainer') as HTMLDivElement;
 		getRouteMap().then((mapContent) => {
 			// Create an iframe to hold the map
 			const iframe = document.createElement('iframe');
@@ -177,13 +176,9 @@
 				</div>
 				<a
 					class="btn btn-outline btn-info me-auto"
-					href={addParams(
-						hrefs.aircraft.replace('slug', aircraft.id.toString()),
-						{
-							ref: pageUrl.toString()
-						},
-						pageUrl.origin
-					)}>View</a
+					href={addParams(hrefs.aircraft.replace('slug', aircraft.id.toString()), {
+						ref: pageUrl.toString()
+					})}>View</a
 				>
 			</LogViewerCard>
 		{:else}
@@ -199,7 +194,7 @@
 				{@render airportDetails(log.des_airport)}
 			{/if}
 		</div>
-		<div class="flex w-full flex-col" id="mapContainer"></div>
+		<div bind:this={mapContainer} class="flex w-full flex-col"></div>
 	</div>
 </Container>
 

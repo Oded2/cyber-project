@@ -31,7 +31,7 @@ export const actions: Actions = {
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row
 		const { error: e } = await supabase.from('aircrafts').upsert([obj]);
 		if (e) throw error(500, { message: e.message });
-		throw redirect(303, addParams(hrefs.settings, { page: 'aircraft' }, url.origin));
+		throw redirect(303, addParams(hrefs.settings, { page: 'aircraft' }));
 	}
 };
 

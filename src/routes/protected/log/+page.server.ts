@@ -1,5 +1,6 @@
 import { APININJAS } from '$env/static/private';
-import { addParams, hrefs } from '$lib';
+import { addParams, bannedCountries, hrefs } from '$lib';
+import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
@@ -20,13 +21,13 @@ export const actions: Actions = {
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
 		const notes = formData.get('notes') as string;
-		// Get the weather data from the departure airport to the destination airport
-		const weather = await getWeather(
+		const route = buildRoute(
 			[depAirport.longitude, depAirport.latitude],
 			[desAirport.longitude, desAirport.latitude],
-			depDate,
-			desDate
+			bannedCountries.IL
 		);
+		// Get the weather data from the departure airport to the destination airport
+		const weather = await getWeather(route, depDate, desDate);
 		validateDates(depDate, desDate);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
