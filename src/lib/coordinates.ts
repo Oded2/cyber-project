@@ -1,5 +1,12 @@
 import { booleanPointInPolygon, greatCircle, point } from '@turf/turf';
-import type { Feature, Geometry, LineString, MultiLineString, Position } from 'geojson';
+import type { Feature, LineString, MultiLineString, Polygon, Position } from 'geojson';
+
+const fetchCountries = async () => {
+	// Helper function that fetches the countries geojson file and returns them as the correct type
+	return (await fetch('/countries.geojson').then((response) =>
+		response.json()
+	)) as Promise<CountryGeoJSON>;
+};
 
 export function buildRoute(pointA: Position, pointB: Position, banned: string[]): Position[] {
 	// TODO: Needs to build a route based on banned countries
@@ -17,12 +24,10 @@ export function sanitizeCoordinates(points: Feature<LineString | MultiLineString
 
 export async function getCountriesFlownOver(coordinates: Position[]): Promise<Set<string>> {
 	// Function to determine which countries a path flies over
-	const countryData = (await fetch('/countries.geojson').then((response) =>
-		response.json()
-	)) as CountryGeoJSON;
 	const flownOver = new Set<string>();
+	const countryData = await fetchCountries();
 	for (const coord of coordinates) {
-		const countryFeature = countryData.features.find((feature: any) => {
+		const countryFeature = countryData.features.find((feature) => {
 			return booleanPointInPolygon(point(coord), feature);
 		});
 		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2 ?? 'ERROR');
@@ -59,7 +64,7 @@ type CountryFeature = {
 		CONTINENT?: string; // Continent (optional)
 		[key: string]: any; // Allow other properties
 	};
-	geometry: Geometry;
+	geometry: Polygon;
 };
 
 type CountryGeoJSON = { type: 'FeatureCollection'; features: CountryFeature[] };
