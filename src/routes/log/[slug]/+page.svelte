@@ -8,7 +8,6 @@
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
-	import type { Position } from 'geojson';
 
 	const { data } = $props();
 	const { log, aircraft, ref } = data;
@@ -22,8 +21,8 @@
 	const end: Coordinate = [log.des_airport.longitude, log.des_airport.latitude];
 	const distanceKm = haversineDistance(start, end);
 	// TODO: Make banned countries specific to the owner of the log
-	const route: Position[] = buildRoute(start, end, bannedCountries.IL);
-	const countriesFlown = getCountriesFlownOver(route);
+	const routePromise = buildRoute(start, end, bannedCountries.IL);
+	const countriesFlownPromise = getCountriesFlownOver(routePromise);
 	let mapContainer: HTMLDivElement;
 
 	onMount(() => {
@@ -64,12 +63,15 @@
 
 	async function getRouteMap(): Promise<string> {
 		// Prepare any data you need to send with your request.
-		// This example assumes you have variables like `route`, `log`, and `weather` available in scope.
 		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
 			wind_speed,
 			wind_direction,
 			coord
 		}));
+		const route = await routePromise;
+		// Reverse the coordinates for the python code since they're reversed there
+		const newRoute = route.map((val) => [val[1], val[0]]);
+		console.log(newRoute[0]);
 		// Make a POST request to the endpoint that returns the Folium map HTML
 		const response = await fetch(PUBLIC_MAP_ENDPOINT, {
 			method: 'POST',
@@ -78,7 +80,7 @@
 			},
 			body: JSON.stringify({
 				// Reverse the order if your endpoint expects [lat, lon] instead of [lon, lat]
-				points: route.map((val) => [val[1], val[0]]),
+				points: newRoute,
 				dep: log.dep_airport.icao,
 				des: log.des_airport.icao,
 				weather_data: weatherFiltered
@@ -135,7 +137,7 @@
 							minute: 'numeric'
 						})}
 					</li>
-					{#await countriesFlown then countries}
+					{#await countriesFlownPromise then countries}
 						<li>
 							<strong>Countries Flown Over</strong>
 							<ul>

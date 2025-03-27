@@ -12,7 +12,7 @@ export async function load({ parent, url }) {
 }
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase } }) => {
+	default: async ({ request, locals: { supabase }, fetch }) => {
 		const today = new Date();
 		const formData = await request.formData();
 		// Get data for the airports and check that they are real
@@ -21,10 +21,11 @@ export const actions: Actions = {
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
 		const notes = formData.get('notes') as string;
-		const route = buildRoute(
+		const route = await buildRoute(
 			[depAirport.longitude, depAirport.latitude],
 			[desAirport.longitude, desAirport.latitude],
-			bannedCountries.IL
+			bannedCountries.IL,
+			fetch
 		);
 		// Get the weather data from the departure airport to the destination airport
 		const weather = await getWeather(route, depDate, desDate);

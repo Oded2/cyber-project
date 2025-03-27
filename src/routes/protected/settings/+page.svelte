@@ -96,7 +96,7 @@
 		for (const log of logs) {
 			// Checks to see if the log has true weather and that it was before the current date
 			if (!log.true_weather && log.des_time < today) {
-				const route = buildRoute(
+				const route = await buildRoute(
 					[log.dep_airport.longitude, log.dep_airport.latitude],
 					[log.des_airport.longitude, log.des_airport.latitude],
 					bannedCountries.IL
