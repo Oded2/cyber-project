@@ -85,7 +85,7 @@ function directionOfRoute(pointA: Position, pointB: Position): Direction {
 	const deltaLon = pointA[0] - pointB[0];
 	const deltaLat = pointA[1] - pointB[1];
 	const angle = (Math.atan(deltaLat / deltaLon) * 180) / Math.PI;
-	if (-45 <= angle || angle <= 45) return 'horizontal'; // Route is horizontal if the angle is between -45 and 45
+	if (-45 <= angle && angle <= 45) return 'horizontal'; // Route is horizontal if the angle is between -45 and 45
 	return 'vertical'; // Otherwise, it's vertical
 }
 
@@ -100,7 +100,7 @@ function binarySearchCoordinates(
 	const shiftCoord: (point: Position, isPositive: boolean) => Position = (point, isPositive) => {
 		const toAdd = isPositive ? 1 : -1;
 		// Shift the coordinate either vertically or horizontally based on the direction
-		if (direction === 'vertical') return [point[0], point[1] + toAdd];
+		if (direction === 'horizontal') return [point[0], point[1] + toAdd];
 		return [point[0] + toAdd, point[1]];
 	};
 	// Continue adjusting the coordinates until a valid point is found
