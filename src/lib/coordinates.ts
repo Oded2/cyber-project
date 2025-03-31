@@ -1,6 +1,8 @@
 import { booleanPointInPolygon, greatCircle, point } from '@turf/turf';
 import type { Feature, LineString, MultiLineString, Polygon, Position } from 'geojson';
 
+type Direction = 'horizontal' | 'vertical';
+
 const fetchCountries: (fetchFn?: typeof fetch) => Promise<CountryGeoJSON> = async (
 	fetchFn = fetch
 ) => {
@@ -43,6 +45,7 @@ export async function buildRoute(
 
 function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeature[]): Position[] {
 	const finalPoints: Position[] = [pointA];
+	const direction = directionOfRoute(pointA, pointB);
 	let points: Position[] = buildGreatCircleRoute(pointA, pointB);
 	const MAXCALLCOUNT = 10000;
 	// If the while loop gets called over 10,000 times, the site will throw an error in order to avoid
@@ -56,7 +59,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 		for (const point of points) {
 			const illegal = illegalPoint(point, polygons);
 			if (illegal) {
-				const closestLegal = binarySearchCoordinates(point, polygons);
+				const closestLegal = binarySearchCoordinates(point, polygons, direction);
 				const test = buildGreatCircleRoute(finalPoints[finalPoints.length - 1], closestLegal);
 				finalPoints.push(...test);
 				break;
@@ -71,22 +74,32 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 	return finalPoints;
 }
 
+function directionOfRoute(pointA: Position, pointB: Position): Direction {
+	const deltaLon = pointA[0] - pointB[0];
+	const deltaLat = pointA[1] - pointB[1];
+	const angle = (Math.atan(deltaLat / deltaLon) * 180) / Math.PI;
+	if (-45 <= angle || angle <= 45) return 'horizontal';
+	return 'vertical';
+}
+
 function binarySearchCoordinates(
 	illegalCoordinate: Position,
-	polygons: CountryFeature[]
+	polygons: CountryFeature[],
+	direction: Direction
 ): Position {
 	// An illegal coordinate has been found
-	let down: Position = illegalCoordinate;
-	let up: Position = illegalCoordinate;
-	const shiftCoord: (point: Position, dir: 'up' | 'down') => Position = (point, dir) => {
-		const toAdd = dir === 'up' ? 1 : -1;
-		return [point[0], point[1] + toAdd];
+	let downOrLeft: Position = illegalCoordinate;
+	let upOrRight: Position = illegalCoordinate;
+	const shiftCoord: (point: Position, isPositive: boolean) => Position = (point, isPositive) => {
+		const toAdd = isPositive ? 1 : -1;
+		if (direction === 'vertical') return [point[0], point[1] + toAdd];
+		return [point[0] + toAdd, point[1]];
 	};
-	while (illegalPoint(down, polygons) && illegalPoint(up, polygons)) {
-		up = shiftCoord(up, 'up');
-		down = shiftCoord(down, 'down');
+	while (illegalPoint(downOrLeft, polygons) && illegalPoint(upOrRight, polygons)) {
+		upOrRight = shiftCoord(upOrRight, true);
+		downOrLeft = shiftCoord(downOrLeft, false);
 	}
-	return illegalPoint(up, polygons) ? down : up;
+	return illegalPoint(upOrRight, polygons) ? downOrLeft : upOrRight;
 }
 
 function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
