@@ -20,15 +20,54 @@ export async function buildRoute(
 	const bannedCountriesPolygons = countryData.features.filter((val) =>
 		banned.includes(val.properties.ISO_A2)
 	);
-	let points = sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
-	const noFly = () =>
-		points.some((coord) =>
-			bannedCountriesPolygons.some((polygon) => booleanPointInPolygon(coord, polygon))
-		);
-	// while (noFly()) {
-	// 	// Build a different route that's as short as possible without flying over the illegal countries
-	// }
-	return points;
+	return avoidPolygons(pointA, pointB, bannedCountriesPolygons);
+}
+
+function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeature[]): Position[] {
+	const finalPoints: Position[] = [pointA];
+	let points: Position[] = sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
+	const MAXCALLCOUNT = 10000;
+	// If the while loop gets called over 10,000 times, the site will throw an error in order to avoid
+	// a crash
+	let callCount = 0;
+	while (
+		haversineDistance(finalPoints[finalPoints.length - 1], pointB) > 1 &&
+		callCount < MAXCALLCOUNT
+	) {
+		callCount++;
+		for (const point of points) {
+			const illegal = polygons.some((polygon) => booleanPointInPolygon(point, polygon));
+			if (illegal) {
+				const closestLegal = binarySearchCoordinates(point, polygons);
+				const test = sanitizeCoordinates(
+					greatCircle(finalPoints[finalPoints.length - 1], closestLegal, { npoints: 100 })
+				);
+				finalPoints.push(...test);
+				break;
+			} else {
+				finalPoints.push(point);
+			}
+		}
+		const lastPoint = finalPoints[finalPoints.length - 1];
+		points = sanitizeCoordinates(greatCircle(lastPoint, pointB, { npoints: 100 }));
+	}
+	return finalPoints;
+}
+
+function binarySearchCoordinates(illegalCoordinate: Position, polygon: CountryFeature[]): Position {
+	// An illegal coordinate has been found
+	let down: Position = illegalCoordinate;
+	let up: Position = illegalCoordinate;
+	const shiftCoord: (point: Position) => Position = (point) => [point[0], point[1] + 5];
+	while (illegalPoint(down, polygon) || illegalPoint(up, polygon)) {
+		up = shiftCoord(up);
+		down = shiftCoord(down);
+	}
+	return illegalPoint(up, polygon) ? down : up;
+}
+
+function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
+	return polygons.some((polygon) => booleanPointInPolygon(point, polygon));
 }
 
 export function sanitizeCoordinates(points: Feature<LineString | MultiLineString>): Position[] {
@@ -56,7 +95,7 @@ export async function getCountriesFlownOver(
 	return flownOver;
 }
 
-export function haversineDistance(pointA: Coordinate, pointB: Coordinate): number {
+export function haversineDistance(pointA: Position, pointB: Position): number {
 	// Mathematical function to calculate the distance between two points
 	const earthRadius = 6371; // km
 	// Convert latitude and longitude to radians

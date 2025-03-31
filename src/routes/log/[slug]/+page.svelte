@@ -33,6 +33,7 @@
 			// Set desired dimensions for the map
 			iframe.style.width = '100%';
 			iframe.style.height = '100%'; // adjust as needed
+			iframe.style.minHeight = '400px';
 			// Append the iframe to the container
 			mapContainer.appendChild(iframe);
 			// Write the fetched HTML content into the iframe's document
@@ -71,7 +72,6 @@
 		const route = await routePromise;
 		// Reverse the coordinates for the python code since they're reversed there
 		const newRoute = route.map((val) => [val[1], val[0]]);
-		console.log(newRoute[0]);
 		// Make a POST request to the endpoint that returns the Folium map HTML
 		const response = await fetch(PUBLIC_MAP_ENDPOINT, {
 			method: 'POST',
@@ -196,7 +196,7 @@
 				{@render airportDetails(log.des_airport)}
 			{/if}
 		</div>
-		<div bind:this={mapContainer} class="flex w-full flex-col"></div>
+		<div bind:this={mapContainer} class="flex min-h-80 w-full flex-col"></div>
 	</div>
 </Container>
 
