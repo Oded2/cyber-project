@@ -5,12 +5,14 @@ import bannedCountriesFile from './banned.json';
 import { error } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import defaultPFP from './images/defaultPFP.png';
+import type { AnimationConfig } from 'svelte/animate';
 
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
 export const bannedCountries = bannedCountriesFile;
 export const defaultProfilePicture = defaultPFP;
 export const usernameRegex = /^[A-Za-z0-9]+$/;
+export const flipConfig: AnimationConfig = { duration: 500 };
 
 const min: Date = new Date();
 min.setDate(min.getDate() - 14);

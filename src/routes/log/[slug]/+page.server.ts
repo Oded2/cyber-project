@@ -16,5 +16,11 @@ export async function load({ params, url, locals: { supabase } }) {
 		.eq('id', log['aircraft']);
 	if (eA) throw error(500, { message: eA.message });
 	const aircraft = a[0];
-	return { log: log as Log, aircraft: aircraft as Aircraft, ref };
+	const { data: profile, error: eP } = await supabase
+		.from('profiles')
+		.select()
+		.eq('id', log['owner'])
+		.single();
+	if (eP) throw error(500, { message: eP.message });
+	return { log: log as Log, aircraft: aircraft as Aircraft, profile: profile as Profile, ref };
 }

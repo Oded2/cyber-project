@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { hrefs, showModal, formatDate, getDuration, addParams } from '$lib';
+	import { hrefs, showModal, formatDate, getDuration, addParams, flipConfig } from '$lib';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import LogOptionsModal from '$lib/components/LogOptionsModal.svelte';
 	import type { SupabaseClient } from '@supabase/supabase-js';
@@ -77,7 +77,7 @@
 		<div class="col-auto">Date Logged</div>
 	</div>
 	{#each logs as log, index (log)}
-		<div animate:flip={{ duration: 500 }}>
+		<div animate:flip={flipConfig}>
 			{@render entry(log, index % 2 != 0)}
 		</div>
 	{/each}
@@ -105,11 +105,9 @@
 			{#if aircraft}
 				<a
 					class="link"
-					href={addParams(
-						hrefs.aircraft.replace('slug', aircraft.id.toString()),
-						{ ref: pageUrl.toString() },
-						pageUrl.origin
-					)}>{aircraft.nickname}</a
+					href={addParams(hrefs.aircraft.replace('slug', aircraft.id.toString()), {
+						ref: pageUrl.toString()
+					})}>{aircraft.nickname}</a
 				>
 			{:else}
 				<span>Unknown</span>
@@ -130,13 +128,9 @@
 				>
 			{:else}
 				<a
-					href={addParams(
-						hrefs.logView.replace('slug', log.id.toString()),
-						{
-							ref: pageUrl.toString()
-						},
-						pageUrl.origin
-					)}
+					href={addParams(hrefs.logView.replace('slug', log.id.toString()), {
+						ref: pageUrl.toString()
+					})}
 					class="btn btn-info">View</a
 				>
 			{/if}

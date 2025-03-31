@@ -7,6 +7,7 @@
 		capitalizeFirstLetter,
 		countries,
 		defaultProfilePicture,
+		flipConfig,
 		format,
 		handleLogs,
 		hrefs,
@@ -24,6 +25,8 @@
 	import { addToast } from '$lib/toasts.js';
 	import { getWeather } from '$lib/weather.js';
 	import { buildRoute } from '$lib/coordinates.js';
+	import type { MouseEventHandler } from 'svelte/elements';
+	import LogInput from '$lib/components/LogInput.svelte';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
@@ -34,6 +37,10 @@
 		unlisted: 'Unlist',
 		public: 'Publicize'
 	};
+	const logUpdate = $state({
+		inProgress: false,
+		isFinished: false
+	});
 	let { aircrafts } = $state(data);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
@@ -43,10 +50,8 @@
 	let currentFilter: 'all' | 'unfavorite' | 'favorite' | 'private' | 'public' | 'unlisted' =
 		$state('all');
 	let currentVisibility: keyof typeof visibilities = $state('private');
-	let logUpdate = $state({
-		inProgress: false,
-		isFinished: false
-	});
+	let accountDeleteButton: HTMLButtonElement;
+	let banCountryProgress: boolean = $state(false);
 
 	async function handleAircraftDelete(): Promise<void> {
 		await supabase.from('aircrafts').delete().eq('id', currentID);
@@ -60,7 +65,7 @@
 		const { error: e } = await supabase
 			.from('profiles')
 			.update({ [key]: updatedProfile[key] })
-			.eq('id', user?.id);
+			.eq('id', user!.id);
 		if (e) {
 			console.error(e);
 			return;
@@ -69,14 +74,13 @@
 	}
 
 	function handleAccountDelete(): void {
-		const hiddenButton: HTMLButtonElement = document.getElementById(
-			'deleteAccountButton'
-		) as HTMLButtonElement;
-		hiddenButton.click();
+		accountDeleteButton.click();
 	}
+
 	async function changeLogsVisibility(visibility: keyof typeof visibilities): Promise<void> {
 		await supabase.from('logs').update({ visibility }).eq('owner', user!.id);
 	}
+
 	async function handleLogPurge(filter: typeof currentFilter): Promise<void> {
 		const userId = user!.id;
 		if (filter === 'all') await supabase.from('logs').delete().eq('owner', userId);
@@ -86,6 +90,7 @@
 			await supabase.from('logs').delete().eq('owner', userId).eq('favorite', false);
 		else await supabase.from('logs').delete().eq('owner', userId).eq('visibility', filter);
 	}
+
 	async function updateLogs(): Promise<void> {
 		// This function updates the weather in any logs that were logged before they happened
 		const today = new Date();
@@ -112,6 +117,55 @@
 		logUpdate.inProgress = false;
 		logUpdate.isFinished = true;
 	}
+
+	const unbanCountry: MouseEventHandler<HTMLButtonElement> = async (event) => {
+		const country = event.currentTarget.getAttribute('data-country');
+		event.currentTarget.disabled = true;
+		const newBannedCountries = updatedProfile.bannedCountries.filter((val) => val !== country);
+		const { error: e } = await supabase
+			.from('profiles')
+			.update({ bannedCountries: newBannedCountries })
+			.eq('id', user!.id);
+		if (e) {
+			event.currentTarget.disabled = false;
+			console.error(e);
+			return;
+		}
+		updatedProfile.bannedCountries = newBannedCountries;
+	};
+
+	const banCountry: (
+		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
+	) => Promise<void> = async (event) => {
+		event.preventDefault();
+
+		const form = event.currentTarget;
+		const formData = new FormData(form);
+		const countryToBan = formData.get('country')!.toString().toUpperCase();
+		if (countryToBan.length < 2) {
+			addToast({ type: 'error', text: 'Input must be a 2 letter country code', duration: 5000 });
+			return;
+		}
+		const countryExists = Object.keys(countries).includes(countryToBan);
+		if (!countryExists) {
+			addToast({ type: 'error', text: "Country doesn't exist", duration: 5000 });
+			return;
+		}
+		banCountryProgress = true;
+		const updatedValue = [...updatedProfile.bannedCountries, countryToBan];
+		const { error: e } = await supabase
+			.from('profiles')
+			.update({ bannedCountries: updatedValue })
+			.eq('id', user!.id);
+		banCountryProgress = false;
+		if (e) {
+			console.error(e);
+			return;
+		}
+		const input = document.getElementById('countryBanInput') as HTMLInputElement;
+		input.value = '';
+		updatedProfile.bannedCountries = updatedValue;
+	};
 </script>
 
 <Container>
@@ -240,7 +294,7 @@
 						{#each aircrafts as aircraft (aircraft)}
 							<div
 								class="card relative col-auto w-full shadow-sm transition hover:shadow-xl"
-								animate:flip={{ duration: 500 }}
+								animate:flip={flipConfig}
 							>
 								<div class="card-body">
 									<div class="mb-2">
@@ -286,33 +340,71 @@
 					</div>
 				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
 			{:else if currentPage === 'logs'}
-				<div class="flex flex-col gap-2">
-					<button
-						class="btn btn-outline btn-primary max-w-xs"
-						onclick={updateLogs}
-						disabled={logUpdate.inProgress || logUpdate.isFinished}
-					>
-						{#if logUpdate.inProgress}
-							<span class="loading loading-spinner"></span>
-						{:else if logUpdate.isFinished}
-							Logs are up to date
-						{:else}
-							Update Logs
-						{/if}
-					</button>
-					{@render visibilityButton('public')}
-					{@render visibilityButton('unlisted')}
-					{@render visibilityButton('private')}
-					{@render purgeLogsButton('all')}
-					<Collapse title="More Options">
-						<div class="flex flex-col gap-2">
-							{@render purgeLogsButton('unfavorite')}
-							{@render purgeLogsButton('favorite')}
-							{@render purgeLogsButton('private')}
-							{@render purgeLogsButton('unlisted')}
-							{@render purgeLogsButton('public')}
-						</div>
-					</Collapse>
+				<div class="flex flex-col gap-2 sm:flex-row">
+					<div class="flex flex-col gap-2">
+						<button
+							class="btn btn-outline btn-primary max-w-xs"
+							onclick={updateLogs}
+							disabled={logUpdate.inProgress || logUpdate.isFinished}
+						>
+							{#if logUpdate.inProgress}
+								<span class="loading loading-spinner"></span>
+							{:else if logUpdate.isFinished}
+								Logs are up to date
+							{:else}
+								Update Logs
+							{/if}
+						</button>
+						{@render visibilityButton('public')}
+						{@render visibilityButton('unlisted')}
+						{@render visibilityButton('private')}
+						{@render purgeLogsButton('all')}
+						<Collapse title="More Options">
+							<div class="flex flex-col gap-2">
+								{@render purgeLogsButton('unfavorite')}
+								{@render purgeLogsButton('favorite')}
+								{@render purgeLogsButton('private')}
+								{@render purgeLogsButton('unlisted')}
+								{@render purgeLogsButton('public')}
+							</div>
+						</Collapse>
+					</div>
+					<div class="flex flex-col gap-2 border-s-2 px-2">
+						<h2 class="mb-2 text-xl font-bold">Banned Countries</h2>
+						{#each updatedProfile.bannedCountries as bannedCountry (bannedCountry)}
+							<div
+								animate:flip={flipConfig}
+								class="flex w-full items-baseline justify-between rounded bg-gray-200 p-2 py-2 shadow"
+							>
+								<span>{countries[bannedCountry]}</span>
+								<div class="tooltip" data-tip="Remove from banned countries">
+									<button
+										class="btn btn-outline btn-error btn-sm btn-circle"
+										aria-label="Delete"
+										data-country={bannedCountry}
+										onclick={unbanCountry}
+									>
+										<i class="fa-solid fa-xmark"></i>
+									</button>
+								</div>
+							</div>
+						{/each}
+						<form class="flex gap-2" onsubmit={banCountry}>
+							<LogInput
+								id="countryBanInput"
+								name="country"
+								displayName="Add Country"
+								minlength={2}
+								maxlength={2}
+								required
+								placeholder="Two letter code"
+								noValidation
+							></LogInput>
+							<button type="submit" class="btn btn-primary" disabled={banCountryProgress}>
+								Ban Country
+							</button>
+						</form>
+					</div>
 				</div>
 			{/if}
 		</div>
@@ -321,7 +413,7 @@
 
 <!-- Hidden form that sends a request to the server to delete the user's account -->
 <form action="?/deleteAccount" method="POST" class="hidden">
-	<button aria-label="Delete Account" type="submit" id="deleteAccountButton"></button>
+	<button bind:this={accountDeleteButton} aria-label="Delete Account" type="submit"></button>
 </form>
 
 <ConfirmationModal id="passwordReset" href={hrefs.passwordReset}></ConfirmationModal>

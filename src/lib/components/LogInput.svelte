@@ -4,6 +4,7 @@
 	import { format } from '$lib';
 
 	const {
+		id,
 		min,
 		max,
 		minlength,
@@ -15,8 +16,10 @@
 		value,
 		type,
 		autocomplete,
-		autocorrect
+		autocorrect,
+		noValidation
 	}: {
+		id?: string;
 		min?: number;
 		max?: number;
 		minlength?: number;
@@ -30,18 +33,22 @@
 		validatorText?: string;
 		autocomplete?: FullAutoFill;
 		autocorrect?: 'on' | 'off';
+		noValidation?: boolean;
 	} = $props();
 </script>
 
 <InputLabel
-	validatorText={min
-		? `Must be at least ${min.toLocaleString()}`
-		: minlength
-			? `Must be at least ${minlength?.toLocaleString()} characters long`
-			: 'Field cannot be empty'}
+	validatorText={noValidation
+		? undefined
+		: min
+			? `Must be at least ${min.toLocaleString()}`
+			: minlength
+				? `Must be at least ${minlength?.toLocaleString()} characters long`
+				: 'Field cannot be empty'}
 >
 	{displayName}
 	<input
+		{id}
 		{value}
 		{type}
 		{name}
@@ -56,27 +63,3 @@
 		{required}
 	/>
 </InputLabel>
-
-<!-- <label class="flex w-full flex-col">
-	<div class="label">
-		<span class="text-lg font-semibold">{displayName}</span>
-	</div>
-	<input
-		type="text"
-		{value}
-		onchange={handleChange}
-		{placeholder}
-		{autocorrect}
-		class="input input-sm w-full py-5"
-		{minlength}
-		{maxlength}
-		{required}
-		{name}
-	/>
-	{#if !required}
-		<div class="label"><span class="label-text-alt font-light italic">Optional</span></div>
-	{/if}
-	{#if errorMessage.length > 0}
-		<span class="text-error px-3 text-sm">{errorMessage}</span>
-	{/if}
-</label> -->

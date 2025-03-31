@@ -16,8 +16,6 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
-	// Longitude, Latitude
-	type Coordinate = [number, number];
 	type SelectValues = {
 		id: string;
 		display: string;
@@ -30,6 +28,7 @@ declare global {
 		bio: string;
 		image: string;
 		country: string;
+		bannedCountries: string[];
 		[key: string]: string | Date;
 	}
 	interface Log {

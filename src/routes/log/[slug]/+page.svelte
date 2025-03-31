@@ -8,20 +8,20 @@
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
+	import type { Position } from 'geojson';
 
 	const { data } = $props();
-	const { log, aircraft, ref } = data;
+	const { log, aircraft, ref, profile } = data;
 
 	const pageUrl = page.url;
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
 	const dep_weather = weather[0];
 	const des_weather = weather[weather.length - 1];
-	const start: Coordinate = [log.dep_airport.longitude, log.dep_airport.latitude];
-	const end: Coordinate = [log.des_airport.longitude, log.des_airport.latitude];
+	const start: Position = [log.dep_airport.longitude, log.dep_airport.latitude];
+	const end: Position = [log.des_airport.longitude, log.des_airport.latitude];
 	const distanceKm = haversineDistance(start, end);
-	// TODO: Make banned countries specific to the owner of the log
-	const routePromise = buildRoute(start, end, bannedCountries.IL);
+	const routePromise = buildRoute(start, end, profile.bannedCountries);
 	const countriesFlownPromise = getCountriesFlownOver(routePromise);
 	let mapContainer: HTMLDivElement;
 
@@ -74,7 +74,7 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				// Reverse the order if your endpoint expects [lat, lon] instead of [lon, lat]
+				// Reverse the order because the endpoint expects [lat, lon] instead of [lon, lat]
 				points: newRoute,
 				dep: log.dep_airport.icao,
 				des: log.des_airport.icao,
