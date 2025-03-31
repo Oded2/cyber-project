@@ -3,24 +3,25 @@ import type { Feature, LineString, MultiLineString, Polygon, Position } from 'ge
 
 type Direction = 'horizontal' | 'vertical';
 
+// Fetches country boundaries as GeoJSON
 const fetchCountries: (fetchFn?: typeof fetch) => Promise<CountryGeoJSON> = async (
 	fetchFn = fetch
 ) => {
-	// Helper function that fetches the countries geojson file and returns them as the correct type
-	// 'fetchFn' allows to use event.fetch for server-side functions
+	// Fetches the geojson file and returns it as the correct type
 	return (await fetchFn('/countries.geojson').then((response) =>
 		response.json()
 	)) as Promise<CountryGeoJSON>;
 };
 
+// Generates a great-circle route between two points, with 100 intermediate points
 const buildGreatCircleRoute: (pointA: Position, pointB: Position) => Position[] = (
 	pointA,
 	pointB
 ) => {
+	// Converts the geometry from greatCircle into an array of coordinates (Position[])
 	const sanitizeCoordinates: (points: Feature<LineString | MultiLineString>) => Position[] = (
 		points
 	) => {
-		// Converts the output functions such as greatCircle to Position[]
 		const geometry = points.geometry;
 		if (geometry.type === 'MultiLineString')
 			return geometry.coordinates.flat().map((val) => [val[0], val[1]]);
@@ -29,106 +30,115 @@ const buildGreatCircleRoute: (pointA: Position, pointB: Position) => Position[] 
 	return sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
 };
 
+// Builds a route while avoiding banned countries
 export async function buildRoute(
 	pointA: Position,
 	pointB: Position,
 	banned: string[],
 	fetchFn?: typeof fetch
 ): Promise<Position[]> {
-	// TODO: Needs to build a route based on banned countries
+	// Fetch country data and filter out banned countries
 	const countryData = await fetchCountries(fetchFn);
 	const bannedCountriesPolygons = countryData.features.filter((val) =>
 		banned.includes(val.properties.ISO_A2)
 	);
-	return avoidPolygons(pointA, pointB, bannedCountriesPolygons);
+	return avoidPolygons(pointA, pointB, bannedCountriesPolygons); // Call function to avoid banned countries
 }
 
+// Adjusts the route to avoid specified polygons (banned countries)
 function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeature[]): Position[] {
-	const finalPoints: Position[] = [pointA];
-	const direction = directionOfRoute(pointA, pointB);
-	let points: Position[] = buildGreatCircleRoute(pointA, pointB);
-	const MAXCALLCOUNT = 10000;
-	// If the while loop gets called over 10,000 times, the site will throw an error in order to avoid
-	// a crash
+	const finalPoints: Position[] = [pointA]; // Route starts at pointA
+	const direction = directionOfRoute(pointA, pointB); // Determine route direction (horizontal/vertical)
+	let points: Position[] = buildGreatCircleRoute(pointA, pointB); // Get initial great-circle route
+	const MAXCALLCOUNT = 10000; // Prevents infinite loops by limiting the number of attempts
 	let callCount = 0;
+
+	// Iteratively adjust the route until we reach the destination or exceed max attempts
 	while (
 		haversineDistance(finalPoints[finalPoints.length - 1], pointB) > 1 &&
 		callCount < MAXCALLCOUNT
 	) {
 		callCount++;
 		for (const point of points) {
-			const illegal = illegalPoint(point, polygons);
+			const illegal = illegalPoint(point, polygons); // Check if the point is inside a banned country
 			if (illegal) {
+				// If the point is illegal, find the closest legal point and adjust the route
 				const closestLegal = binarySearchCoordinates(point, polygons, direction);
 				const test = buildGreatCircleRoute(finalPoints[finalPoints.length - 1], closestLegal);
 				finalPoints.push(...test);
 				break;
 			} else {
+				// If point is legal, add it to the route
 				finalPoints.push(point);
 			}
 		}
+		// Recalculate points for the next segment of the route
 		const lastPoint = finalPoints[finalPoints.length - 1];
 		points = buildGreatCircleRoute(lastPoint, pointB);
 	}
-	if (callCount === MAXCALLCOUNT) console.error('Max calls exceeded');
+	if (callCount === MAXCALLCOUNT) console.error('Max calls exceeded'); // Error if too many attempts
 	return finalPoints;
 }
 
+// Determines if the route is horizontal or vertical based on the angle between the points
 function directionOfRoute(pointA: Position, pointB: Position): Direction {
 	const deltaLon = pointA[0] - pointB[0];
 	const deltaLat = pointA[1] - pointB[1];
 	const angle = (Math.atan(deltaLat / deltaLon) * 180) / Math.PI;
-	if (-45 <= angle || angle <= 45) return 'horizontal';
-	return 'vertical';
+	if (-45 <= angle || angle <= 45) return 'horizontal'; // Route is horizontal if the angle is between -45 and 45
+	return 'vertical'; // Otherwise, it's vertical
 }
 
+// Finds the closest valid coordinate if the current one is inside a banned polygon
 function binarySearchCoordinates(
 	illegalCoordinate: Position,
 	polygons: CountryFeature[],
 	direction: Direction
 ): Position {
-	// An illegal coordinate has been found
-	let downOrLeft: Position = illegalCoordinate;
-	let upOrRight: Position = illegalCoordinate;
+	let downOrLeft: Position = illegalCoordinate; // The point to move down/left
+	let upOrRight: Position = illegalCoordinate; // The point to move up/right
 	const shiftCoord: (point: Position, isPositive: boolean) => Position = (point, isPositive) => {
 		const toAdd = isPositive ? 1 : -1;
+		// Shift the coordinate either vertically or horizontally based on the direction
 		if (direction === 'vertical') return [point[0], point[1] + toAdd];
 		return [point[0] + toAdd, point[1]];
 	};
+	// Continue adjusting the coordinates until a valid point is found
 	while (illegalPoint(downOrLeft, polygons) && illegalPoint(upOrRight, polygons)) {
 		upOrRight = shiftCoord(upOrRight, true);
 		downOrLeft = shiftCoord(downOrLeft, false);
 	}
+	// Return the first valid coordinate found
 	return illegalPoint(upOrRight, polygons) ? downOrLeft : upOrRight;
 }
 
+// Checks if a point is inside any of the banned country polygons
 function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
-	return polygons.some((polygon) => booleanPointInPolygon(point, polygon));
+	return polygons.some((polygon) => booleanPointInPolygon(point, polygon)); // Return true if point is inside a banned polygon
 }
 
+// Determines which countries are overflown by a route, based on the coordinates
 export async function getCountriesFlownOver(
 	coordinatesPromise: Promise<Position[]>
 ): Promise<Set<string>> {
-	// Function to determine which countries a path flies over
-	// Await the promise
-	const coordinates = await coordinatesPromise;
-	const flownOver = new Set<string>();
-	const countryData = await fetchCountries();
+	const coordinates = await coordinatesPromise; // Await the promise to get coordinates
+	const flownOver = new Set<string>(); // Set to store unique country ISO codes
+	const countryData = await fetchCountries(); // Fetch country data
 	for (const coord of coordinates) {
-		const countryFeature = countryData.features.find((feature) => {
-			return booleanPointInPolygon(point(coord), feature);
-		});
-		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2);
+		// Find which country the coordinate belongs to
+		const countryFeature = countryData.features.find((feature) =>
+			booleanPointInPolygon(point(coord), feature)
+		);
+		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2); // Add country code to the set
 	}
-	return flownOver;
+	return flownOver; // Return the set of overflown countries
 }
 
+// Calculates the great-circle distance between two points on Earth
 export function haversineDistance(pointA: Position, pointB: Position): number {
-	// Mathematical function to calculate the distance between two points
-	const earthRadius = 6371; // km
-	// Convert latitude and longitude to radians
-	const deltaLatitude = ((pointB[1] - pointA[1]) * Math.PI) / 180;
-	const deltaLongitude = ((pointB[0] - pointA[0]) * Math.PI) / 180;
+	const earthRadius = 6371; // Earth's radius in kilometers
+	const deltaLatitude = ((pointB[1] - pointA[1]) * Math.PI) / 180; // Difference in latitude in radians
+	const deltaLongitude = ((pointB[0] - pointA[0]) * Math.PI) / 180; // Difference in longitude in radians
 	const halfChordLength =
 		Math.cos((pointA[1] * Math.PI) / 180) *
 			Math.cos((pointB[1] * Math.PI) / 180) *
@@ -137,22 +147,23 @@ export function haversineDistance(pointA: Position, pointB: Position): number {
 		Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
 
 	const angularDistance =
-		2 * Math.atan2(Math.sqrt(halfChordLength), Math.sqrt(1 - halfChordLength));
+		2 * Math.atan2(Math.sqrt(halfChordLength), Math.sqrt(1 - halfChordLength)); // Angular distance in radians
 
-	return earthRadius * angularDistance;
+	return earthRadius * angularDistance; // Return the distance in kilometers
 }
 
+// Type definition for a country's geographic data
 type CountryFeature = {
-	type: 'Feature';
+	type: 'Feature'; // Feature type for GeoJSON
 	properties: {
 		NAME: string; // Country name
 		ISO_A2: string; // 2-letter ISO code
 		ISO_A3?: string; // 3-letter ISO code (optional)
 		POP_EST?: number; // Population estimate (optional)
 		CONTINENT?: string; // Continent (optional)
-		[key: string]: any; // Allow other properties
+		[key: string]: any; // Other properties
 	};
-	geometry: Polygon;
+	geometry: Polygon; // Geographical shape of the country (Polygon)
 };
 
-type CountryGeoJSON = { type: 'FeatureCollection'; features: CountryFeature[] };
+type CountryGeoJSON = { type: 'FeatureCollection'; features: CountryFeature[] }; // GeoJSON format for country data
