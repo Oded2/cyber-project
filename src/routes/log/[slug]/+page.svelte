@@ -34,15 +34,10 @@
 			iframe.style.width = '100%';
 			iframe.style.height = '100%'; // adjust as needed
 			iframe.style.minHeight = '400px';
+			// Attach the html to the iframe document
+			iframe.srcdoc = mapContent;
 			// Append the iframe to the container
 			mapContainer.appendChild(iframe);
-			// Write the fetched HTML content into the iframe's document
-			const doc = iframe.contentWindow?.document;
-			if (doc) {
-				doc.open();
-				doc.write(mapContent);
-				doc.close();
-			}
 		});
 	});
 
@@ -137,13 +132,13 @@
 							minute: 'numeric'
 						})}
 					</li>
-					{#await countriesFlownPromise then countries}
+					{#await countriesFlownPromise then countriesFlown}
 						<li>
 							<strong>Countries Flown Over</strong>
 							<ul>
-								{#each countries as country}
+								{#each countriesFlown as countryTwoLetter}
 									<li>
-										{country}
+										{countries[countryTwoLetter]}
 									</li>
 								{/each}
 							</ul>
