@@ -50,7 +50,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 	const finalPoints: Position[] = [pointA]; // Route starts at pointA
 	const direction = directionOfRoute(pointA, pointB); // Determine route direction (horizontal/vertical)
 	let points: Position[] = buildGreatCircleRoute(pointA, pointB); // Get initial great-circle route
-	const MAXCALLCOUNT = 10000; // Prevents infinite loops by limiting the number of attempts
+	const MAXCALLCOUNT = 100; // Prevents infinite loops by limiting the number of attempts
 	let callCount = 0;
 
 	// Iteratively adjust the route until we reach the destination or exceed max attempts
