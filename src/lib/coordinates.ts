@@ -1,12 +1,30 @@
 import { booleanPointInPolygon, greatCircle, point } from '@turf/turf';
 import type { Feature, LineString, MultiLineString, Polygon, Position } from 'geojson';
 
-const fetchCountries = async (fetchFn: typeof fetch = fetch) => {
+const fetchCountries: (fetchFn?: typeof fetch) => Promise<CountryGeoJSON> = async (
+	fetchFn = fetch
+) => {
 	// Helper function that fetches the countries geojson file and returns them as the correct type
 	// 'fetchFn' allows to use event.fetch for server-side functions
 	return (await fetchFn('/countries.geojson').then((response) =>
 		response.json()
 	)) as Promise<CountryGeoJSON>;
+};
+
+const buildGreatCircleRoute: (pointA: Position, pointB: Position) => Position[] = (
+	pointA,
+	pointB
+) => {
+	const sanitizeCoordinates: (points: Feature<LineString | MultiLineString>) => Position[] = (
+		points
+	) => {
+		// Converts the output functions such as greatCircle to Position[]
+		const geometry = points.geometry;
+		if (geometry.type === 'MultiLineString')
+			return geometry.coordinates.flat().map((val) => [val[0], val[1]]);
+		return geometry.coordinates.map((val) => [val[0], val[1]]);
+	};
+	return sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
 };
 
 export async function buildRoute(
@@ -25,7 +43,7 @@ export async function buildRoute(
 
 function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeature[]): Position[] {
 	const finalPoints: Position[] = [pointA];
-	let points: Position[] = sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
+	let points: Position[] = buildGreatCircleRoute(pointA, pointB);
 	const MAXCALLCOUNT = 10000;
 	// If the while loop gets called over 10,000 times, the site will throw an error in order to avoid
 	// a crash
@@ -39,9 +57,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 			const illegal = polygons.some((polygon) => booleanPointInPolygon(point, polygon));
 			if (illegal) {
 				const closestLegal = binarySearchCoordinates(point, polygons);
-				const test = sanitizeCoordinates(
-					greatCircle(finalPoints[finalPoints.length - 1], closestLegal, { npoints: 100 })
-				);
+				const test = buildGreatCircleRoute(finalPoints[finalPoints.length - 1], closestLegal);
 				finalPoints.push(...test);
 				break;
 			} else {
@@ -49,7 +65,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 			}
 		}
 		const lastPoint = finalPoints[finalPoints.length - 1];
-		points = sanitizeCoordinates(greatCircle(lastPoint, pointB, { npoints: 100 }));
+		points = buildGreatCircleRoute(lastPoint, pointB);
 	}
 	return finalPoints;
 }
@@ -68,14 +84,6 @@ function binarySearchCoordinates(illegalCoordinate: Position, polygon: CountryFe
 
 function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
 	return polygons.some((polygon) => booleanPointInPolygon(point, polygon));
-}
-
-export function sanitizeCoordinates(points: Feature<LineString | MultiLineString>): Position[] {
-	// Converts the output functions such as greatCircle to Position[]
-	const geometry = points.geometry;
-	if (geometry.type === 'MultiLineString')
-		return geometry.coordinates.flat().map((val) => [val[0], val[1]]);
-	return geometry.coordinates.map((val) => [val[0], val[1]]);
 }
 
 export async function getCountriesFlownOver(
