@@ -5,6 +5,7 @@
 		addParams,
 		bannedCountries,
 		capitalizeFirstLetter,
+		closeModal,
 		countries,
 		defaultProfilePicture,
 		flipConfig,
@@ -25,8 +26,9 @@
 	import { addToast } from '$lib/toasts.js';
 	import { getWeather } from '$lib/weather.js';
 	import { buildRoute } from '$lib/coordinates.js';
-	import type { MouseEventHandler } from 'svelte/elements';
+	import type { EventHandler, MouseEventHandler } from 'svelte/elements';
 	import LogInput from '$lib/components/LogInput.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 
 	const { data } = $props();
 	const { supabase, user, profile, page: pageDirect } = data;
@@ -134,9 +136,7 @@
 		updatedProfile.bannedCountries = newBannedCountries;
 	};
 
-	const banCountry: (
-		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
-	) => Promise<void> = async (event) => {
+	const banCountry: EventHandler<SubmitEvent, HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
 		const form = event.currentTarget;
@@ -152,7 +152,7 @@
 			return;
 		}
 		banCountryProgress = true;
-		const updatedValue = [...updatedProfile.bannedCountries, countryToBan];
+		const updatedValue = [countryToBan, ...updatedProfile.bannedCountries];
 		const { error: e } = await supabase
 			.from('profiles')
 			.update({ bannedCountries: updatedValue })
@@ -165,6 +165,38 @@
 		const input = document.getElementById('countryBanInput') as HTMLInputElement;
 		input.value = '';
 		updatedProfile.bannedCountries = updatedValue;
+	};
+
+	const handlePreset: MouseEventHandler<HTMLButtonElement> = async (event) => {
+		const button = event.currentTarget;
+		const preset = button.getAttribute('data-preset')!.split(',');
+		button.disabled = true;
+		const { error: e } = await supabase
+			.from('profiles')
+			.update({ bannedCountries: preset })
+			.eq('id', user!.id);
+		button.disabled = false;
+		if (e) {
+			console.error(e);
+			return;
+		}
+		updatedProfile.bannedCountries = preset;
+		closeModal('presets');
+	};
+
+	const handleResetBannedCountries: MouseEventHandler<HTMLButtonElement> = async (event) => {
+		const button = event.currentTarget;
+		button.disabled = true;
+		const { error: e } = await supabase
+			.from('profiles')
+			.update({ bannedCountries: [] })
+			.eq('id', user!.id);
+		button.disabled = false;
+		if (e) {
+			console.error(e);
+			return;
+		}
+		updatedProfile.bannedCountries = [];
 	};
 </script>
 
@@ -371,13 +403,14 @@
 					</div>
 					<div class="flex flex-col gap-2 border-s-2 px-2">
 						<h2 class="mb-2 text-xl font-bold">Banned Countries</h2>
-						{#each updatedProfile.bannedCountries as bannedCountry (bannedCountry)}
-							<div
-								animate:flip={flipConfig}
-								class="flex w-full items-baseline justify-between rounded bg-gray-200 p-2 py-2 shadow"
-							>
-								<span>{countries[bannedCountry]}</span>
-								<div class="tooltip" data-tip="Remove from banned countries">
+						<div class="max-h-48 overflow-auto">
+							{#each updatedProfile.bannedCountries as bannedCountry (bannedCountry)}
+								<div
+									animate:flip={flipConfig}
+									class="flex w-full items-baseline justify-between rounded bg-gray-200 p-2 py-2 shadow"
+								>
+									<span>{countries[bannedCountry]}</span>
+
 									<button
 										class="btn btn-outline btn-error btn-sm btn-circle"
 										aria-label="Delete"
@@ -387,8 +420,8 @@
 										<i class="fa-solid fa-xmark"></i>
 									</button>
 								</div>
-							</div>
-						{/each}
+							{/each}
+						</div>
 						<form class="flex gap-2" onsubmit={banCountry}>
 							<LogInput
 								id="countryBanInput"
@@ -404,6 +437,15 @@
 								Ban Country
 							</button>
 						</form>
+						<div class="grid w-full grid-cols-2 gap-2">
+							<button class="btn btn-secondary w-full" onclick={() => showModal('presets')}>
+								Show Presets
+							</button>
+							<button
+								onclick={handleResetBannedCountries}
+								class="btn btn-outline btn-secondary w-full">Reset Banned Countries</button
+							>
+						</div>
 					</div>
 				</div>
 			{/if}
@@ -416,6 +458,16 @@
 	<button bind:this={accountDeleteButton} aria-label="Delete Account" type="submit"></button>
 </form>
 
+<Modal id="presets">
+	<h1 class="texl-xl mb-2 font-bold">No-fly list for specific countries</h1>
+	<div class="grid grid-cols-2 gap-4">
+		{#each Object.entries(bannedCountries) as [key, value]}
+			<button onclick={handlePreset} data-preset={value.join(',')} class="btn w-full">
+				{countries[key]}
+			</button>
+		{/each}
+	</div>
+</Modal>
 <ConfirmationModal id="passwordReset" href={hrefs.passwordReset}></ConfirmationModal>
 <ConfirmationModal
 	message="This action cannot be undone."
