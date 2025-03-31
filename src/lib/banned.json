@@ -23,11 +23,51 @@
 		"AE",
 		"YE"
 	],
-	"US": ["IR", "SY", "UA", "BY", "RU"],
-	"CA": ["IR", "SY", "UA", "BY", "RU"],
-	"FR": ["IR", "SY", "UA", "BY", "RU"],
-	"DE": ["IR", "SY", "UA", "BY", "RU"],
-	"ES": ["IR", "SY", "UA", "BY", "RU"],
-	"BR": ["IR", "SY", "UA", "BY", "RU"],
-	"UA": ["RU", "BY", "MD"]
+	"US": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"CA": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"FR": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"DE": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"ES": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"BR": [
+		"IR",
+		"SY",
+		"UA",
+		"BY",
+		"RU"
+	],
+	"UA": [
+		"RU",
+		"BY",
+		"MD"
+	]
 }

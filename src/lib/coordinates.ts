@@ -54,7 +54,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 	) {
 		callCount++;
 		for (const point of points) {
-			const illegal = polygons.some((polygon) => booleanPointInPolygon(point, polygon));
+			const illegal = illegalPoint(point, polygons);
 			if (illegal) {
 				const closestLegal = binarySearchCoordinates(point, polygons);
 				const test = buildGreatCircleRoute(finalPoints[finalPoints.length - 1], closestLegal);
@@ -71,16 +71,22 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 	return finalPoints;
 }
 
-function binarySearchCoordinates(illegalCoordinate: Position, polygon: CountryFeature[]): Position {
+function binarySearchCoordinates(
+	illegalCoordinate: Position,
+	polygons: CountryFeature[]
+): Position {
 	// An illegal coordinate has been found
 	let down: Position = illegalCoordinate;
 	let up: Position = illegalCoordinate;
-	const shiftCoord: (point: Position) => Position = (point) => [point[0], point[1] + 5];
-	while (illegalPoint(down, polygon) || illegalPoint(up, polygon)) {
-		up = shiftCoord(up);
-		down = shiftCoord(down);
+	const shiftCoord: (point: Position, dir: 'up' | 'down') => Position = (point, dir) => {
+		const toAdd = dir === 'up' ? 1 : -1;
+		return [point[0], point[1] + toAdd];
+	};
+	while (illegalPoint(down, polygons) && illegalPoint(up, polygons)) {
+		up = shiftCoord(up, 'up');
+		down = shiftCoord(down, 'down');
 	}
-	return illegalPoint(up, polygon) ? down : up;
+	return illegalPoint(up, polygons) ? down : up;
 }
 
 function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
