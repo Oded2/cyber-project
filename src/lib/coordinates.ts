@@ -67,6 +67,7 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 		const lastPoint = finalPoints[finalPoints.length - 1];
 		points = buildGreatCircleRoute(lastPoint, pointB);
 	}
+	if (callCount === MAXCALLCOUNT) console.error('Max calls exceeded');
 	return finalPoints;
 }
 
