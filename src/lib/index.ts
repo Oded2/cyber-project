@@ -77,6 +77,20 @@ export function closeModal(id: string): void {
 	modal.close();
 }
 
+export function extractDate(date: Date = new Date()): string {
+	return date.toISOString().split('T')[0];
+}
+
+export function extractTime(date: Date = new Date()): string {
+	// Extract HH:MM format
+	return date.toISOString().slice(11, 16);
+}
+
+export function combineDateTime(date: string, time: string): Date {
+	const dateTimeString = `${date}T${time}:00`; // Append seconds for ISO format
+	return new Date(dateTimeString); // Return Date object
+}
+
 export function formatDateTime(date: Date): string {
 	// Helper function to format date and time as YYYY-MM-DDTHH:MM
 	const year = date.getFullYear();

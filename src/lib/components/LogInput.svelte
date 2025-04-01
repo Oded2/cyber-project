@@ -20,8 +20,8 @@
 		noValidation
 	}: {
 		id?: string;
-		min?: number;
-		max?: number;
+		min?: number | string;
+		max?: number | string;
 		minlength?: number;
 		maxlength?: number;
 		required?: boolean;
@@ -41,7 +41,7 @@
 	validatorText={noValidation
 		? undefined
 		: min
-			? `Must be at least ${min.toLocaleString()}`
+			? `Must be at between ${min.toLocaleString()} and ${max ? max.toLocaleString() : 'unknown'}`
 			: minlength
 				? `Must be at least ${minlength?.toLocaleString()} characters long`
 				: 'Field cannot be empty'}

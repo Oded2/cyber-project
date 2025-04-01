@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { formatDateTime } from '$lib';
+	import { extractDate, extractTime, maxDate, minDate } from '$lib';
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Container from '$lib/components/Container.svelte';
-	import LogDateInput from '$lib/components/LogDateInput.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
 	import LogTextarea from '$lib/components/LogTextarea.svelte';
@@ -24,6 +23,7 @@
 		{ id: 'visual', display: 'VFR' },
 		{ id: 'instrument', display: 'IFR' }
 	];
+	const extractedTime = extractTime();
 </script>
 
 <Container>
@@ -38,7 +38,6 @@
 					<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
 					></LogInput>
 					<AircraftSelect name="aircraft" values={aircraftValues}></AircraftSelect>
-					<!-- <LogSelect name="aircraft" values={aircraftValues}></LogSelect> -->
 					<LogInput
 						type="number"
 						name="altitude"
@@ -47,7 +46,6 @@
 						max={200000}
 					></LogInput>
 					<AircraftSelect name="rating" values={ratings}></AircraftSelect>
-					<!-- <LogSelect name="rating" values={ratings}></LogSelect> -->
 					<LogInput
 						type="number"
 						name="fuel_usage"
@@ -65,13 +63,15 @@
 						minlength={3}
 						maxlength={4}
 					></LogInput>
-					<LogDateInput
-						value={formatDateTime(predefinedDate)}
-						name="dep_time"
-						attributeChange={{ id: 'des_time', attribute: 'min' }}
-						displayName="Date & Time"
+					<LogInput
+						type="date"
+						name="date"
+						value={predefinedDate}
 						required
-					></LogDateInput>
+						min={extractDate(minDate)}
+						max={extractDate(maxDate)}
+					></LogInput>
+					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime}></LogInput>
 					<LogSection>Destination Details</LogSection>
 					<LogInput
 						name="des_airport"
@@ -82,13 +82,7 @@
 						minlength={3}
 						maxlength={4}
 					></LogInput>
-					<LogDateInput
-						value={formatDateTime(predefinedDate)}
-						name="des_time"
-						attributeChange={{ id: 'dep_time', attribute: 'max' }}
-						displayName="Date & Time"
-						required
-					></LogDateInput>
+					<LogInput type="time" name="des_time" displayName="Time" value={extractedTime}></LogInput>
 					<LogSection>Additional Details</LogSection>
 					<LogTextarea name="notes" maxlength={10000}></LogTextarea>
 					<AircraftSelect name="visibility" values={visibilities}></AircraftSelect>

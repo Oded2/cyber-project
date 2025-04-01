@@ -1,14 +1,16 @@
 import { APININJAS } from '$env/static/private';
-import { addParams, bannedCountries, hrefs } from '$lib';
+import { addParams, combineDateTime, extractDate, hrefs } from '$lib';
 import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-export async function load({ parent, url }) {
+export async function load({ parent, url }): Promise<{ predefinedDate: string }> {
 	const { aircrafts } = await parent();
-	const predefinedDate = url.searchParams.get('date');
 	if (aircrafts.length == 0) throw error(400, { message: 'No registered aircrafts' });
-	return { predefinedDate: predefinedDate ? new Date(predefinedDate) : new Date() };
+	const predefinedDate = url.searchParams.get('date') ?? extractDate();
+	return {
+		predefinedDate
+	};
 }
 
 export const actions: Actions = {
@@ -16,11 +18,19 @@ export const actions: Actions = {
 		if (!user) throw error(401, { message: 'No user found' });
 		const today = new Date();
 		const formData = await request.formData();
-		// Get data for the airports and check that they are real
-		const depAirport = await getAirportData(formData.get('dep_airport') as string);
-		const desAirport = await getAirportData(formData.get('des_airport') as string);
-		const depDate = new Date(formData.get('dep_time') as string);
-		const desDate = new Date(formData.get('des_time') as string);
+		const depDate = combineDateTime(
+			formData.get('date') as string,
+			formData.get('dep_time') as string
+		);
+		const desDate = combineDateTime(
+			formData.get('date') as string,
+			formData.get('des_time') as string
+		);
+		if (desDate < depDate) {
+			// The user has put the hour of the arrival as before the hour of the departure
+			// Therefore it means that the user has landed a day later
+			desDate.setDate(desDate.getDate() + 1);
+		}
 		validateDates(depDate, desDate);
 		const { data: profile, error: eP } = await supabase
 			.from('profiles')
@@ -30,6 +40,9 @@ export const actions: Actions = {
 		if (eP) throw error(500, { message: eP.message });
 		const bannedCountries = profile.bannedCountries as string[];
 		const notes = formData.get('notes') as string;
+		// Get data for the airports and check that they are real
+		const depAirport = await getAirportData(formData.get('dep_airport') as string);
+		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const route = await buildRoute(
 			[depAirport.longitude, depAirport.latitude],
 			[desAirport.longitude, desAirport.latitude],
@@ -41,6 +54,7 @@ export const actions: Actions = {
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
+		delete obj['date']; // Date was only used to calculate the dep_time and the des_time
 		obj['weather_data'] = weather;
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
