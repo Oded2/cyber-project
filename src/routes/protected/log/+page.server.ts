@@ -12,7 +12,8 @@ export async function load({ parent, url }) {
 }
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase }, fetch }) => {
+	default: async ({ request, locals: { supabase, user }, fetch }) => {
+		if (!user) throw error(401, { message: 'No user found' });
 		const today = new Date();
 		const formData = await request.formData();
 		// Get data for the airports and check that they are real
@@ -20,16 +21,23 @@ export const actions: Actions = {
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const depDate = new Date(formData.get('dep_time') as string);
 		const desDate = new Date(formData.get('des_time') as string);
+		validateDates(depDate, desDate);
+		const { data: profile, error: eP } = await supabase
+			.from('profiles')
+			.select('bannedCountries')
+			.eq('id', user.id)
+			.single();
+		if (eP) throw error(500, { message: eP.message });
+		const bannedCountries = profile.bannedCountries as string[];
 		const notes = formData.get('notes') as string;
 		const route = await buildRoute(
 			[depAirport.longitude, depAirport.latitude],
 			[desAirport.longitude, desAirport.latitude],
-			bannedCountries.IL,
+			bannedCountries,
 			fetch
 		);
 		// Get the weather data from the departure airport to the destination airport
 		const weather = await getWeather(route, depDate, desDate);
-		validateDates(depDate, desDate);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
