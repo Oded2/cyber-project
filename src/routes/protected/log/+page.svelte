@@ -35,8 +35,7 @@
 				</div>
 				<div class="flex flex-col gap-4">
 					<LogSection>Basic Details</LogSection>
-					<LogInput name="pilot_in_command" value={profile.display} required maxlength={50}
-					></LogInput>
+					<LogInput name="pilot_in_command" value={profile.display} required max={50}></LogInput>
 					<AircraftSelect name="aircraft" values={aircraftValues}></AircraftSelect>
 					<LogInput
 						type="number"
@@ -60,17 +59,10 @@
 						placeholder="ICAO or IATA code"
 						autocorrect="off"
 						required
-						minlength={3}
-						maxlength={4}
+						min={3}
+						max={4}
 					></LogInput>
-					<LogInput
-						type="date"
-						name="date"
-						value={predefinedDate}
-						required
-						min={extractDate(minDate)}
-						max={extractDate(maxDate)}
-					></LogInput>
+					<LogInput type="date" name="date" value={predefinedDate} required></LogInput>
 					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime}></LogInput>
 					<LogSection>Destination Details</LogSection>
 					<LogInput
@@ -79,8 +71,8 @@
 						placeholder="ICAO or IATA code"
 						autocorrect="off"
 						required
-						minlength={3}
-						maxlength={4}
+						min={3}
+						max={4}
 					></LogInput>
 					<LogInput type="time" name="des_time" displayName="Time" value={extractedTime}></LogInput>
 					<LogSection>Additional Details</LogSection>

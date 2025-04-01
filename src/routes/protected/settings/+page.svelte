@@ -427,8 +427,8 @@
 								id="countryBanInput"
 								name="country"
 								displayName="Add Country"
-								minlength={2}
-								maxlength={2}
+								min={2}
+								max={2}
 								required
 								placeholder="Two letter code"
 								noValidation

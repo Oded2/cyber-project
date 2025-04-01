@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
+	import type { EventHandler, FullAutoFill, HTMLInputTypeAttribute } from 'svelte/elements';
 	import InputLabel from './InputLabel.svelte';
 	import { format } from '$lib';
 
@@ -7,23 +7,20 @@
 		id,
 		min,
 		max,
-		minlength,
-		maxlength,
 		required,
 		placeholder,
 		name,
 		displayName = format(name),
 		value,
-		type,
+		type = 'text',
 		autocomplete,
 		autocorrect,
-		noValidation
+		noValidation,
+		oninput
 	}: {
 		id?: string;
-		min?: number | string;
-		max?: number | string;
-		minlength?: number;
-		maxlength?: number;
+		min?: number;
+		max?: number;
 		required?: boolean;
 		placeholder?: string;
 		displayName?: string;
@@ -34,18 +31,16 @@
 		autocomplete?: FullAutoFill;
 		autocorrect?: 'on' | 'off';
 		noValidation?: boolean;
+		oninput?: EventHandler<Event, HTMLInputElement>;
 	} = $props();
+
+	const validatorText =
+		min !== undefined && max !== undefined
+			? `Must be between ${min.toLocaleString()} and ${max.toLocaleString()} ${type === 'text' ? 'characters long' : ''}`
+			: 'Field cannot be empty';
 </script>
 
-<InputLabel
-	validatorText={noValidation
-		? undefined
-		: min
-			? `Must be at between ${min.toLocaleString()} and ${max ? max.toLocaleString() : 'unknown'}`
-			: minlength
-				? `Must be at least ${minlength?.toLocaleString()} characters long`
-				: 'Field cannot be empty'}
->
+<InputLabel validatorText={noValidation ? undefined : validatorText}>
 	{displayName}
 	{#if !required}
 		<span class="font-light italic">(optional)</span>
@@ -59,10 +54,11 @@
 		{placeholder}
 		{min}
 		{max}
-		{minlength}
-		{maxlength}
+		minlength={type === 'text' ? min : undefined}
+		maxlength={type === 'text' ? max : undefined}
 		{autocomplete}
 		{autocorrect}
 		{required}
+		{oninput}
 	/>
 </InputLabel>

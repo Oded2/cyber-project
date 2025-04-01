@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { FormEvent } from '$lib';
-	import type { HTMLInputTypeAttribute } from 'svelte/elements';
+	import type { EventHandler, HTMLInputTypeAttribute } from 'svelte/elements';
 
 	let {
 		title,
@@ -29,13 +28,13 @@
 	let edit = $state(false);
 	let progress = $state(false);
 
-	async function handleSubmit(e: FormEvent) {
+	const handleSubmit: EventHandler<SubmitEvent, HTMLFormElement> = async (e) => {
 		e.preventDefault();
 		progress = true;
 		await action();
 		progress = false;
 		edit = false;
-	}
+	};
 </script>
 
 <form class="mb-2" onsubmit={handleSubmit}>

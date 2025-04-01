@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { format, toInputElement } from '$lib';
 
-	let {
+	const {
 		values,
 		name,
 		id,
