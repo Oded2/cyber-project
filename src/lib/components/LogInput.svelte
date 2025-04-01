@@ -47,6 +47,9 @@
 				: 'Field cannot be empty'}
 >
 	{displayName}
+	{#if !required}
+		<span class="font-light italic">(optional)</span>
+	{/if}
 	<input
 		{id}
 		{value}
