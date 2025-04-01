@@ -28,8 +28,7 @@ export const actions: Actions = {
 			fetch
 		);
 		// Get the weather data from the departure airport to the destination airport
-		// const weather = await getWeather(route, depDate, desDate);
-		const weather = null;
+		const weather = await getWeather(route, depDate, desDate);
 		validateDates(depDate, desDate);
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
