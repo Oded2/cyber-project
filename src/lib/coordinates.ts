@@ -1,4 +1,4 @@
-import { booleanPointInPolygon, greatCircle, point } from '@turf/turf';
+import { booleanPointInPolygon, greatCircle, point, distance } from '@turf/turf';
 import type { Feature, LineString, MultiLineString, Polygon, Position } from 'geojson';
 
 type Direction = 'horizontal' | 'vertical';
@@ -50,12 +50,12 @@ function avoidPolygons(pointA: Position, pointB: Position, polygons: CountryFeat
 	const finalPoints: Position[] = [pointA]; // Route starts at pointA
 	const direction = directionOfRoute(pointA, pointB); // Determine route direction (horizontal/vertical)
 	let points: Position[] = buildGreatCircleRoute(pointA, pointB); // Get initial great-circle route
-	const MAXCALLCOUNT = 100; // Prevents infinite loops by limiting the number of attempts
+	const MAXCALLCOUNT = 1000; // Prevents infinite loops by limiting the number of attempts
 	let callCount = 0;
 
 	// Iteratively adjust the route until we reach the destination or exceed max attempts
 	while (
-		haversineDistance(finalPoints[finalPoints.length - 1], pointB) > 1 &&
+		distance(finalPoints[finalPoints.length - 1], pointB, { units: 'kilometers' }) > 1 &&
 		callCount < MAXCALLCOUNT
 	) {
 		callCount++;
@@ -132,24 +132,6 @@ export async function getCountriesFlownOver(
 		if (countryFeature) flownOver.add(countryFeature.properties.ISO_A2); // Add country code to the set
 	}
 	return flownOver; // Return the set of overflown countries
-}
-
-// Calculates the great-circle distance between two points on Earth
-export function haversineDistance(pointA: Position, pointB: Position): number {
-	const earthRadius = 6371; // Earth's radius in kilometers
-	const deltaLatitude = ((pointB[1] - pointA[1]) * Math.PI) / 180; // Difference in latitude in radians
-	const deltaLongitude = ((pointB[0] - pointA[0]) * Math.PI) / 180; // Difference in longitude in radians
-	const halfChordLength =
-		Math.cos((pointA[1] * Math.PI) / 180) *
-			Math.cos((pointB[1] * Math.PI) / 180) *
-			Math.sin(deltaLongitude / 2) *
-			Math.sin(deltaLongitude / 2) +
-		Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
-
-	const angularDistance =
-		2 * Math.atan2(Math.sqrt(halfChordLength), Math.sqrt(1 - halfChordLength)); // Angular distance in radians
-
-	return earthRadius * angularDistance; // Return the distance in kilometers
 }
 
 // Type definition for a country's geographic data

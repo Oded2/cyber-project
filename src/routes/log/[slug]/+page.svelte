@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
-	import { addParams, bannedCountries, countries, format, getDuration, hrefs } from '$lib';
-	import { buildRoute, getCountriesFlownOver, haversineDistance } from '$lib/coordinates.js';
+	import { addParams, countries, format, getDuration, hrefs } from '$lib';
+	import { buildRoute, getCountriesFlownOver } from '$lib/coordinates.js';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
 	import type { Position } from 'geojson';
+	import { distance } from '@turf/turf';
 
 	const { data } = $props();
 	const { log, aircraft, ref, profile } = data;
@@ -20,7 +21,7 @@
 	const des_weather = weather[weather.length - 1];
 	const start: Position = [log.dep_airport.longitude, log.dep_airport.latitude];
 	const end: Position = [log.des_airport.longitude, log.des_airport.latitude];
-	const distanceKm = haversineDistance(start, end);
+	const distanceNM = distance(start, end, { units: 'nauticalmiles' });
 	const routePromise = buildRoute(start, end, profile.bannedCountries);
 	const countriesFlownPromise = getCountriesFlownOver(routePromise);
 	let mapContainer: HTMLDivElement;
@@ -101,7 +102,7 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
-					<li>Distance: {Math.round(distanceKm / 1.852).toLocaleString()}NM</li>
+					<li>Distance: {Math.round(distanceNM).toLocaleString()}NM</li>
 					<li>
 						<strong>Departure & Landing</strong>
 						<ul>
