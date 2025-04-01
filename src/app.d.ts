@@ -29,7 +29,7 @@ declare global {
 		image: string;
 		country: string;
 		bannedCountries: string[];
-		[key: string]: string | Date;
+		[key: string]: string | Date | string[];
 	}
 	interface Log {
 		id: number;

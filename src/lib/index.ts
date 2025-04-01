@@ -111,10 +111,6 @@ export function formatDate(date: Date): string {
 	return formatter.format(date);
 }
 
-export function handleError(e: PostgrestError | null): void {
-	if (e) throw error(500, { message: e.message });
-}
-
 export function toUTC(date: Date): Date {
 	return new Date(
 		Date.UTC(

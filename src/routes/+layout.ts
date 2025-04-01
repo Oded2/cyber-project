@@ -1,7 +1,7 @@
 import { createBrowserClient, createServerClient, isBrowser } from '@supabase/ssr';
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
 import type { LayoutLoad } from './$types';
-import { handleError } from '$lib';
+import { error } from '@sveltejs/kit';
 
 export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 	/**
@@ -42,19 +42,23 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 
 	let profile: Profile = {
 		id: '0',
-		created_at: '0',
+		created_at: new Date(),
 		display: '0',
 		username: '0',
 		bio: '0',
-		image: '0'
+		image: '0',
+		country: '0',
+		bannedCountries: []
 	};
 	if (user) {
 		const { data: profileArray, error: e } = await supabase
 			.from('profiles')
 			.select()
-			.eq('id', user.id);
-		handleError(e);
-		profile = profileArray![0] as Profile;
+			.eq('id', user.id)
+			.single();
+		if (e) throw error(500, { message: e.message });
+
+		profile = profileArray as Profile;
 	}
 
 	return { session, supabase, user, profile };
