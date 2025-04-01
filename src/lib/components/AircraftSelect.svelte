@@ -20,6 +20,7 @@
 	let other: boolean = $state(false);
 	let selectInput: HTMLSelectElement;
 	let otherOption: HTMLOptionElement;
+	let titleOption: HTMLOptionElement;
 
 	function otherInputChange(event: Event) {
 		const value = toInputElement(event).value;
@@ -45,6 +46,7 @@
 	<select
 		bind:this={selectInput}
 		onchange={(e) => {
+			titleOption.disabled = true;
 			const value = e.currentTarget.value;
 			other = !values.some((val) => val.id === value);
 			// Will only show text input if other is selected
@@ -54,8 +56,8 @@
 		class="select w-full"
 		class:max-w-40={other}
 	>
-		<option disabled value={originalValue ? originalValue : values[0]} selected
-			>{format(name)}</option
+		<option bind:this={titleOption} value={originalValue ? originalValue : values[0].id} selected>
+			{format(name)}</option
 		>
 		{#each values as value}
 			<option value={value.id}>{value.display}</option>

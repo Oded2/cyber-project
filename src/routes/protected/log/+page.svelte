@@ -48,7 +48,12 @@
 					></LogInput>
 					<AircraftSelect name="rating" values={ratings}></AircraftSelect>
 					<!-- <LogSelect name="rating" values={ratings}></LogSelect> -->
-					<LogInput name="fuel_usage" displayName="Fuel Used in Gallons" min={0} max={200000}
+					<LogInput
+						type="number"
+						name="fuel_usage"
+						displayName="Fuel Used in Gallons"
+						min={0}
+						max={200000}
 					></LogInput>
 					<LogSection>Departure Details</LogSection>
 					<LogInput
