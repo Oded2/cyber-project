@@ -39,7 +39,7 @@
 		// Simply to assist the user, does not perform any client-side validation
 		const value = new Date(toInputElement(e).value);
 		if (value > maxDate) {
-			errorMessage = `Date cannot be before ${formatDate(maxDate)}`;
+			errorMessage = `Date cannot be after ${formatDate(maxDate)}`;
 		} else if (value < minDate) {
 			errorMessage = `Date cannot be before ${formatDate(minDate)}`;
 		} else {
