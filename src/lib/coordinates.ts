@@ -1,4 +1,4 @@
-import { booleanPointInPolygon, greatCircle, point, distance } from '@turf/turf';
+import { booleanPointInPolygon, greatCircle, point, distance, type Units } from '@turf/turf';
 import type { Feature, LineString, MultiLineString, Polygon, Position } from 'geojson';
 
 type Direction = 'horizontal' | 'vertical';
@@ -29,6 +29,12 @@ const buildGreatCircleRoute: (pointA: Position, pointB: Position) => Position[] 
 	};
 	return sanitizeCoordinates(greatCircle(pointA, pointB, { npoints: 100 }));
 };
+
+export function getRouteDistance(route: Position[], units: Units = 'nauticalmiles') {
+	let sum = 0;
+	for (let i = 0; i < route.length - 1; i++) sum += distance(route[i], route[i + 1], { units });
+	return sum;
+}
 
 // Builds a route while avoiding banned countries
 export async function buildRoute(

@@ -2,14 +2,13 @@
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
 	import { addParams, countries, format, getDuration, hrefs } from '$lib';
-	import { buildRoute, getCountriesFlownOver } from '$lib/coordinates.js';
+	import { buildRoute, getCountriesFlownOver, getRouteDistance } from '$lib/coordinates.js';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
 	import type { Position } from 'geojson';
-	import { distance } from '@turf/turf';
 
 	const { data } = $props();
 	const { log, aircraft, ref, profile } = data;
@@ -21,7 +20,6 @@
 	const des_weather = weather[weather.length - 1];
 	const start: Position = [log.dep_airport.longitude, log.dep_airport.latitude];
 	const end: Position = [log.des_airport.longitude, log.des_airport.latitude];
-	const distanceNM = distance(start, end, { units: 'nauticalmiles' });
 	const routePromise = buildRoute(start, end, profile.bannedCountries);
 	const countriesFlownPromise = getCountriesFlownOver(routePromise);
 	let mapContainer: HTMLDivElement;
@@ -102,7 +100,9 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
-					<li>Distance: {Math.round(distanceNM).toLocaleString()}NM</li>
+					{#await routePromise then route}
+						<li>Distance: {Math.round(getRouteDistance(route)).toLocaleString()}NM</li>
+					{/await}
 					<li>
 						<strong>Departure & Landing</strong>
 						<ul>
@@ -136,13 +136,17 @@
 					{#await countriesFlownPromise then countriesFlown}
 						<li>
 							<strong>Countries Flown Over</strong>
-							<ul>
-								{#each countriesFlown as countryTwoLetter}
-									<li>
-										{countries[countryTwoLetter]}
-									</li>
-								{/each}
-							</ul>
+							<br />
+							{[...countriesFlown]
+								.map((countryTwoLetter) => countries[countryTwoLetter])
+								.join(', ')}
+						</li>
+						<li>
+							<strong>Countries Avoided</strong>
+							<br />
+							{profile.bannedCountries
+								.map((countryTwoLetter) => countries[countryTwoLetter])
+								.join(', ')}
 						</li>
 					{/await}
 				</ul>
