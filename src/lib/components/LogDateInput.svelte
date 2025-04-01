@@ -74,9 +74,9 @@
 		<button type="button" onclick={sync} class="btn">Sync</button>
 	</div>
 	<div class="label">
-		<span class="label-text-alt font-light italic">Adjusted to timezone</span>
+		<span class="label-text-alt font-light italic">Relative to local timezone</span>
 	</div>
 	{#if errorMessage.length > 0}
-		<span class="px-3 text-sm text-error">{errorMessage}</span>
+		<span class="text-error px-3 text-sm">{errorMessage}</span>
 	{/if}
 </label>
