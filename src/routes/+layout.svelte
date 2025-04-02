@@ -15,10 +15,13 @@
 	let status = $derived(page.status);
 	let pathname = $derived(page.url.pathname);
 
-	const navItems = [
-		{ href: hrefs.contact, title: 'Contact' },
-		{ href: hrefs.search, title: 'Search' },
-		{ href: '/temp', title: 'Development' }
+	const navItems: {
+		href: keyof typeof hrefs;
+		title: string;
+	}[] = [
+		{ href: 'contact', title: 'Contact' },
+		{ href: 'search', title: 'Search' },
+		{ href: 'log', title: 'New Flight' }
 	];
 
 	onMount(() => {
@@ -60,7 +63,7 @@
 					</svg>
 				</div>
 				<ul
-					class="menu dropdown-content menu-sm z-1 mt-3 w-52 rounded-box bg-base-100 p-2 shadow-sm"
+					class="menu dropdown-content menu-sm rounded-box bg-base-100 z-1 mt-3 w-52 p-2 shadow-sm"
 				>
 					{#each navItems as item}
 						<li><a href={item.href}>{item.title}</a></li>
@@ -72,7 +75,7 @@
 		<div class="navbar-center hidden sm:flex">
 			<ul class="menu menu-horizontal">
 				{#each navItems as item}
-					<li><a href={item.href}>{item.title}</a></li>
+					<li><a href={hrefs[item.href]}>{item.title}</a></li>
 				{/each}
 			</ul>
 		</div>
