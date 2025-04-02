@@ -1,8 +1,7 @@
-import { createClient, type PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
 import countriesFile from './countries.json';
 import bannedCountriesFile from './banned.json';
-import { error } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import defaultPFP from './images/defaultPFP.png';
 import type { AnimationConfig } from 'svelte/animate';
@@ -78,28 +77,17 @@ export function closeModal(id: string): void {
 }
 
 export function extractDate(date: Date = new Date()): string {
-	return date.toISOString().split('T')[0];
+	return toLocalISOString(date).split('T')[0];
 }
 
 export function extractTime(date: Date = new Date()): string {
 	// Extract HH:MM format
-	return date.toISOString().slice(11, 16);
+	return toLocalISOString(date).slice(11, 16);
 }
 
 export function combineDateTime(date: string, time: string): Date {
 	const dateTimeString = `${date}T${time}:00`; // Append seconds for ISO format
 	return new Date(dateTimeString); // Return Date object
-}
-
-export function formatDateTime(date: Date): string {
-	// Helper function to format date and time as YYYY-MM-DDTHH:MM
-	const year = date.getFullYear();
-	// Month is zero-based index, so it's necessary to add one
-	const month = (date.getMonth() + 1).toString().padStart(2, '0');
-	const day = date.getDate().toString().padStart(2, '0');
-	const hours = date.getHours().toString().padStart(2, '0');
-	const minutes = date.getMinutes().toString().padStart(2, '0');
-	return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 export function formatDate(date: Date): string {
@@ -209,3 +197,25 @@ export function getDatesBetween(start: Date, end: Date, n: number): Date[] {
 
 	return dates;
 }
+
+function toLocalISOString(date: Date): string {
+	// Returns a local time ISO-like string (without converting to UTC)
+	return (
+		date.getFullYear() +
+		'-' +
+		(date.getMonth() + 1).toString().padStart(2, '0') + // Month (1-based)
+		'-' +
+		date.getDate().toString().padStart(2, '0') + // Day
+		'T' +
+		date.getHours().toString().padStart(2, '0') + // Hours
+		':' +
+		date.getMinutes().toString().padStart(2, '0') + // Minutes
+		':' +
+		date.getSeconds().toString().padStart(2, '0') + // Seconds
+		'.' +
+		date.getMilliseconds().toString().padStart(3, '0') // Milliseconds
+	);
+}
+
+const localDate = new Date();
+console.log(toLocalISOString(localDate)); // Outputs local time in ISO format

@@ -8,20 +8,21 @@
 	import LogTextarea from '$lib/components/LogTextarea.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { addToast } from '$lib/toasts.js';
-	import type { EventHandler } from 'svelte/elements';
+	import { onMount } from 'svelte';
 
 	const { data } = $props();
 	const { profile, aircrafts, predefinedDate } = data;
-	const aircraftValues: { display: string; id: string }[] = aircrafts.map((item) => ({
+
+	const aircraftValues: SelectValues = aircrafts.map((item) => ({
 		display: item.nickname,
 		id: item.id.toString()
 	}));
-	const visibilities: { display: string; id: string }[] = [
+	const visibilities: SelectValues = [
 		{ id: 'private', display: 'Private' },
 		{ id: 'public', display: 'Public' },
 		{ id: 'unlisted', display: 'Unlisted' }
 	];
-	const ratings: { display: string; id: string }[] = [
+	const ratings: SelectValues = [
 		{ id: 'visual', display: 'VFR' },
 		{ id: 'instrument', display: 'IFR' }
 	];
@@ -29,18 +30,22 @@
 
 	let dateDisclaimer: string | undefined = $state();
 
-	const checkDate: EventHandler<Event, HTMLInputElement> = (e) => {
-		const value = new Date(e.currentTarget.value);
+	onMount(() => {
+		checkDate(predefinedDate);
+	});
+
+	function checkDate(val: string): void {
+		const value = new Date(val);
 		if (value < minDate)
-			dateDisclaimer = `Weather data will not be attached to this log due to the date being prior to ${formatDate(minDate)}`;
+			dateDisclaimer = `Weather data will not be attached to this log due to the date being prior to ${formatDate(minDate)}.`;
 		else if (value > maxDate)
-			dateDisclaimer = `Weather data will not be attached to this log due to the date being post ${formatDate(maxDate)}`;
+			dateDisclaimer = `Weather data will not be attached to this log due to the date being post ${formatDate(maxDate)}.`;
 		else {
 			dateDisclaimer = undefined;
 			return;
 		}
 		addToast({ type: 'info', text: dateDisclaimer, duration: 5000 });
-	};
+	}
 </script>
 
 <Container>
@@ -85,7 +90,7 @@
 						value={predefinedDate}
 						required
 						disclaimer={dateDisclaimer}
-						onchange={checkDate}
+						onchange={(e) => checkDate(e.currentTarget.value)}
 					></LogInput>
 					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime} required
 					></LogInput>

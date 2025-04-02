@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { addParams, formatDateTime, hrefs, showModal } from '$lib';
+	import { addParams, extractDate, hrefs, showModal } from '$lib';
 	import { SvelteDate } from 'svelte/reactivity';
 	import { page } from '$app/state';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
@@ -65,8 +65,7 @@
 		datePicked.setFullYear(current.getFullYear());
 		datePicked.setMonth(current.getMonth());
 		datePicked.setDate(date);
-		datePicked.setHours(0);
-		datePicked.setMinutes(0);
+		datePicked.setHours(0, 0, 0, 0);
 		showModal('newLog');
 	}
 	function handleDelete() {
@@ -120,7 +119,7 @@
 							currentLog = log;
 							showModal('logOptions');
 						}}
-						class="bg-base-200 text-start transition select-none hover:shadow-md"
+						class="bg-base-200 cursor-pointer text-start transition select-none hover:shadow-md"
 					>
 						<span
 							>{#if log.favorite}<i class="fa-solid fa-star text-info"></i>
@@ -129,7 +128,12 @@
 						</span>
 					</button>
 				{/each}
-				<button onclick={() => handleNewLog(day)} class="h-full" aria-label="New Log"></button>
+				<button
+					onclick={() => handleNewLog(day)}
+					class="h-full cursor-pointer"
+					aria-label="New Log"
+				>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -146,7 +150,7 @@
 	<ConfirmationModal
 		id="newLog"
 		title={`Would you like to create a log entry for ${datePicked.toLocaleString('en-US', { month: 'long', day: 'numeric' })}?`}
-		href={addParams(hrefs.log, { date: formatDateTime(datePicked) })}
+		href={addParams(hrefs.log, { date: extractDate(datePicked) })}
 	></ConfirmationModal>
 {:else}
 	<ConfirmationModal
