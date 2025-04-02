@@ -16,19 +16,21 @@
 	const { user, redirect, supabase } = data;
 	const today = new Date();
 
-	const futureLogs = fetchLogs();
+	const futureLogsPromise = fetchFutureLogs();
+
+	let hero: HTMLDivElement | null = $state(null);
 
 	onMount(() => {
-		if (redirect.length > 0) goto(redirect);
-		document.getElementById('hero')?.scrollIntoView({ behavior: 'instant' });
+		if (redirect) goto(redirect);
+		hero?.scrollIntoView({ behavior: 'instant' });
 	});
 
-	async function fetchLogs(): Promise<Log[]> {
+	async function fetchFutureLogs(): Promise<Log[]> {
 		if (!user) return [];
 		const { data: temp } = await supabase.from('logs').select().eq('owner', user.id);
 		let logs = temp as Log[];
 		handleLogs(logs);
-		logs = logs.filter((item) => item.dep_time.getTime() > today.getTime());
+		logs = logs.filter((item) => item.dep_time > today);
 		logs.reverse();
 		return logs;
 	}
@@ -37,7 +39,7 @@
 <main>
 	{#if user}
 		<div
-			id="hero"
+			bind:this={hero}
 			class="hero min-h-screen place-items-start"
 			style="background-image: url(/background.jpg);"
 		>
@@ -46,12 +48,12 @@
 				<div class="card glass col-auto max-h-72 p-5">
 					<h1 class="text-neutral-content mb-5 text-2xl font-bold">Upcoming Flights</h1>
 					<div class="flex flex-col overflow-auto">
-						{#await futureLogs}
+						{#await futureLogsPromise}
 							<span class="loading loading-spinner loading-lg text-neutral-content mx-auto"></span>
-						{:then logs}
-							{#if logs.length > 0}
+						{:then futureLogs}
+							{#if futureLogs.length > 0}
 								<div class="flex flex-col gap-4">
-									{#each logs! as log}
+									{#each futureLogs as log}
 										<div class="rounded-lg bg-black/20 p-5">
 											<h2 class="text-neutral-content font-semibold">
 												{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
