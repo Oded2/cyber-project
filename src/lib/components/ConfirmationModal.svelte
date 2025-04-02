@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { closeModal } from '$lib';
+	import type { EventHandler } from 'svelte/elements';
 	import Modal from './Modal.svelte';
 
 	const {
@@ -19,17 +20,17 @@
 	} = $props();
 
 	let value: string = $state('');
-	let inProgress: boolean = $state(false);
+
+	const handleConfirmation: EventHandler<MouseEvent, HTMLButtonElement> = async (e) => {
+		e.currentTarget.disabled = true;
+		await onconfirmation();
+		e.currentTarget.disabled = false;
+		onclose();
+		closeModal(id);
+	};
 
 	function onclose(): void {
 		value = '';
-	}
-	async function handleSubmit() {
-		inProgress = true;
-		await onconfirmation();
-		inProgress = false;
-		onclose();
-		closeModal(id);
 	}
 </script>
 
@@ -53,14 +54,16 @@
 		<div class="flex justify-end gap-2">
 			<button type="submit" class="btn btn-secondary">Cancel</button>
 			{#if href}
-				<a {href} class="btn btn-primary" class:btn-disabled={value !== text}>Confirm</a>
+				<a {href} class="btn btn-primary" class:btn-disabled={!!text && value !== text}>Confirm</a>
 			{:else}
 				<button
 					type="button"
-					onclick={handleSubmit}
+					onclick={handleConfirmation}
 					class="btn btn-primary"
-					disabled={value !== text || inProgress}>Confirm</button
+					disabled={!!text && value !== text}
 				>
+					Confirm
+				</button>
 			{/if}
 		</div>
 	</form>

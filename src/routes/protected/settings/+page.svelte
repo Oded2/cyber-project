@@ -125,6 +125,7 @@
 			}
 		}
 		button.removeChild(spinner);
+		button.textContent = 'Logs are up to date';
 	};
 
 	const unbanCountry: MouseEventHandler<HTMLButtonElement> = async (event) => {
