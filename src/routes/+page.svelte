@@ -52,7 +52,7 @@
 							{#if logs.length > 0}
 								<div class="flex flex-col gap-4">
 									{#each logs! as log}
-										<div class="bg-opacity-20 rounded-lg bg-black p-5">
+										<div class="rounded-lg bg-black/20 p-5">
 											<h2 class="text-neutral-content font-semibold">
 												{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
 											</h2>
