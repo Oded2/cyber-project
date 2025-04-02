@@ -26,7 +26,7 @@
 	import { addToast } from '$lib/toasts.js';
 	import { getWeather } from '$lib/weather.js';
 	import { buildRoute } from '$lib/coordinates.js';
-	import type { EventHandler, MouseEventHandler } from 'svelte/elements';
+	import type { EventHandler } from 'svelte/elements';
 	import LogInput from '$lib/components/LogInput.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 
@@ -128,7 +128,7 @@
 		button.textContent = 'Logs are up to date';
 	};
 
-	const unbanCountry: MouseEventHandler<HTMLButtonElement> = async (event) => {
+	const unbanCountry: EventHandler<MouseEvent, HTMLButtonElement> = async (event) => {
 		const country = event.currentTarget.getAttribute('data-country');
 		event.currentTarget.disabled = true;
 		const newBannedCountries = updatedProfile.bannedCountries.filter((val) => val !== country);
@@ -175,7 +175,7 @@
 		updatedProfile.bannedCountries = updatedValue;
 	};
 
-	const handlePreset: MouseEventHandler<HTMLButtonElement> = async (event) => {
+	const handlePreset: EventHandler<Event, HTMLButtonElement> = async (event) => {
 		const button = event.currentTarget;
 		const preset = button.getAttribute('data-preset')!.split(',');
 		button.disabled = true;
@@ -192,7 +192,7 @@
 		closeModal('presets');
 	};
 
-	const handleResetBannedCountries: MouseEventHandler<HTMLButtonElement> = async (event) => {
+	const handleResetBannedCountries: EventHandler<Event, HTMLButtonElement> = async (event) => {
 		const button = event.currentTarget;
 		button.disabled = true;
 		const { error: e } = await supabase
