@@ -216,6 +216,3 @@ function toLocalISOString(date: Date): string {
 		date.getMilliseconds().toString().padStart(3, '0') // Milliseconds
 	);
 }
-
-const localDate = new Date();
-console.log(toLocalISOString(localDate)); // Outputs local time in ISO format
