@@ -10,7 +10,7 @@
 		children
 	}: {
 		type: ToastType;
-		duration: number;
+		duration?: number;
 		handleClose: () => void;
 		children: Snippet;
 	} = $props();
@@ -19,7 +19,7 @@
 	showProgress();
 
 	function showProgress(): void {
-		if (duration <= 0) return;
+		if (!duration) return;
 		const start = Date.now();
 		const interval = setInterval(() => {
 			const elapsed = Date.now() - start;
@@ -58,7 +58,7 @@
 			<i class="fa-solid fa-xmark"></i>
 		</button>
 	</div>
-	{#if duration > 0}
+	{#if duration}
 		<progress value={progress} max="100" class="progress"></progress>
 	{/if}
 </div>

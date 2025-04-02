@@ -16,7 +16,9 @@
 		autocomplete,
 		autocorrect,
 		noValidation,
-		oninput
+		disclaimer,
+		oninput,
+		onchange
 	}: {
 		id?: string;
 		min?: number;
@@ -31,7 +33,9 @@
 		autocomplete?: FullAutoFill;
 		autocorrect?: 'on' | 'off';
 		noValidation?: boolean;
+		disclaimer?: string;
 		oninput?: EventHandler<Event, HTMLInputElement>;
+		onchange?: EventHandler<Event, HTMLInputElement>;
 	} = $props();
 
 	const validatorText =
@@ -40,7 +44,7 @@
 			: 'Field cannot be empty';
 </script>
 
-<InputLabel validatorText={noValidation ? undefined : validatorText}>
+<InputLabel validatorText={noValidation ? undefined : validatorText} {disclaimer}>
 	{displayName}
 	{#if !required}
 		<span class="font-light italic">(optional)</span>
@@ -60,5 +64,6 @@
 		{autocorrect}
 		{required}
 		{oninput}
+		{onchange}
 	/>
 </InputLabel>

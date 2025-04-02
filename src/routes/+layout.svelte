@@ -7,6 +7,7 @@
 	import { hrefs } from '$lib';
 	import { page } from '$app/state';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import Toasts from '$lib/components/Toasts.svelte';
 
 	const { children, data } = $props();
 	// possible issue
@@ -115,3 +116,5 @@
 {/if}
 
 {@render children()}
+
+<Toasts></Toasts>

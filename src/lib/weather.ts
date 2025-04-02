@@ -1,25 +1,27 @@
 import { addParams, divideArray, getDatesBetween, toUTC } from '$lib';
-import { error } from '@sveltejs/kit';
 import type { Position } from 'geojson';
 
 export async function getWeather(
 	coordinates: Position[],
 	timeStart: Date,
 	timeEnd: Date
-): Promise<Weather[]> {
+): Promise<Weather[] | null> {
 	// Takes in an array of coordinates, then splits them into 10 even points to fetch weather data for
 
 	// The time in which the weather api is going to get the forecast at is dependent on the timeStart and
 	// timeEnd, so that between the 10 even points there will be 10 equal time periods
 	const coords = divideArray(coordinates, 10);
 	const dates = getDatesBetween(timeStart, timeEnd, coords.length);
+	console.log('Fetching weather data');
 	const weatherData = await Promise.all(
 		coords.map((coord, index) => getWeatherData(dates[index], coord))
 	);
-	return weatherData;
+	for (const weather of weatherData) if (!weather) return null;
+	// Remove any null values
+	return weatherData.filter((val) => !!val);
 }
 
-export async function getWeatherData(time: Date, position: Position): Promise<Weather> {
+async function getWeatherData(time: Date, position: Position): Promise<Weather | null> {
 	// Retrieves inforamtion about the weather for a specific date
 	const oneHourDiff = (date1: Date, date2: Date): boolean => {
 		// Checks that the difference between two dates is less than an hour
@@ -39,7 +41,10 @@ export async function getWeatherData(time: Date, position: Position): Promise<We
 	};
 	const url: string = addParams(apiUrl, params);
 	const response: Response = await fetch(url);
-	if (!response.ok) throw error(response.status, { message: response.statusText });
+	if (!response.ok) {
+		console.error(`Error fetching weather data: ${response.status} - ${response.statusText}`);
+		return null;
+	}
 	const json: WeatherData = (await response.json()) as WeatherData;
 	const hourlyData = json.hourly;
 	const hourlyIndex = hourlyData.time.findIndex((item) => oneHourDiff(new Date(item), time));

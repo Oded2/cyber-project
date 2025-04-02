@@ -41,12 +41,12 @@ declare global {
 		des_airport: Airport;
 		aircraft: number;
 		notes: string;
-		altitude?: number;
+		altitude: number | null;
 		pilot_in_command: string;
 		visibility: 'public' | 'unlisted' | 'private';
-		fuel_usage?: number;
+		fuel_usage: number | null;
 		rating: 'visual' | 'instrument';
-		weather_data: Weather[];
+		weather_data: Weather[] | null;
 		favorite: boolean;
 		true_weather: boolean;
 	}

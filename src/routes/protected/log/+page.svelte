@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { extractDate, extractTime, maxDate, minDate } from '$lib';
+	import { extractTime, formatDate, maxDate, minDate } from '$lib';
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Container from '$lib/components/Container.svelte';
@@ -7,6 +7,8 @@
 	import LogSection from '$lib/components/LogSection.svelte';
 	import LogTextarea from '$lib/components/LogTextarea.svelte';
 	import Title from '$lib/components/Title.svelte';
+	import { addToast } from '$lib/toasts.js';
+	import type { EventHandler } from 'svelte/elements';
 
 	const { data } = $props();
 	const { profile, aircrafts, predefinedDate } = data;
@@ -24,6 +26,21 @@
 		{ id: 'instrument', display: 'IFR' }
 	];
 	const extractedTime = extractTime();
+
+	let dateDisclaimer: string | undefined = $state();
+
+	const checkDate: EventHandler<Event, HTMLInputElement> = (e) => {
+		const value = new Date(e.currentTarget.value);
+		if (value < minDate)
+			dateDisclaimer = `Weather data will not be attached to this log due to the date being prior to ${formatDate(minDate)}`;
+		else if (value > maxDate)
+			dateDisclaimer = `Weather data will not be attached to this log due to the date being post ${formatDate(maxDate)}`;
+		else {
+			dateDisclaimer = undefined;
+			return;
+		}
+		addToast({ type: 'info', text: dateDisclaimer, duration: 5000 });
+	};
 </script>
 
 <Container>
@@ -62,7 +79,14 @@
 						min={3}
 						max={4}
 					></LogInput>
-					<LogInput type="date" name="date" value={predefinedDate} required></LogInput>
+					<LogInput
+						type="date"
+						name="date"
+						value={predefinedDate}
+						required
+						disclaimer={dateDisclaimer}
+						onchange={checkDate}
+					></LogInput>
 					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime} required
 					></LogInput>
 					<LogSection>Destination Details</LogSection>

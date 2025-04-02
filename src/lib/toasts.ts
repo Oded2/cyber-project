@@ -2,12 +2,13 @@ import { writable, type Writable } from 'svelte/store';
 
 export type ToastType = 'success' | 'info' | 'error';
 
-export interface UserToast {
-	duration: number;
+interface UserToast {
 	type: ToastType;
 	text: string;
+	duration?: number;
 }
-export interface Toast extends UserToast {
+
+interface Toast extends UserToast {
 	id: string;
 }
 
@@ -20,7 +21,7 @@ export const addToast = (options: UserToast) => {
 		...options
 	};
 	toasts.update((all) => [toast, ...all]);
-	if (toast.duration > 0) setTimeout(() => dismissToast(id), toast.duration);
+	if (toast.duration) setTimeout(() => dismissToast(id), toast.duration);
 };
 
 export const dismissToast = (id: string): void => {

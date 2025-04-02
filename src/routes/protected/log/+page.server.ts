@@ -1,5 +1,5 @@
 import { APININJAS } from '$env/static/private';
-import { addParams, combineDateTime, extractDate, hrefs } from '$lib';
+import { addParams, combineDateTime, extractDate, hrefs, maxDate, minDate } from '$lib';
 import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
@@ -49,13 +49,17 @@ export const actions: Actions = {
 			bannedCountries,
 			fetch
 		);
-		// Get the weather data from the departure airport to the destination airport
-		const weather = await getWeather(route, depDate, desDate);
+
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
 		delete obj['date']; // Date was only used to calculate the dep_time and the des_time
-		obj['weather_data'] = weather;
+		if (depDate > minDate && desDate < maxDate) {
+			// Only fetch the weather if the dates are not out of bounds
+			// Get the weather data from the departure airport to the destination airport
+			const weather = await getWeather(route, depDate, desDate);
+			obj['weather_data'] = weather;
+		}
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
 		// Ensure that the dates are inserted properly

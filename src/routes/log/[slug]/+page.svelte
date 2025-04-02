@@ -16,8 +16,8 @@
 	const pageUrl = page.url;
 	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
 	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
-	const dep_weather = weather[0];
-	const des_weather = weather[weather.length - 1];
+	const dep_weather = weather && weather[0];
+	const des_weather = weather && weather[weather.length - 1];
 	const start: Position = [log.dep_airport.longitude, log.dep_airport.latitude];
 	const end: Position = [log.des_airport.longitude, log.des_airport.latitude];
 	const routePromise = buildRoute(start, end, profile.bannedCountries);
@@ -58,11 +58,13 @@
 
 	async function getRouteMap(): Promise<string> {
 		// Prepare any data you need to send with your request.
-		const weatherFiltered = weather.map(({ wind_speed, wind_direction, coord }) => ({
-			wind_speed,
-			wind_direction,
-			coord
-		}));
+		const weatherFiltered =
+			weather &&
+			weather.map(({ wind_speed, wind_direction, coord }) => ({
+				wind_speed,
+				wind_direction,
+				coord
+			}));
 		const route = await routePromise;
 		// Reverse the coordinates for the python code since they're reversed there
 		const newRoute = route.map((val) => [val[1], val[0]]);
@@ -153,12 +155,16 @@
 			</div>
 		</LogViewerCard>
 		<LogViewerCard title="Weather Details">
-			<div class="prose">
-				<ul>
-					{@render weatherDetails(dep_weather, log.dep_airport.city)}
-					{@render weatherDetails(des_weather, log.des_airport.city)}
-				</ul>
-			</div>
+			{#if dep_weather && des_weather}
+				<div class="prose">
+					<ul>
+						{@render weatherDetails(dep_weather, log.dep_airport.city)}
+						{@render weatherDetails(des_weather, log.des_airport.city)}
+					</ul>
+				</div>
+			{:else}
+				<h3 class="italic">No weather data</h3>
+			{/if}
 		</LogViewerCard>
 		{#if aircraft}
 			<LogViewerCard title="Aircraft" image={aircraft.image_url}>

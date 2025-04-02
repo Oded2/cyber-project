@@ -5,9 +5,9 @@
 	const {
 		id,
 		title = 'Are you sure you want to do this?',
-		message = '',
-		text = '',
-		href = '',
+		message,
+		text,
+		href,
 		onconfirmation = () => {}
 	}: {
 		id: string;
@@ -34,10 +34,10 @@
 </script>
 
 <Modal {id} {title} {onclose}>
-	{#if message.length > 0}
-		<div class="mb-4 text-error">{message}</div>
+	{#if message}
+		<div class="text-error mb-4">{message}</div>
 	{/if}
-	{#if text.length > 0}
+	{#if text}
 		<label class="mb-4 flex w-full flex-col">
 			<span class="mb-2 px-2 text-sm">{`Type "${text}" to confirm`}</span>
 			<input
@@ -52,7 +52,7 @@
 	<form method="dialog" onsubmit={onclose}>
 		<div class="flex justify-end gap-2">
 			<button type="submit" class="btn btn-secondary">Cancel</button>
-			{#if href.length > 0}
+			{#if href}
 				<a {href} class="btn btn-primary" class:btn-disabled={value !== text}>Confirm</a>
 			{:else}
 				<button

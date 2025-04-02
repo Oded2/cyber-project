@@ -13,6 +13,7 @@
 		handleLogs,
 		hrefs,
 		isTaken,
+		minDate,
 		showModal,
 		usernameRegex
 	} from '$lib';
@@ -22,7 +23,6 @@
 	import Title from '$lib/components/Title.svelte';
 	import { page } from '$app/state';
 	import Collapse from '$lib/components/Collapse.svelte';
-	import Toasts from '$lib/components/Toasts.svelte';
 	import { addToast } from '$lib/toasts.js';
 	import { getWeather } from '$lib/weather.js';
 	import { buildRoute } from '$lib/coordinates.js';
@@ -39,10 +39,6 @@
 		unlisted: 'Unlist',
 		public: 'Publicize'
 	};
-	const logUpdate = $state({
-		inProgress: false,
-		isFinished: false
-	});
 	let { aircrafts } = $state(data);
 	// User cannot be null due to this being a protected page
 	let email = $state(user!.email!);
@@ -93,22 +89,34 @@
 		else await supabase.from('logs').delete().eq('owner', userId).eq('visibility', filter);
 	}
 
-	async function updateLogs(): Promise<void> {
+	const updateLogs: EventHandler<MouseEvent, HTMLButtonElement> = async (e) => {
 		// This function updates the weather in any logs that were logged before they happened
 		const today = new Date();
-		logUpdate.inProgress = true;
+		const button = e.currentTarget;
+		button.disabled = true;
+		const spinner = document.createElement('span');
+		spinner.classList.add('loading', 'loading-spinner');
+		button.appendChild(spinner);
 		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
 		const logs = temp as Log[];
 		handleLogs(logs);
 		for (const log of logs) {
 			// Checks to see if the log has true weather and that it was before the current date
-			if (!log.true_weather && log.des_time < today) {
+			if (!log.true_weather && log.des_time < today && log.dep_time > minDate) {
 				const route = await buildRoute(
 					[log.dep_airport.longitude, log.dep_airport.latitude],
 					[log.des_airport.longitude, log.des_airport.latitude],
-					bannedCountries.IL
+					profile.bannedCountries
 				);
 				const newWeather = await getWeather(route, log.dep_time, log.des_time);
+				if (!newWeather) {
+					addToast({
+						type: 'error',
+						text: 'Error fetching weather data, try again later',
+						duration: 5000
+					});
+					continue;
+				}
 				const toUpdate = {
 					weather_data: newWeather,
 					true_weather: true
@@ -116,9 +124,8 @@
 				await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);
 			}
 		}
-		logUpdate.inProgress = false;
-		logUpdate.isFinished = true;
-	}
+		button.removeChild(spinner);
+	};
 
 	const unbanCountry: MouseEventHandler<HTMLButtonElement> = async (event) => {
 		const country = event.currentTarget.getAttribute('data-country');
@@ -374,18 +381,15 @@
 			{:else if currentPage === 'logs'}
 				<div class="flex flex-col gap-2 sm:flex-row">
 					<div class="flex flex-col gap-2">
-						<button
-							class="btn btn-outline btn-primary max-w-xs"
-							onclick={updateLogs}
-							disabled={logUpdate.inProgress || logUpdate.isFinished}
-						>
-							{#if logUpdate.inProgress}
+						<button class="btn btn-outline btn-primary max-w-xs" onclick={updateLogs}>
+							Update Logs
+							<!-- {#if logUpdate.inProgress}
 								<span class="loading loading-spinner"></span>
 							{:else if logUpdate.isFinished}
 								Logs are up to date
 							{:else}
 								Update Logs
-							{/if}
+							{/if} -->
 						</button>
 						{@render visibilityButton('public')}
 						{@render visibilityButton('unlisted')}
@@ -491,7 +495,6 @@
 	onconfirmation={() => handleLogPurge(currentFilter)}
 	text={`${profile.username}/logs/${currentFilter}`}
 ></ConfirmationModal>
-<Toasts></Toasts>
 
 <Title title="Settings"></Title>
 
