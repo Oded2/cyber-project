@@ -50,7 +50,7 @@
 		{value}
 		{type}
 		{name}
-		class="grow"
+		class="flex items-center"
 		{placeholder}
 		{min}
 		{max}

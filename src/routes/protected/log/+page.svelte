@@ -63,7 +63,8 @@
 						max={4}
 					></LogInput>
 					<LogInput type="date" name="date" value={predefinedDate} required></LogInput>
-					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime}></LogInput>
+					<LogInput type="time" name="dep_time" displayName="Time" value={extractedTime} required
+					></LogInput>
 					<LogSection>Destination Details</LogSection>
 					<LogInput
 						name="des_airport"
@@ -74,7 +75,8 @@
 						min={3}
 						max={4}
 					></LogInput>
-					<LogInput type="time" name="des_time" displayName="Time" value={extractedTime}></LogInput>
+					<LogInput type="time" name="des_time" displayName="Time" value={extractedTime} required
+					></LogInput>
 					<LogSection>Additional Details</LogSection>
 					<LogTextarea name="notes" maxlength={10000}></LogTextarea>
 					<AircraftSelect name="visibility" values={visibilities}></AircraftSelect>
