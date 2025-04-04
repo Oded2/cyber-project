@@ -206,6 +206,15 @@
 		}
 		updatedProfile.bannedCountries = [];
 	};
+
+	async function handleAircraftPurge(): Promise<void> {
+		const { error: e } = await supabase.from('aircrafts').delete().eq('owner', user!.id);
+		if (e) {
+			console.error(e);
+			addToast({ type: 'error', text: 'Error encountered' });
+			return;
+		}
+	}
 </script>
 
 <Container>
@@ -378,19 +387,18 @@
 					<div class="max-w-xs border-b-2 pb-2">
 						<h1 class="text-lg">No registered aircrafts yet</h1>
 					</div>
-				{/if}<a href={hrefs.registerAircraft} class="btn btn-info mt-5">Add aircraft</a>
+				{/if}
+				<div class="mt-5 flex gap-2">
+					<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
+					<button class="btn btn-error" onclick={() => showModal('aircraftPurge')}
+						>Purge Aircrafts</button
+					>
+				</div>
 			{:else if currentPage === 'logs'}
 				<div class="flex flex-col gap-2 sm:flex-row">
 					<div class="flex flex-col gap-2">
 						<button class="btn btn-outline btn-primary max-w-xs" onclick={updateLogs}>
 							Update Logs
-							<!-- {#if logUpdate.inProgress}
-								<span class="loading loading-spinner"></span>
-							{:else if logUpdate.isFinished}
-								Logs are up to date
-							{:else}
-								Update Logs
-							{/if} -->
 						</button>
 						{@render visibilityButton('public')}
 						{@render visibilityButton('unlisted')}
@@ -473,6 +481,12 @@
 		{/each}
 	</div>
 </Modal>
+<ConfirmationModal
+	message="This action cannot be undone and will also delete ALL of your logs."
+	id="aircraftPurge"
+	onconfirmation={handleAircraftPurge}
+	text={`${profile.username}/aircrafts/all`}
+></ConfirmationModal>
 <ConfirmationModal id="passwordReset" href={hrefs.passwordReset}></ConfirmationModal>
 <ConfirmationModal
 	message="This action cannot be undone."
