@@ -10,7 +10,9 @@
 		defaultProfilePicture,
 		flipConfig,
 		format,
+		handleButtonAwait,
 		handleLogs,
+		handleSupabaseError,
 		hrefs,
 		isTaken,
 		minDate,
@@ -91,56 +93,51 @@
 
 	const updateLogs: EventHandler<MouseEvent, HTMLButtonElement> = async (e) => {
 		// This function updates the weather in any logs that were logged before they happened
-		const today = new Date();
-		const button = e.currentTarget;
-		button.disabled = true;
-		const spinner = document.createElement('span');
-		spinner.classList.add('loading', 'loading-spinner');
-		button.appendChild(spinner);
-		const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
-		const logs = temp as Log[];
-		handleLogs(logs);
-		for (const log of logs) {
-			// Checks to see if the log has true weather and that it was before the current date
-			if (!log.true_weather && log.des_time < today && log.dep_time > minDate) {
-				const route = await buildRoute(
-					[log.dep_airport.longitude, log.dep_airport.latitude],
-					[log.des_airport.longitude, log.des_airport.latitude],
-					profile.bannedCountries
-				);
-				const newWeather = await getWeather(route, log.dep_time, log.des_time);
-				if (!newWeather) {
-					addToast({
-						type: 'error',
-						text: 'Error fetching weather data, try again later',
-						duration: 5000
-					});
-					continue;
+		const fn = async () => {
+			const today = new Date();
+			const { data: temp } = await supabase.from('logs').select().eq('owner', user!.id);
+			const logs = temp as Log[];
+			handleLogs(logs);
+			for (const log of logs) {
+				// Checks to see if the log has true weather and that it was before the current date
+				if (!log.true_weather && log.des_time < today && log.dep_time > minDate) {
+					const route = await buildRoute(
+						[log.dep_airport.longitude, log.dep_airport.latitude],
+						[log.des_airport.longitude, log.des_airport.latitude],
+						profile.bannedCountries
+					);
+					const newWeather = await getWeather(route, log.dep_time, log.des_time);
+					if (!newWeather) {
+						addToast({
+							type: 'error',
+							text: 'Error fetching weather data, try again later',
+							duration: 5000
+						});
+						continue;
+					}
+					const toUpdate = {
+						weather_data: newWeather,
+						true_weather: true
+					};
+					await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);
 				}
-				const toUpdate = {
-					weather_data: newWeather,
-					true_weather: true
-				};
-				await supabase.from('logs').update(toUpdate).eq('owner', user!.id).eq('id', log.id);
 			}
-		}
-		button.removeChild(spinner);
-		button.textContent = 'Logs are up to date';
+		};
+		await handleButtonAwait(e.currentTarget, fn, document, true);
 	};
 
 	const unbanCountry: EventHandler<MouseEvent, HTMLButtonElement> = async (event) => {
-		const country = event.currentTarget.getAttribute('data-country');
-		event.currentTarget.disabled = true;
+		const btn = event.currentTarget;
+		const country = btn.getAttribute('data-country');
 		const newBannedCountries = updatedProfile.bannedCountries.filter((val) => val !== country);
-		const { error: e } = await supabase
-			.from('profiles')
-			.update({ bannedCountries: newBannedCountries })
-			.eq('id', user!.id);
-		if (e) {
-			event.currentTarget.disabled = false;
-			console.error(e);
-			return;
-		}
+		const fn = async () => {
+			const { error: e } = await supabase
+				.from('profiles')
+				.update({ bannedCountries: newBannedCountries })
+				.eq('id', user!.id);
+			if (e) handleSupabaseError(e);
+		};
+		await handleButtonAwait(btn, fn, document);
 		updatedProfile.bannedCountries = newBannedCountries;
 	};
 

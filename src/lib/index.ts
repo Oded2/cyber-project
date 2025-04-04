@@ -1,10 +1,11 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
 import countriesFile from './countries.json';
 import bannedCountriesFile from './banned.json';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import defaultPFP from './images/defaultPFP.png';
 import type { AnimationConfig } from 'svelte/animate';
+import { addToast } from './toasts';
 
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
@@ -196,6 +197,44 @@ export function getDatesBetween(start: Date, end: Date, n: number): Date[] {
 	}
 
 	return dates;
+}
+
+export async function handleButtonAwait(
+	btn: HTMLButtonElement,
+	fn: () => Promise<any> | any,
+	doc: Document,
+	spinner: boolean = false
+): Promise<void> {
+	// Disable the button to prevent repeated clicks during the operation
+	btn.disabled = true;
+	if (spinner) {
+		// Store the original text to restore it later
+		const originalText = btn.textContent;
+		// Lock the button's width to prevent layout shift when text is replaced
+		const originalWidth = btn.offsetWidth;
+		btn.style.width = `${originalWidth}px`;
+		// Clear the button's content
+		btn.textContent = null;
+		// Create and append a spinner element
+		const spinner = doc.createElement('span');
+		spinner.classList.add('loading', 'loading-spinner');
+		btn.appendChild(spinner);
+		// Execute the provided function and wait for completion
+		await fn();
+		// Remove the spinner and restore original button content
+		btn.removeChild(spinner);
+		btn.textContent = originalText;
+	} else {
+		// If no spinner is needed, just await the function directly
+		await fn();
+	}
+	// Re-enable the button after the operation completes
+	btn.disabled = false;
+}
+
+export function handleSupabaseError(e: PostgrestError): void {
+	console.error(e);
+	addToast({ type: 'error', text: `Error encountered: ${e.message}`, duration: 5000 });
 }
 
 function toLocalISOString(date: Date): string {
