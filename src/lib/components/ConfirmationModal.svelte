@@ -22,9 +22,10 @@
 	let value: string = $state('');
 
 	const handleConfirmation: EventHandler<MouseEvent, HTMLButtonElement> = async (e) => {
-		e.currentTarget.disabled = true;
+		const btn = e.currentTarget;
+		btn.disabled = true;
 		await onconfirmation();
-		e.currentTarget.disabled = false;
+		btn.disabled = false;
 		onclose();
 		closeModal(id);
 	};
