@@ -143,8 +143,8 @@
 
 	const banCountry: EventHandler<SubmitEvent, HTMLFormElement> = async (event) => {
 		event.preventDefault();
-
 		const form = event.currentTarget;
+		const input = document.getElementById('countryBanInput') as HTMLInputElement;
 		const formData = new FormData(form);
 		const countryToBan = formData.get('country')!.toString().toUpperCase();
 		if (countryToBan.length < 2) {
@@ -154,6 +154,16 @@
 		const countryExists = Object.keys(countries).includes(countryToBan);
 		if (!countryExists) {
 			addToast({ type: 'error', text: "Country doesn't exist", duration: 5000 });
+			input.value = '';
+			return;
+		}
+		if (updatedProfile.bannedCountries.includes(countryToBan)) {
+			addToast({
+				type: 'info',
+				text: `${countries[countryToBan]} already in ban list`,
+				duration: 5000
+			});
+			input.value = '';
 			return;
 		}
 		banCountryProgress = true;
@@ -167,7 +177,6 @@
 			console.error(e);
 			return;
 		}
-		const input = document.getElementById('countryBanInput') as HTMLInputElement;
 		input.value = '';
 		updatedProfile.bannedCountries = updatedValue;
 	};
