@@ -26,6 +26,6 @@ export const actions: Actions = {
 		// Response has been sent to formspree
 		if (response.ok) return { success: true };
 		// Error encountered
-		throw error(response.status, { message: 'Unable to send form' });
+		throw error(response.status, { message: response.statusText });
 	}
 };

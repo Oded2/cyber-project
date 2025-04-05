@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import CardActions from './CardActions.svelte';
 
 	const texts = {
 		signup: {
@@ -34,10 +35,10 @@
 		<div class="flex flex-col gap-2">
 			{@render children()}
 		</div>
-		<div class="card-actions mt-5">
+		<CardActions>
 			<button type="submit" class="btn btn-primary mx-auto w-full max-w-xs">
 				{texts[authType].submit}
 			</button>
-		</div>
+		</CardActions>
 	</div>
 </div>

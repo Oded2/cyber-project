@@ -13,6 +13,7 @@
 		displayName = format(name),
 		value,
 		type = 'text',
+		validatorText,
 		autocomplete,
 		autocorrect,
 		noValidation,
@@ -38,13 +39,13 @@
 		onchange?: EventHandler<Event, HTMLInputElement>;
 	} = $props();
 
-	const validatorText =
-		min !== undefined && max !== undefined
-			? `Must be between ${min.toLocaleString()} and ${max.toLocaleString()} ${type === 'text' ? 'characters long' : ''}`
-			: 'Field cannot be empty';
+	let finalValidatorText = $state('Field cannot be empty');
+	if (validatorText) finalValidatorText = validatorText;
+	else if (min && max)
+		finalValidatorText = `Input must be between ${min.toLocaleString()} and ${max.toLocaleString()}${type === 'text' ? ' characters long' : undefined}.`;
 </script>
 
-<InputLabel validatorText={noValidation ? undefined : validatorText} {disclaimer}>
+<InputLabel validatorText={noValidation ? undefined : finalValidatorText} {disclaimer}>
 	{displayName}
 	{#if !required}
 		<span class="font-light italic">(optional)</span>

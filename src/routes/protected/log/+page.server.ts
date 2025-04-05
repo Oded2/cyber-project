@@ -4,9 +4,7 @@ import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
-export async function load({ parent, url }): Promise<{ predefinedDate: string }> {
-	const { aircrafts } = await parent();
-	if (aircrafts.length == 0) throw error(400, { message: 'No registered aircrafts' });
+export async function load({ url }): Promise<{ predefinedDate: string }> {
 	const predefinedDate = url.searchParams.get('date') ?? extractDate();
 	return {
 		predefinedDate
