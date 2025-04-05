@@ -20,7 +20,7 @@
 		// Ensure that the user doesn't show up in the search results
 		if (user) query = query.not('id', 'eq', user.id);
 		// Limit to the first 10 results
-		query.limit(10);
+		query = query.limit(10);
 		inProgress = true;
 		const { data: results, error } = await query;
 		inProgress = false;
@@ -28,7 +28,7 @@
 			console.error(error);
 			return;
 		}
-		searchResults = results as typeof searchResults;
+		searchResults = results as Profile[];
 		// if the search result matches the exact username, then that result will be placed first
 		const exactIndex = searchResults.findIndex((item) => item.username === input);
 		if (exactIndex != -1) {
@@ -59,7 +59,9 @@
 		<div class="flex w-full max-w-md flex-col gap-4">
 			{#each searchResults as result}
 				<a href={hrefs.profile.replace('slug', result.username)} class="w-full">
-					<div class="flex gap-8 rounded-sm bg-base-200 px-4 py-2 shadow-sm transition hover:shadow-lg">
+					<div
+						class="bg-base-200 flex gap-8 rounded-sm px-4 py-2 shadow-sm transition hover:shadow-lg"
+					>
 						<div class="avatar">
 							<div class="w-12 rounded-full bg-white">
 								<img
