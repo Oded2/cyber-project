@@ -57,8 +57,8 @@
 		{name}
 		class="flex items-center"
 		{placeholder}
-		{min}
-		{max}
+		min={type === 'number' ? min : undefined}
+		max={type === 'number' ? min : undefined}
 		minlength={type === 'text' ? min : undefined}
 		maxlength={type === 'text' ? max : undefined}
 		{autocomplete}
