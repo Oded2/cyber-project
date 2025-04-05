@@ -387,9 +387,11 @@
 				{/if}
 				<div class="mt-5 flex gap-2">
 					<a href={hrefs.registerAircraft} class="btn btn-info">Add aircraft</a>
-					<button class="btn btn-error" onclick={() => showModal('aircraftPurge')}
-						>Purge Aircrafts</button
-					>
+					{#if aircrafts.length > 0}
+						<button class="btn btn-error" onclick={() => showModal('aircraftPurge')}>
+							Purge Aircrafts
+						</button>
+					{/if}
 				</div>
 			{:else if currentPage === 'logs'}
 				<div class="flex flex-col gap-2 sm:flex-row">
@@ -510,7 +512,12 @@
 
 <Title title="Settings"></Title>
 
-{#snippet settingsButton(text: string, icon: string, onclick: () => void, active: boolean)}
+{#snippet settingsButton(
+	text: string,
+	icon: string,
+	onclick: EventHandler<MouseEvent, HTMLButtonElement>,
+	active: boolean
+)}
 	<button class="btn btn-outline btn-info justify-start" class:btn-active={active} {onclick}>
 		<i class={icon}></i>{text}
 	</button>

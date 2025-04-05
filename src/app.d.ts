@@ -50,29 +50,54 @@ declare global {
 		favorite: boolean;
 		true_weather: boolean;
 	}
+	// interface Aircraft {
+	// 	id: number; // bigint
+	// 	created_at: string; // timestamp with time zone
+	// 	nickname: string; // text
+	// 	tail_number: string; // text
+	// 	model: string; // text
+	// 	manufacturer: string; // text
+	// 	year_of_manufacture: number; // integer
+	// 	aircraft_type: string; // text
+	// 	category: string; // text
+	// 	aircraft_engine: string; // text
+	// 	number_of_engines: number; // integer
+	// 	maximum_takeoff_weight: number; // integer
+	// 	wingspan: number; // integer
+	// 	range: number; // integer
+	// 	cruising_speed: number; // integer
+	// 	fuel_capacity: number; // integer
+	// 	fuel_type: string; // text
+	// 	owner_name: string; // text
+	// 	seating_capacity: number; // integer
+	// 	image_url: string; // text
+	// 	notes: string; // text
+	// 	visibility: 'public' | 'private' | 'unlisted'; // text with constraints
+	// 	owner: string; // uuid
+	// }
 	interface Aircraft {
 		id: number; // bigint
 		created_at: string; // timestamp with time zone
 		nickname: string; // text
 		tail_number: string; // text
-		model: string; // text
-		manufacturer: string; // text
-		year_of_manufacture: number; // integer
+		model?: string; // text | optional
+		manufacturer?: string; // text | optional
+		year_of_manufacture?: number; // integer | optional
 		aircraft_type: string; // text
 		category: string; // text
 		aircraft_engine: string; // text
-		number_of_engines: number; // integer
-		maximum_takeoff_weight: number; // integer
-		wingspan: number; // integer
-		range: number; // integer
-		cruising_speed: number; // integer
-		fuel_capacity: number; // integer
-		fuel_type: string; // text
-		owner_name: string; // text
-		seating_capacity: number; // integer
-		image_url: string; // text
-		notes: string; // text
-		visibility: 'public' | 'private' | 'unlisted'; // text with constraints
+		number_of_engines?: number; // integer | optional
+		maximum_takeoff_weight?: number; // integer | optional
+		wingspan?: number; // integer | optional
+		range?: number; // integer | optional
+		cruising_speed?: number; // integer | optional
+		fuel_capacity?: number; // integer | optional
+		fuel_type?: string; // text | optional
+		owner_name?: string; // text | optional
+		seating_capacity?: number; // integer | optional
+		image_url?: string; // text | optional
+		notes?: string; // text | optional
+		visibility: 'public' | 'private' | 'unlisted';
 		owner: string; // uuid
 	}
 	interface Airport {

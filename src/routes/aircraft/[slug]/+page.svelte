@@ -25,9 +25,15 @@
 			<div class="prose">
 				<ul>
 					<li>{`Tail Number: ${aircraft.tail_number}`}</li>
-					<li>{`Model: ${aircraft.model}`}</li>
-					<li>{`Manufacturer: ${aircraft.manufacturer}`}</li>
-					<li>{`Year of Manufacture: ${aircraft.year_of_manufacture}`}</li>
+					{#if aircraft.model}
+						<li>{`Model: ${aircraft.model}`}</li>
+					{/if}
+					{#if aircraft.manufacturer}
+						<li>{`Manufacturer: ${aircraft.manufacturer}`}</li>
+					{/if}
+					{#if aircraft.year_of_manufacture}
+						<li>{`Year of Manufacture: ${aircraft.year_of_manufacture}`}</li>
+					{/if}
 				</ul>
 			</div>
 		</LogViewerCard>
@@ -36,25 +42,43 @@
 				<ul>
 					<li>{`Aircraft Type: ${aircraft.aircraft_type}`}</li>
 					<li>{`Category: ${aircraft.category}`}</li>
-					<li>{`Engines: ${aircraft.number_of_engines.toLocaleString()}`}</li>
-					<li>
-						{`Maximum Takeoff Weight: ${aircraft.maximum_takeoff_weight.toLocaleString()}lbs`}
-					</li>
-					<li>{`Wingspan: ${aircraft.wingspan.toLocaleString()}ft`}</li>
-					<li>{`Range: ${aircraft.range.toLocaleString()}NM`}</li>
-					<li>{`Cruising Speed: ${aircraft.cruising_speed.toLocaleString()}KN`}</li>
-					<li>{`Fuel Capacity: ${aircraft.fuel_capacity.toLocaleString()} Gallons`}</li>
-					<li>{`Fuel Type: ${aircraft.fuel_type}`}</li>
+					{#if aircraft.number_of_engines}
+						<li>{`Engines: ${aircraft.number_of_engines.toLocaleString()}`}</li>
+					{/if}
+					{#if aircraft.maximum_takeoff_weight}
+						<li>
+							{`Maximum Takeoff Weight: ${aircraft.maximum_takeoff_weight.toLocaleString()} lbs`}
+						</li>
+					{/if}
+					{#if aircraft.wingspan}
+						<li>{`Wingspan: ${aircraft.wingspan.toLocaleString()} ft`}</li>
+					{/if}
+					{#if aircraft.range}
+						<li>{`Range: ${aircraft.range.toLocaleString()} NM`}</li>
+					{/if}
+					{#if aircraft.cruising_speed}
+						<li>{`Cruising Speed: ${aircraft.cruising_speed.toLocaleString()} KN`}</li>
+					{/if}
+					{#if aircraft.fuel_capacity}
+						<li>{`Fuel Capacity: ${aircraft.fuel_capacity.toLocaleString()} Gallons`}</li>
+					{/if}
+					{#if aircraft.fuel_type}
+						<li>{`Fuel Type: ${aircraft.fuel_type}`}</li>
+					{/if}
 				</ul>
 			</div>
 		</LogViewerCard>
 		<LogViewerCard title="Miscellaneous">
 			<div class="prose">
 				<ul>
-					<li>{`Owner: ${aircraft.owner_name}`}</li>
-					<li>{`Seating Capacity: ${aircraft.seating_capacity}`}</li>
+					{#if aircraft.owner_name}
+						<li>{`Owner: ${aircraft.owner_name}`}</li>
+					{/if}
+					{#if aircraft.seating_capacity}
+						<li>{`Seating Capacity: ${aircraft.seating_capacity}`}</li>
+					{/if}
 					<li>{`Visibility: ${format(aircraft.visibility)}`}</li>
-					{#if aircraft.notes.length > 0}
+					{#if aircraft.notes}
 						<li>{`Notes: ${aircraft.notes}`}</li>
 					{/if}
 				</ul>

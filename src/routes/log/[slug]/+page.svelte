@@ -170,15 +170,23 @@
 			<LogViewerCard title="Aircraft" image={aircraft.image_url}>
 				<div class="prose">
 					<ul>
-						<li>Nickname: {aircraft.nickname}</li>
-						<li>Tail Number: {aircraft.tail_number}</li>
-						<li>Model: {aircraft.model}</li>
-						<li>Manufacturer: {aircraft.manufacturer}</li>
-						<li>Category: {aircraft.category}</li>
-						<li>Range: {aircraft.range.toLocaleString()}NM</li>
-						<li>Fuel Capacity: {aircraft.fuel_capacity.toLocaleString()} Gallons</li>
-						{#if aircraft.notes.length > 0}
-							<li>Notes: {aircraft.notes}</li>
+						<li>{`Nickname: ${aircraft.nickname}`}</li>
+						<li>{`Tail Number: ${aircraft.tail_number}`}</li>
+						{#if aircraft.model}
+							<li>{`Model: ${aircraft.model}`}</li>
+						{/if}
+						{#if aircraft.manufacturer}
+							<li>{`Manufacturer: ${aircraft.manufacturer}`}</li>
+						{/if}
+						<li>{`Category: ${aircraft.category}`}</li>
+						{#if aircraft.range}
+							<li>{`Range: ${Number(aircraft.range).toLocaleString()} NM`}</li>
+						{/if}
+						{#if aircraft.fuel_capacity}
+							<li>{`Fuel Capacity: ${Number(aircraft.fuel_capacity).toLocaleString()} Gallons`}</li>
+						{/if}
+						{#if aircraft.notes}
+							<li>{`Notes: ${aircraft.notes}`}</li>
 						{/if}
 					</ul>
 				</div>

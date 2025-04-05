@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { extractDate, extractTime, format, maxDate, minDate } from '$lib';
+	import { format } from '$lib';
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
-	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import FormCard from '$lib/components/FormCard.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
 	import LogSection from '$lib/components/LogSection.svelte';
-	import LogTextarea from '$lib/components/LogTextarea.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const { data } = $props();
@@ -77,26 +75,19 @@
 				max={maxLength}
 				oninput={(e) => (e.currentTarget.value = e.currentTarget.value.toUpperCase())}
 			></LogInput>
-			<LogInput
-				name="model"
-				placeholder="Cessna 172"
-				value={aircraft?.model}
-				required
-				max={maxLength}
+			<LogInput name="model" placeholder="Cessna 172" value={aircraft?.model} max={maxLength}
 			></LogInput>
 			<LogInput
 				name="manufacturer"
 				placeholder="Cessna"
 				value={aircraft?.manufacturer}
-				required
 				max={maxLength}
 			></LogInput>
 			<LogInput
 				type="number"
 				name="year_of_manufacture"
 				placeholder="1956"
-				value={aircraft?.year_of_manufacture.toString()}
-				required
+				value={aircraft?.year_of_manufacture?.toString()}
 				min={1903}
 				max={currentYear}
 			></LogInput>
@@ -117,8 +108,7 @@
 				type="number"
 				name="number_of_engines"
 				placeholder="1"
-				value={aircraft?.number_of_engines.toString()}
-				required
+				value={aircraft?.number_of_engines?.toString()}
 				min={1}
 				max={999999}
 			></LogInput>
@@ -126,8 +116,7 @@
 				type="number"
 				name="maximum_takeoff_weight"
 				placeholder="(lbs)"
-				value={aircraft?.maximum_takeoff_weight.toString()}
-				required
+				value={aircraft?.maximum_takeoff_weight?.toString()}
 				min={0}
 				max={999999}
 			></LogInput>
@@ -135,8 +124,7 @@
 				type="number"
 				name="wingspan"
 				placeholder="(ft)"
-				value={aircraft?.wingspan.toString()}
-				required
+				value={aircraft?.wingspan?.toString()}
 				min={0}
 				max={999999}
 			></LogInput>
@@ -144,8 +132,7 @@
 				type="number"
 				name="range"
 				placeholder="(NM)"
-				value={aircraft?.range.toString()}
-				required
+				value={aircraft?.range?.toString()}
 				min={0}
 				max={999999}
 			></LogInput>
@@ -153,8 +140,7 @@
 				type="number"
 				name="cruising_speed"
 				placeholder="(Knots)"
-				value={aircraft?.cruising_speed.toString()}
-				required
+				value={aircraft?.cruising_speed?.toString()}
 				min={0}
 				max={999999}
 			></LogInput>
@@ -162,32 +148,20 @@
 				type="number"
 				name="fuel_capacity"
 				placeholder="(Gallons)"
-				value={aircraft?.fuel_capacity.toString()}
-				required
+				value={aircraft?.fuel_capacity?.toString()}
 				min={0}
 				max={999999}
 			></LogInput>
-			<LogInput
-				name="fuel_type"
-				placeholder="Avgas"
-				value={aircraft?.fuel_type}
-				required
-				max={maxLength}
+			<LogInput name="fuel_type" placeholder="Avgas" value={aircraft?.fuel_type} max={maxLength}
 			></LogInput>
 			<LogSection>Additional Information</LogSection>
-			<LogInput
-				name="owner_name"
-				placeholder="Sully"
-				value={aircraft?.owner_name}
-				required
-				max={maxLength}
+			<LogInput name="owner_name" placeholder="Sully" value={aircraft?.owner_name} max={maxLength}
 			></LogInput>
 			<LogInput
 				type="number"
 				name="seating_capacity"
 				placeholder="4"
-				value={aircraft?.seating_capacity.toString()}
-				required
+				value={aircraft?.seating_capacity?.toString()}
 				min={1}
 				max={999999}
 			></LogInput>
