@@ -3,7 +3,7 @@
 
 	const {
 		id,
-		title = '',
+		title,
 		onclose = () => {},
 		children
 	}: { id: string; title?: string; onclose?: () => void; children: Snippet } = $props();
@@ -11,7 +11,7 @@
 
 <dialog {id} class="modal">
 	<div class="modal-box">
-		{#if title.length > 0}
+		{#if title}
 			<div class="card-title mb-3 border-b-2 pb-3">{title}</div>
 		{/if}
 		{@render children()}
