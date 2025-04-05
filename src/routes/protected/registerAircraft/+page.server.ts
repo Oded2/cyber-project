@@ -1,4 +1,4 @@
-import { addParams, hrefs } from '$lib';
+import { addParams, handleFormData, hrefs } from '$lib';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 
 export async function load({ url, locals: { supabase } }) {
@@ -17,11 +17,7 @@ export const actions: Actions = {
 		const id = url.searchParams.get('id');
 		const formData = await request.formData();
 		const notes = formData.get('notes') as string;
-		const obj = Object.fromEntries(
-			formData.entries().map(([key, value]) => {
-				return [key, value.toString().length > 0 ? value.toString() : null];
-			})
-		);
+		const obj = handleFormData(formData);
 		if (id) obj['id'] = id;
 		obj['notes'] = notes.trim();
 		// Upsert is a function that updates a row if a conflict is met (aircraft id for editiing), else it inserts a new row

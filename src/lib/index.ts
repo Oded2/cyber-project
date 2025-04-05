@@ -237,6 +237,14 @@ export function handleSupabaseError(e: PostgrestError): void {
 	addToast({ type: 'error', text: `Error encountered: ${e.message}`, duration: 5000 });
 }
 
+export function handleFormData(formData: FormData): { [key: string]: string | null } {
+	return Object.fromEntries(
+		formData.entries().map(([key, value]) => {
+			return [key, value.toString().length > 0 ? value.toString() : null];
+		})
+	);
+}
+
 function toLocalISOString(date: Date): string {
 	// Returns a local time ISO-like string (without converting to UTC)
 	return (

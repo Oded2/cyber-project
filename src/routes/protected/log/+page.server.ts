@@ -52,11 +52,13 @@ export const actions: Actions = {
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
 		delete obj['date']; // Date was only used to calculate the dep_time and the des_time
-		if (depDate > minDate && desDate < maxDate) {
+		delete obj['fetchWeather']; // Only used to determine if the weather should be fetched or not
+		const fetchWeather = formData.get('fetchWeather'); // Determine if the weather should be fetched
+		if (fetchWeather && depDate > minDate && desDate < maxDate) {
 			// Only fetch the weather if the dates are not out of bounds
 			// Get the weather data from the departure airport to the destination airport
 			const weather = await getWeather(route, depDate, desDate);
-			obj['weather_data'] = weather;
+			obj['weather_data'] = JSON.stringify(weather);
 		}
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
