@@ -97,11 +97,13 @@
 								Profile
 							</a>
 						</li>
+						<li><a href={hrefs.logbook}>Logbook</a></li>
 						<li><a href={hrefs.settings}>Settings</a></li>
 						<li><button onclick={handleSignOut}>Sign Out</button></li>
 					</Dropdown>
 				</div>
 			{:else if !pathname.includes(hrefs.login)}
+				<!-- Ensure that the user isn't on the sign up page -->
 				<div class="join">
 					<div class="join-item me-2">
 						<a href={hrefs.login} class="btn btn-secondary">Log In</a>
