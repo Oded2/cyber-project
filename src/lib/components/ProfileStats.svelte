@@ -49,7 +49,7 @@
 		{@render statCard('Shortest Flight', shortest)}
 	</div>
 	<div class="col-auto">
-		<div class="card glass h-full bg-neutral">
+		<div class="card glass bg-neutral h-full">
 			<div class="card-body text-neutral-content">
 				<h2 class="card-title mb-2">Most Common Aircraft</h2>
 				{#if mostFrequentAircraft !== 'Unknown'}
@@ -63,7 +63,7 @@
 				{:else}
 					<h1 class="text-xl font-bold">{mostFrequentAircraft}</h1>{/if}
 			</div>
-			{#if mostFrequentAircraft !== 'Unknown' && mostFrequentAircraft.image_url.length > 0}
+			{#if mostFrequentAircraft !== 'Unknown' && mostFrequentAircraft.image_url}
 				<figure class="h-1/2">
 					<img src={mostFrequentAircraft.image_url} alt={mostFrequentAircraft.nickname} />
 				</figure>
@@ -74,7 +74,7 @@
 
 {#snippet statCard(title: string, log: Log)}
 	{@const aircraft = aircrafts.find((item) => item.id == log.aircraft)}
-	<div class="card glass h-full bg-primary">
+	<div class="card glass bg-primary h-full">
 		<div class="card-body text-primary-content">
 			<h2 class="card-title mb-2">{title}</h2>
 			<h1 class="text-xl font-bold">{`${log.dep_airport.icao} TO ${log.dep_airport.icao}`}</h1>
@@ -87,7 +87,7 @@
 				</h1>
 			{/if}
 		</div>
-		{#if aircraft && aircraft.image_url.length > 0}
+		{#if aircraft && aircraft.image_url}
 			<figure class="h-1/2">
 				<img src={aircraft.image_url} alt={aircraft.nickname} />
 			</figure>
