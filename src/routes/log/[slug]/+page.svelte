@@ -86,6 +86,23 @@
 		const mapHTML = await response.text();
 		return mapHTML;
 	}
+
+	function coordinateToString(coord: Position): string {
+		const map = {
+			latitude: ['N', 'S'],
+			longitude: ['E', 'W']
+		};
+		const getCoord = (coord: number, coordType: keyof typeof map) => {
+			const { floor, abs } = Math;
+			const symbol = coord > 0 ? map[coordType][0] : map[coordType][1];
+			coord = abs(coord);
+			const degrees = floor(coord);
+			const minutes = floor((coord - degrees) * 60);
+			const seconds = floor((coord - degrees - minutes / 60) * 3600);
+			return `${degrees}°${minutes}'${seconds}"${symbol}`;
+		};
+		return `${getCoord(coord[0], 'latitude')}, ${getCoord(coord[1], 'longitude')}`;
+	}
 </script>
 
 <Container>
@@ -240,6 +257,7 @@
 				<li>{`Country: ${countries[airport.country]}`}</li>
 				<li>{`Timezone: ${airport.timezone}`}</li>
 				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
+				<li>{`Coordinates: ${coordinateToString([airport.latitude, airport.longitude])}`}</li>
 			</ul>
 		</div>
 	</div>
