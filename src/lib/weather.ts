@@ -6,11 +6,11 @@ export async function getWeather(
 	timeStart: Date,
 	timeEnd: Date
 ): Promise<Weather[] | null> {
-	// Takes in an array of coordinates, then splits them into 10 even points to fetch weather data for
+	// Takes in an array of coordinates, then splits them into 5 even points to fetch weather data for
 
 	// The time in which the weather api is going to get the forecast at is dependent on the timeStart and
-	// timeEnd, so that between the 10 even points there will be 10 equal time periods
-	const coords = divideArray(coordinates, 10);
+	// timeEnd, so that between the 5 even points there will be 5 equal time periods
+	const coords = divideArray(coordinates, 5);
 	const dates = getDatesBetween(timeStart, timeEnd, coords.length);
 	console.log('Fetching weather data');
 	const weatherData = await Promise.all(

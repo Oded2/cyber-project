@@ -58,7 +58,7 @@ export const actions: Actions = {
 			// Only fetch the weather if the dates are not out of bounds
 			// Get the weather data from the departure airport to the destination airport
 			const weather = await getWeather(route, depDate, desDate);
-			obj['weather_data'] = JSON.stringify(weather);
+			obj['weather_data'] = weather;
 		}
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
