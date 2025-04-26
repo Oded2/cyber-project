@@ -124,10 +124,7 @@ function illegalPoint(point: Position, polygons: CountryFeature[]): boolean {
 }
 
 // Determines which countries are overflown by a route, based on the coordinates
-export async function getCountriesFlownOver(
-	coordinatesPromise: Promise<Position[]>
-): Promise<Set<string>> {
-	const coordinates = await coordinatesPromise; // Await the promise to get coordinates
+export async function getCountriesFlownOver(coordinates: Position[]): Promise<Set<string>> {
 	const flownOver = new Set<string>(); // Set to store unique country ISO codes
 	const countryData = await fetchCountries(); // Fetch country data
 	for (const coord of coordinates) {

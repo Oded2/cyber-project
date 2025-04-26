@@ -6,6 +6,7 @@ import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import defaultPFP from './images/defaultPFP.png';
 import type { AnimationConfig } from 'svelte/animate';
 import { addToast } from './toasts';
+import type { Position } from 'geojson';
 
 export const hrefs = hrefsFile;
 export const countries = countriesFile as { [key: string]: string };
@@ -134,11 +135,15 @@ export function getDuration(dateA: Date, dateB: Date): string {
 export function handleLogs(logs: any[]): void {
 	// Helper function to ensure that logs fetched from the database are in the correct format
 	// Transforms the departure and destination time to Date objects
-	const pointer = logs as Log[];
+	const pointer = logs;
 	pointer.forEach((item) => {
 		item.dep_time = new Date(item.dep_time);
 		item.des_time = new Date(item.des_time);
 		item.created_at = new Date(item.created_at);
+		const newPoints: Position[] = [];
+		for (let i = 0; i < item.points.length; i += 2)
+			newPoints.push([item.points[i], item.points[i + 1]]);
+		item.points = newPoints;
 	});
 	// Sorts the array based on the date
 	pointer.sort((a, b) => b.dep_time.getTime() - a.dep_time.getTime());

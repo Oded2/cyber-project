@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { PUBLIC_MAP_ENDPOINT } from '$env/static/public';
 	import { addParams, countries, format, getDuration, hrefs } from '$lib';
-	import { buildRoute, getCountriesFlownOver, getRouteDistance } from '$lib/coordinates.js';
+	import { getCountriesFlownOver, getRouteDistance } from '$lib/coordinates.js';
 	import Container from '$lib/components/Container.svelte';
 	import LogViewerCard from '$lib/components/LogViewerCard.svelte';
 	import Ref from '$lib/components/Ref.svelte';
@@ -18,10 +18,8 @@
 	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
 	const dep_weather = weather && weather[0];
 	const des_weather = weather && weather[weather.length - 1];
-	const start: Position = [log.dep_airport.longitude, log.dep_airport.latitude];
-	const end: Position = [log.des_airport.longitude, log.des_airport.latitude];
-	const routePromise = buildRoute(start, end, profile.bannedCountries);
-	const countriesFlownPromise = getCountriesFlownOver(routePromise);
+	const route = log.points;
+	const countriesFlownPromise = getCountriesFlownOver(route);
 	let mapContainer: HTMLDivElement;
 
 	onMount(() => {
@@ -65,7 +63,6 @@
 				wind_direction,
 				coord
 			}));
-		const route = await routePromise;
 		// Reverse the coordinates for the python code since they're reversed there
 		const newRoute = route.map((val) => [val[1], val[0]]);
 		// Make a POST request to the endpoint that returns the Folium map HTML
@@ -119,9 +116,7 @@
 				<ul>
 					<li>Pilot in Command: {log.pilot_in_command}</li>
 					<li>Duration: {getDuration(depTime, desTime)}</li>
-					{#await routePromise then route}
-						<li>Distance: {Math.round(getRouteDistance(route)).toLocaleString()}NM</li>
-					{/await}
+					<li>Distance: {Math.round(getRouteDistance(route)).toLocaleString()}NM</li>
 					<li>
 						<strong>Departure & Landing</strong>
 						<ul>

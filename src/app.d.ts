@@ -49,6 +49,7 @@ declare global {
 		weather_data: Weather[] | null;
 		favorite: boolean;
 		true_weather: boolean;
+		points: Position[];
 	}
 
 	interface Aircraft {

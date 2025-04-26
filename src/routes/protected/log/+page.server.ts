@@ -47,7 +47,6 @@ export const actions: Actions = {
 			bannedCountries,
 			fetch
 		);
-
 		numToNull(formData, 'fuel_usage');
 		numToNull(formData, 'altitude');
 		const obj = Object.fromEntries(formData.entries()) as { [key: string]: any };
@@ -68,6 +67,7 @@ export const actions: Actions = {
 		obj['true_weather'] = desDate < today;
 		// Remove any whitespace from the notes
 		obj['notes'] = notes.trim();
+		obj['points'] = route.flat();
 		const { error: e } = await supabase.from('logs').insert(obj);
 		if (e) throw error(500, { message: e.message });
 		throw redirect(303, hrefs.logbook);
