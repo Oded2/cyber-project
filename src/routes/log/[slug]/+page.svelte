@@ -109,6 +109,11 @@
 			<span class="font-bold"> {log.des_airport.city}</span>
 		</h1>
 		<h2 class="text-center">{formatSpecificDate(depTime)}</h2>
+		<h3 class="text-center text-sm">
+			Logged by: <a href={hrefs.profile.replace('slug', profile.username)} class="link"
+				>{profile.display}</a
+			>
+		</h3>
 	</div>
 	<div class="mb-10 grid gap-4 lg:grid-cols-3">
 		<LogViewerCard title="Basic Information">
@@ -152,13 +157,6 @@
 							<strong>Countries Flown Over</strong>
 							<br />
 							{[...countriesFlown]
-								.map((countryTwoLetter) => countries[countryTwoLetter])
-								.join(', ')}
-						</li>
-						<li>
-							<strong>Countries Avoided</strong>
-							<br />
-							{profile.bannedCountries
 								.map((countryTwoLetter) => countries[countryTwoLetter])
 								.join(', ')}
 						</li>
