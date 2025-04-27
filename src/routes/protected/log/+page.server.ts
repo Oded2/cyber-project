@@ -41,7 +41,6 @@ export const actions: Actions = {
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
-		console.log(depAirport);
 		const route = await buildRoute(
 			[depAirport.longitude_deg, depAirport.latitude_deg],
 			[desAirport.longitude_deg, desAirport.latitude_deg],
