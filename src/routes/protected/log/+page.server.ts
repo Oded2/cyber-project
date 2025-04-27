@@ -1,4 +1,4 @@
-import { APININJAS } from '$env/static/private';
+import { AIRPORTDB_API_KEY } from '$env/static/private';
 import { addParams, combineDateTime, extractDate, hrefs, maxDate, minDate } from '$lib';
 import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
@@ -41,9 +41,10 @@ export const actions: Actions = {
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		const desAirport = await getAirportData(formData.get('des_airport') as string);
+		console.log(depAirport);
 		const route = await buildRoute(
-			[depAirport.longitude, depAirport.latitude],
-			[desAirport.longitude, desAirport.latitude],
+			[depAirport.longitude_deg, depAirport.latitude_deg],
+			[desAirport.longitude_deg, desAirport.latitude_deg],
 			bannedCountries,
 			fetch
 		);
@@ -88,25 +89,17 @@ function numToNull(form: FormData, name: string): void {
 }
 
 async function getAirportData(code: string): Promise<Airport> {
-	// Returns a type AirportInfo based on an ICAO/IATA code
-	// If the code is invalid the function returns an error
-	const apiUrl = 'https://api.api-ninjas.com/v1/airports';
+	// Fetches airport data by ICAO code, validates the response, and returns it
+	// Validate that the airport code is exactly 4 characters long
 	const length: number = code.length;
-	if (length < 3 || length > 4) throw error(422, { message: 'Invalid airport code' });
-	// Since the user is able to input both ICAO and IATA codes, this constant
-	// checks to see which one the user meant based on length
-	const param: string = length == 4 ? 'icao' : 'iata';
-	// Builds the API URL
-	const url: string = addParams(apiUrl, { [param]: code });
-	// Fetches the URL with the API key in the header for authentication
-	const response: Response = await fetch(url, { headers: { 'X-Api-Key': APININJAS } });
-	// Error handling
+	if (length !== 4) throw error(422, { message: 'Invalid airport code' });
+	// Prepare the API URL with the given ICAO code and API key
+	const apiUrl = `https://airportdb.io/api/v1/airport/${code}`;
+	const url: string = addParams(apiUrl, { apiToken: AIRPORTDB_API_KEY });
+	// Perform the API request
+	const response: Response = await fetch(url);
+	// Throw an error if the response is not OK
 	if (!response.ok) throw error(response.status, { message: response.statusText });
-	const json: { [key: string]: any }[] = await response.json();
-	if (json.length == 0) throw error(422, { message: `API could not fetch airport code ${code}` });
-	const airport = json[0];
-	// Converts the longitude and latitude coordinates to number
-	airport['longitude'] = parseFloat(airport['longitude']);
-	airport['latitude'] = parseFloat(airport['latitude']);
-	return json[0] as Airport;
+	// Return the airport object, typed as Airport
+	return (await response.json()) as Airport;
 }

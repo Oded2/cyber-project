@@ -14,7 +14,7 @@
 	const { log, aircraft, ref, profile } = data;
 
 	const pageUrl = page.url;
-	const roundTrip = log.dep_airport.icao === log.des_airport.icao;
+	const roundTrip = log.dep_airport.icao_code === log.des_airport.icao_code;
 	const { dep_time: depTime, des_time: desTime, weather_data: weather } = log;
 	const dep_weather = weather && weather[0];
 	const des_weather = weather && weather[weather.length - 1];
@@ -74,8 +74,8 @@
 			body: JSON.stringify({
 				// Reverse the order because the endpoint expects [lat, lon] instead of [lon, lat]
 				points: newRoute,
-				dep: log.dep_airport.icao,
-				des: log.des_airport.icao,
+				dep: log.dep_airport.icao_code,
+				des: log.des_airport.icao_code,
 				weather_data: weatherFiltered
 			})
 		});
@@ -105,8 +105,9 @@
 <Container>
 	<div class="relative my-10 border-b-2">
 		<h1 class="text-center text-xl">
-			<span class="font-bold">{log.dep_airport.city}</span> <i class="fa-solid fa-arrow-right"></i>
-			<span class="font-bold"> {log.des_airport.city}</span>
+			<span class="font-bold">{log.dep_airport.municipality}</span>
+			<i class="fa-solid fa-arrow-right"></i>
+			<span class="font-bold"> {log.des_airport.municipality}</span>
 		</h1>
 		<h2 class="text-center">{formatSpecificDate(depTime)}</h2>
 		<h3 class="text-center text-sm">
@@ -168,8 +169,8 @@
 			{#if dep_weather && des_weather}
 				<div class="prose">
 					<ul>
-						{@render weatherDetails(dep_weather, log.dep_airport.city)}
-						{@render weatherDetails(des_weather, log.des_airport.city)}
+						{@render weatherDetails(dep_weather, log.dep_airport.municipality)}
+						{@render weatherDetails(des_weather, log.des_airport.municipality)}
 					</ul>
 				</div>
 			{:else}
@@ -238,19 +239,17 @@
 			<strong class="text-lg">{airport.name}</strong>
 			<ul>
 				<li>
-					{`ICAO: ${airport.icao}`}
+					{`ICAO: ${airport.icao_code}`}
 				</li>
-				{#if airport.iata.length > 0}
-					<li>{`IATA: ${airport.iata}`}</li>
+				{#if airport.iata_code.length > 0}
+					<li>{`IATA: ${airport.icao_code}`}</li>
 				{/if}
-				<li>{`City: ${airport.city}`}</li>
-				{#if airport.region.length > 0}
-					<li>{`Region: ${airport.region}`}</li>
-				{/if}
-				<li>{`Country: ${countries[airport.country]}`}</li>
-				<li>{`Timezone: ${airport.timezone}`}</li>
-				<li>{`Elevation: ${parseInt(airport.elevation_ft).toLocaleString()}ft`}</li>
-				<li>{`Coordinates: ${coordinateToString([airport.latitude, airport.longitude])}`}</li>
+				<li>{`Municipality: ${airport.municipality}`}</li>
+				<li>{`Country: ${countries[airport.iso_country]}`}</li>
+				<li>{`Elevation: ${airport.elevation_ft.toLocaleString()}ft`}</li>
+				<li>
+					{`Coordinates: ${coordinateToString([airport.latitude_deg, airport.longitude_deg])}`}
+				</li>
 			</ul>
 		</div>
 	</div>

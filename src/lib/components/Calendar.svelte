@@ -59,7 +59,7 @@
 		);
 	}
 	function formatLog(log: Log) {
-		return `${log.dep_time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' })}: ${log.dep_airport.icao} TO ${log.des_airport.icao}`;
+		return `${log.dep_time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' })}: ${log.dep_airport.icao_code} TO ${log.des_airport.icao_code}`;
 	}
 	function handleNewLog(date: number): void {
 		datePicked.setFullYear(current.getFullYear());

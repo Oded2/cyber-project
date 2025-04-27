@@ -94,7 +94,7 @@
 				{#if log.favorite}
 					<i class="fa-solid fa-star text-info"></i>
 				{/if}
-				{log.dep_airport.icao} TO {log.des_airport.icao}
+				{log.dep_airport.icao_code} TO {log.des_airport.icao_code}
 			</h2>
 			<h6 class="text-sm font-light">{formatDate(log.dep_time)}</h6>
 		</div>

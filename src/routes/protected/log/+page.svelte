@@ -78,7 +78,7 @@
 				<LogInput
 					name="dep_airport"
 					displayName="Airport"
-					placeholder="ICAO or IATA code"
+					placeholder="ICAO Code"
 					autocorrect="off"
 					required
 					min={3}
@@ -98,7 +98,7 @@
 				<LogInput
 					name="des_airport"
 					displayName="Airport"
-					placeholder="ICAO or IATA code"
+					placeholder="ICAO Code"
 					autocorrect="off"
 					required
 					min={3}

@@ -77,7 +77,9 @@
 	<div class="card glass bg-primary h-full">
 		<div class="card-body text-primary-content">
 			<h2 class="card-title mb-2">{title}</h2>
-			<h1 class="text-xl font-bold">{`${log.dep_airport.icao} TO ${log.dep_airport.icao}`}</h1>
+			<h1 class="text-xl font-bold">
+				{`${log.dep_airport.icao_code} TO ${log.dep_airport.icao_code}`}
+			</h1>
 			<h1 class="text-xl font-semibold">{getDuration(log.dep_time, log.des_time)}</h1>
 			{#if aircraft}
 				<h1 class="text-xl font-semibold">

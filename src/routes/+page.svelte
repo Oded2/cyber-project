@@ -56,7 +56,7 @@
 									{#each futureLogs as log}
 										<div class="rounded-lg bg-black/20 p-5">
 											<h2 class="text-neutral-content font-semibold">
-												{`${log.dep_airport.icao} TO ${log.des_airport.icao}`}
+												{`${log.dep_airport.icao_code} TO ${log.des_airport.icao_code}`}
 											</h2>
 											<h4 class="text-neutral-content text-sm font-semibold">
 												{`${log.dep_time.toLocaleString('en-US', { month: 'short', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' })}`}
