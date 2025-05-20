@@ -63,13 +63,9 @@
 		{@render visibilityButton('unlisted')}
 		{@render favoriteButton()}
 		<a
-			href={addParams(
-				hrefs.logView.replace('slug', log.id.toString()),
-				{
-					ref: pageUrl.toString()
-				},
-				pageUrl.origin
-			)}
+			href={addParams(hrefs.logView.replace('slug', log.id.toString()), {
+				ref: pageUrl.toString()
+			})}
 			class="btn btn-primary w-full max-w-xs"
 			class:btn-disabled={inProgress}>View</a
 		>
