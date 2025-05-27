@@ -12,7 +12,7 @@ export function load({ url }) {
 	return { signup: params.get('page') === 'signup' };
 }
 export const actions: Actions = {
-	signup: async ({ request, locals: { supabase }, url }) => {
+	signup: async ({ request, locals: { supabase } }) => {
 		// Creating an admin supabase client in order to bypass RLS and insert
 		// a profile
 		const formData = await request.formData();
@@ -108,7 +108,7 @@ export const actions: Actions = {
 		// User has successfully logged in, and is redirected to the home page
 		throw redirect(303, hrefs.home);
 	},
-	reset: async ({ request, locals: { supabase }, url }) => {
+	reset: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		// Collected all form data, and conveniently stores them as a string
