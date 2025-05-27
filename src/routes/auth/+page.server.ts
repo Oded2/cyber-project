@@ -61,11 +61,9 @@ export const actions: Actions = {
 		// The user now has an account and profile, and is redirected to a page with instructions
 		throw redirect(
 			303,
-			addParams(
-				hrefs.message,
-				{ message: `An email has been sent to ${email} with a confirmation link` },
-				url.origin
-			)
+			addParams(hrefs.message, {
+				message: `An email has been sent to ${email} with a confirmation link`
+			})
 		);
 	},
 	login: async ({ request, locals: { supabase } }) => {
@@ -114,7 +112,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 		// Collected all form data, and conveniently stores them as a string
-		const redirectTo = addParams(hrefs.home, { redirect: hrefs.passwordReset }, url.origin);
+		const redirectTo = addParams(hrefs.home, { redirect: hrefs.passwordReset });
 		const { error: e } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
 		if (e) {
 			// User has encountered an uncommon error
@@ -123,11 +121,7 @@ export const actions: Actions = {
 		// User is now given instructions
 		throw redirect(
 			303,
-			addParams(
-				hrefs.message,
-				{ message: `A password reset link has been sent to ${email}` },
-				url.origin
-			)
+			addParams(hrefs.message, { message: `A password reset link has been sent to ${email}` })
 		);
 	}
 };
