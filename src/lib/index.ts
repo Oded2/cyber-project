@@ -8,21 +8,29 @@ import type { AnimationConfig } from 'svelte/animate';
 import { addToast } from './toasts';
 import type { Position } from 'geojson';
 
+// Navigation link references used throughout the app (e.g., menus, redirects)
 export const hrefs = hrefsFile;
+// Dictionary of country codes to names (used in forms, flight selectors, etc.)
 export const countries = countriesFile as { [key: string]: string };
+// List of banned countries (used for validation to restrict certain locations)
 export const bannedCountries = bannedCountriesFile;
+// Default profile picture for users who haven't uploaded one
 export const defaultProfilePicture = defaultPFP;
+// Used for username validation (only allows letters and numbers)
 export const usernameRegex = /^[A-Za-z0-9]+$/;
+// Animation config for UI transitions (e.g., flipping cards)
 export const flipConfig: AnimationConfig = { duration: 500 };
-
+// Lower bound of allowed date range for weather fetches (14 days ago at midnight)
+// Beyond this point, weather data is too outdated or unavailable
 const min: Date = new Date();
 min.setDate(min.getDate() - 14);
-// Set to midnight to allow slightly more than exactly 2 weeks
 min.setHours(0, 0, 0, 0);
+export const minDate = min;
+// Upper bound of allowed date range for weather fetches (6 days into the future + 30 minutes)
+// Beyond this point, forecasts become too speculative and unreliable
 const max: Date = new Date();
 max.setDate(max.getDate() + 6);
 max.setMinutes(max.getMinutes() + 30);
-export const minDate = min;
 export const maxDate = max;
 
 export function createSupabaseClient(key: string) {
