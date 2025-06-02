@@ -42,10 +42,10 @@
 <Container>
 	<div class="flex flex-col items-center gap-4">
 		<h1 class="text-3xl font-bold">Search</h1>
-		<form class="join shadow-xl" onsubmit={search}>
+		<form class="join shadow-xl sm:w-96" onsubmit={search}>
 			<input
 				type="text"
-				class="join-item mx-auto w-96 bg-transparent px-4 shadow-inner outline-hidden"
+				class="join-item grow bg-transparent px-4 shadow-inner outline-hidden"
 				placeholder="Search for a pilot"
 				bind:value={input}
 			/>

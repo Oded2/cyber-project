@@ -44,8 +44,10 @@
 			style="background-image: url(/background.jpg);"
 		>
 			<div class="hero-overlay bg-opacity-30"></div>
-			<div class="grid h-full w-full grid-cols-3 gap-20 p-5 text-center sm:p-10 md:p-40">
-				<div class="card glass col-auto max-h-72 p-5">
+			<div
+				class="flex grid-cols-3 flex-col-reverse gap-20 p-5 text-center sm:p-10 md:grid md:h-full md:w-full md:p-40"
+			>
+				<div class="card glass max-h-72 p-5">
 					<h1 class="text-neutral-content mb-5 text-2xl font-bold">Upcoming Flights</h1>
 					<div class="flex flex-col overflow-auto">
 						{#await futureLogsPromise}
@@ -72,7 +74,7 @@
 						{/await}
 					</div>
 				</div>
-				<div class="col-auto mx-auto flex max-w-md flex-col">
+				<div class="mx-auto flex max-w-md flex-col">
 					<h1 class="text-neutral-content mb-5 text-5xl font-bold">Hello Pilot</h1>
 					<div class="prose mb-5 bg-white/15">
 						<blockquote class="p-1 text-white">
