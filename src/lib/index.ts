@@ -1,4 +1,4 @@
-import { createClient, PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type PostgrestError, type SupabaseClient } from '@supabase/supabase-js';
 import hrefsFile from './hrefs.json';
 import countriesFile from './countries.json';
 import bannedCountriesFile from './banned.json';

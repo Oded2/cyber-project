@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { addParams, extractTime, formatDate, hrefs, maxDate, minDate, showModal } from '$lib';
+	import { addParams, extractTime, formatDate, hrefs, maxDate, minDate } from '$lib';
 	import AircraftSelect from '$lib/components/AircraftSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import CardActions from '$lib/components/CardActions.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import Container from '$lib/components/Container.svelte';
 	import FormCard from '$lib/components/FormCard.svelte';
 	import LogInput from '$lib/components/LogInput.svelte';
@@ -14,7 +13,7 @@
 	import { addToast } from '$lib/toasts.js';
 	import { onMount } from 'svelte';
 
-	const { data } = $props();
+	const { data, form } = $props();
 	const { profile, aircrafts, predefinedDate } = data;
 
 	const aircraftValues: SelectValues = aircrafts.map((item) => ({
@@ -36,6 +35,7 @@
 
 	onMount(() => {
 		if (aircrafts.length > 0) checkDate(predefinedDate);
+		if (form?.invalidAirport) alert(`${form.invalidAirport} is not a valid ICAO code`);
 	});
 
 	function checkDate(val: string): void {

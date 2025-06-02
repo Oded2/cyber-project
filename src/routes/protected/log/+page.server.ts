@@ -16,6 +16,17 @@ export const actions: Actions = {
 		if (!user) throw error(401, { message: 'No user found' });
 		const today = new Date();
 		const formData = await request.formData();
+		// Get data for the airports and check that they are real
+		const depAirport = await getAirportData(formData.get('dep_airport') as string);
+		if (!depAirport)
+			return {
+				invalidAirport: formData.get('dep_airport')?.toString()
+			};
+		const desAirport = await getAirportData(formData.get('des_airport') as string);
+		if (!desAirport)
+			return {
+				invalidAirport: formData.get('des_airport')?.toString()
+			};
 		const depDate = combineDateTime(
 			formData.get('date') as string,
 			formData.get('dep_time') as string
@@ -38,9 +49,6 @@ export const actions: Actions = {
 		if (eP) throw error(500, { message: eP.message });
 		const bannedCountries = profile.bannedCountries as string[];
 		const notes = formData.get('notes') as string;
-		// Get data for the airports and check that they are real
-		const depAirport = await getAirportData(formData.get('dep_airport') as string);
-		const desAirport = await getAirportData(formData.get('des_airport') as string);
 		const route = await buildRoute(
 			[depAirport.longitude_deg, depAirport.latitude_deg],
 			[desAirport.longitude_deg, desAirport.latitude_deg],
@@ -87,7 +95,7 @@ function numToNull(form: FormData, name: string): void {
 	if (val.length == 0) form.delete(name);
 }
 
-async function getAirportData(code: string): Promise<Airport> {
+async function getAirportData(code: string): Promise<Airport | null> {
 	// Fetches airport data by ICAO code, validates the response, and returns it
 	// Validate that the airport code is exactly 4 characters long
 	const length: number = code.length;
@@ -97,8 +105,8 @@ async function getAirportData(code: string): Promise<Airport> {
 	const url: string = addParams(apiUrl, { apiToken: AIRPORTDB_API_KEY });
 	// Perform the API request
 	const response: Response = await fetch(url);
-	// Throw an error if the response is not OK
-	if (!response.ok) throw error(response.status, { message: response.statusText });
+	// Return null if the response isn't ok
+	if (!response.ok) return null;
 	// Return the airport object, typed as Airport
 	return (await response.json()) as Airport;
 }
