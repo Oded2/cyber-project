@@ -263,9 +263,10 @@
 			<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
 			<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
 			<li>Relative Humidity: {weather.humidity}%</li>
-			<li>Pressure: {weather.pressure} Millibars</li>
+			<li>QNH: {(weather.pressure * 0.0295).toFixed(2)}</li>
 			<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
-			<li>Cloud Cover: {weather.cloud_cover}/100</li>
+			<!-- Cloud cover needs to be x/8 -->
+			<li>Cloud Cover: {Math.round(weather.cloud_cover / 12.5)}/8</li>
 			<li>Precipation: {weather.precipation.toLocaleString()}ml</li>
 		</ul>
 	</li>
