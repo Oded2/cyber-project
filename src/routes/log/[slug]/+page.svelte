@@ -20,6 +20,8 @@
 	const des_weather = weather && weather[weather.length - 1];
 	const route = log.points;
 	const countriesFlownPromise = getCountriesFlownOver(route);
+	const BREAKPOINTVISIBILITY = 10000;
+
 	let mapContainer: HTMLDivElement;
 
 	onMount(() => {
@@ -260,11 +262,17 @@
 		<strong>{title}</strong>
 		<ul>
 			<li>Wind: {weather.wind_direction}&deg;/{weather.wind_speed}KN</li>
-			<li>Temperature: {weather.temperature.toLocaleString()}&deg;C</li>
-			<li>Dew Point: {weather.dewPoint.toLocaleString()}&deg;C</li>
+			<li>Temperature: {Math.round(weather.temperature).toLocaleString()}&deg;C</li>
+			<li>Dew Point: {Math.round(weather.dewPoint).toLocaleString()}&deg;C</li>
 			<li>Relative Humidity: {weather.humidity}%</li>
-			<li>QNH: {(weather.pressure * 0.0295).toFixed(2)}</li>
-			<li>Visibility: {weather.visibility.toLocaleString()} Meters</li>
+			<!-- Multiply by 0.02953 to convert to inches -->
+			<li>QNH: {(weather.pressure * 0.02953).toFixed(2)}</li>
+			<!-- If the visibility is greater than 10km than it should only say greater than 10,000 meters -->
+			<li>
+				Visibility: {weather.visibility > BREAKPOINTVISIBILITY
+					? `>${BREAKPOINTVISIBILITY.toLocaleString()}`
+					: weather.visibility.toLocaleString()} Meters
+			</li>
 			<!-- Cloud cover needs to be x/8 -->
 			<li>Cloud Cover: {Math.round(weather.cloud_cover / 12.5)}/8</li>
 			<li>Precipation: {weather.precipation.toLocaleString()}ml</li>
