@@ -42,7 +42,9 @@
 	let finalValidatorText = $state('Field cannot be empty');
 	if (validatorText) finalValidatorText = validatorText;
 	else if (min && max)
-		finalValidatorText = `Input must be between ${min.toLocaleString()} and ${max.toLocaleString()}${type === 'text' ? ' characters long' : ''}.`;
+		if (min == max) finalValidatorText = `Input must be ${min.toLocaleString()} characters long`;
+		else
+			finalValidatorText = `Input must be between ${min.toLocaleString()} and ${max.toLocaleString()}${type === 'text' ? ' characters long' : ''}.`;
 </script>
 
 <InputLabel validatorText={noValidation ? undefined : finalValidatorText} {disclaimer}>

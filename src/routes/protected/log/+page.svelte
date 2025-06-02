@@ -81,7 +81,7 @@
 					placeholder="ICAO Code"
 					autocorrect="off"
 					required
-					min={3}
+					min={4}
 					max={4}
 				></LogInput>
 				<LogInput
@@ -101,7 +101,7 @@
 					placeholder="ICAO Code"
 					autocorrect="off"
 					required
-					min={3}
+					min={4}
 					max={4}
 				></LogInput>
 				<LogInput type="time" name="des_time" displayName="Time" value={extractedTime} required
