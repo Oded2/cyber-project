@@ -16,6 +16,21 @@ export const actions: Actions = {
 		if (!user) throw error(401, { message: 'No user found' });
 		const today = new Date();
 		const formData = await request.formData();
+		const depDate = combineDateTime(
+			formData.get('date') as string,
+			formData.get('dep_time') as string
+		);
+		const desDate = combineDateTime(
+			formData.get('date') as string,
+			formData.get('des_time') as string
+		);
+		// Block the user from creating a flight during times when he already has a flight
+		const { data: conflictingFlight } = await supabase
+			.from('logs')
+			.select()
+			.gte('dep_time', depDate.toISOString())
+			.lte('des_time', desDate.toISOString());
+		if (conflictingFlight?.length) error(409, 'Conflicting flight');
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		if (!depAirport)
@@ -27,14 +42,6 @@ export const actions: Actions = {
 			return {
 				invalidAirport: formData.get('des_airport')?.toString()
 			};
-		const depDate = combineDateTime(
-			formData.get('date') as string,
-			formData.get('dep_time') as string
-		);
-		const desDate = combineDateTime(
-			formData.get('date') as string,
-			formData.get('des_time') as string
-		);
 		if (desDate < depDate) {
 			// The user has put the hour of the arrival as before the hour of the departure
 			// Therefore it means that the user has landed a day later
