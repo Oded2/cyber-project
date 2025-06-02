@@ -110,7 +110,7 @@
 				<LogTextarea name="notes" maxlength={10000}></LogTextarea>
 				<AircraftSelect name="visibility" values={visibilities}></AircraftSelect>
 				<Checkbox name="favorite" text="Favorite"></Checkbox>
-				<Checkbox name="fetchWeather" text="Fetch weather data"></Checkbox>
+				<Checkbox name="fetchWeather" checked text="Include weather data"></Checkbox>
 			</FormCard>
 		</form>
 	{:else}
