@@ -24,13 +24,26 @@ export const actions: Actions = {
 			formData.get('date') as string,
 			formData.get('des_time') as string
 		);
+
 		// Block the user from creating a flight during times when he already has a flight
-		const { data: conflictingFlight } = await supabase
+		const { data: conflictingFlight, error: conflictError } = await supabase
 			.from('logs')
-			.select()
-			.gte('dep_time', depDate.toISOString())
-			.lte('des_time', desDate.toISOString());
-		if (conflictingFlight?.length) error(409, 'Conflicting flight');
+			.select('*')
+			.or(`dep_time.lt.${desDate.toISOString()},des_time.gt.${depDate.toISOString()}`);
+
+		if (conflictError) {
+			console.error('Error fetching conflicting flights:', conflictError);
+			throw error(500, 'Internal server error');
+		}
+		if (conflictingFlight?.length) {
+			throw error(409, 'Conflicting flight');
+		}
+		// Proceed with logging the flight if no conflicts
+		// Your flight logging logic here...
+
+		// Proceed with logging the flight if no conflicts
+		// Your flight logging logic here...
+
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		if (!depAirport)
