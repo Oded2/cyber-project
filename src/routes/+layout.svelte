@@ -27,7 +27,7 @@
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
 			if (newSession?.expires_at !== session?.expires_at) {
-				// TODO: Explain this
+				// When the session's expiration time changes (for example, after login or token refresh), we invalidate the 'supabase:auth' data to ensure the app uses the latest authentication state
 				invalidate('supabase:auth');
 			}
 			if (event === 'SIGNED_OUT') window.location.href = hrefs.home;
