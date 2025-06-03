@@ -10,7 +10,6 @@
 	import Toasts from '$lib/components/Toasts.svelte';
 
 	const { children, data } = $props();
-	// possible issue
 	const { supabase, session, user, profile } = data;
 
 	let status = $derived(page.status);
