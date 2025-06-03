@@ -1,5 +1,5 @@
 import { AIRPORTDB_API_KEY } from '$env/static/private';
-import { addParams, combineDateTime, extractDate, hrefs, maxDate, minDate } from '$lib';
+import { addParams, combineDateTime, extractDate, handleLogs, hrefs, maxDate, minDate } from '$lib';
 import { buildRoute } from '$lib/coordinates.js';
 import { getWeather } from '$lib/weather';
 import { error, redirect, type Actions } from '@sveltejs/kit';
@@ -16,26 +16,31 @@ export const actions: Actions = {
 		if (!user) throw error(401, { message: 'No user found' });
 		const today = new Date();
 		const formData = await request.formData();
-		const depDate = combineDateTime(
+		const depTime = combineDateTime(
 			formData.get('date') as string,
 			formData.get('dep_time') as string
 		);
-		const desDate = combineDateTime(
+		const desTime = combineDateTime(
 			formData.get('date') as string,
 			formData.get('des_time') as string
 		);
 
 		// Block the user from creating a flight during times when he already has a flight
-		const { data: conflictingFlight, error: conflictError } = await supabase
+		const { data: temp, error: conflictError } = await supabase
 			.from('logs')
-			.select('*')
-			.or(`dep_time.lt.${desDate.toISOString()},des_time.gt.${depDate.toISOString()}`);
-
+			.select()
+			.eq('owner', user.id);
 		if (conflictError) {
 			console.error('Error fetching conflicting flights:', conflictError);
 			throw error(500, 'Internal server error');
 		}
-		if (conflictingFlight?.length) {
+
+		let allUserFlights = temp as Log[];
+		handleLogs(allUserFlights);
+		const conflictingFlight = allUserFlights.some(
+			(log) => depTime <= log.des_time && log.dep_time <= desTime
+		);
+		if (conflictingFlight) {
 			throw error(409, 'Conflicting flight');
 		}
 		// Get data for the airports and check that they are real
@@ -49,12 +54,12 @@ export const actions: Actions = {
 			return {
 				invalidAirport: formData.get('des_airport')?.toString()
 			};
-		if (desDate < depDate) {
+		if (desTime < depTime) {
 			// The user has put the hour of the arrival as before the hour of the departure
 			// Therefore it means that the user has landed a day later
-			desDate.setDate(desDate.getDate() + 1);
+			desTime.setDate(desTime.getDate() + 1);
 		}
-		validateDates(depDate, desDate);
+		validateDates(depTime, desTime);
 		const { data: profile, error: eP } = await supabase
 			.from('profiles')
 			.select('bannedCountries')
@@ -75,18 +80,18 @@ export const actions: Actions = {
 		delete obj['date']; // Date was only used to calculate the dep_time and the des_time
 		delete obj['fetchWeather']; // Only used to determine if the weather should be fetched or not
 		const fetchWeather = formData.get('fetchWeather'); // Determine if the weather should be fetched
-		if (fetchWeather && depDate > minDate && desDate < maxDate) {
+		if (fetchWeather && depTime > minDate && desTime < maxDate) {
 			// Only fetch the weather if the dates are not out of bounds
 			// Get the weather data from the departure airport to the destination airport
-			const weather = await getWeather(route, depDate, desDate);
+			const weather = await getWeather(route, depTime, desTime);
 			obj['weather_data'] = weather;
 		}
 		obj['dep_airport'] = depAirport;
 		obj['des_airport'] = desAirport;
 		// Ensure that the dates are inserted properly
-		obj['dep_time'] = depDate.toISOString();
-		obj['des_time'] = desDate.toISOString();
-		obj['true_weather'] = desDate < today;
+		obj['dep_time'] = depTime.toISOString();
+		obj['des_time'] = desTime.toISOString();
+		obj['true_weather'] = desTime < today;
 		// Remove any whitespace from the notes
 		obj['notes'] = notes.trim();
 		obj['points'] = route.flat();
