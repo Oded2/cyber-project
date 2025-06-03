@@ -38,12 +38,6 @@ export const actions: Actions = {
 		if (conflictingFlight?.length) {
 			throw error(409, 'Conflicting flight');
 		}
-		// Proceed with logging the flight if no conflicts
-		// Your flight logging logic here...
-
-		// Proceed with logging the flight if no conflicts
-		// Your flight logging logic here...
-
 		// Get data for the airports and check that they are real
 		const depAirport = await getAirportData(formData.get('dep_airport') as string);
 		if (!depAirport)
