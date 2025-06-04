@@ -11,9 +11,10 @@
 	const totalFlightTime = getTotalFlightTime();
 
 	function getTotalFlightTime(): number {
-		let total: number = 0;
-		for (const log of logs) total += log.des_time.getTime() - log.dep_time.getTime();
-		return total;
+		return logs.reduce(
+			(total, prevLog) => (total += prevLog.des_time.getTime() - prevLog.dep_time.getTime()),
+			0
+		);
 	}
 </script>
 
@@ -27,7 +28,7 @@
 				/>
 			</div>
 		</div>
-		<div class="card glass w-full bg-info">
+		<div class="card glass bg-info w-full">
 			<div class="card-body text-info-content">
 				<h6 class="font-semibold">{profile.username}</h6>
 				<h1 class="text-4xl font-bold">{profile.display}</h1>
