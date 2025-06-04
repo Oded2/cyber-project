@@ -17,7 +17,6 @@
 	const mostFrequentAircraft = getMostFrequentAircraft();
 
 	function getMostFrequentAircraft(): Aircraft | 'Unknown' {
-		// Challenge
 		const counter: { [key: number]: number } = {};
 		for (const log of logs) {
 			const aircraftId = log.aircraft;
