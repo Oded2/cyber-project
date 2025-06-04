@@ -24,7 +24,6 @@ export const actions: Actions = {
 			formData.get('date') as string,
 			formData.get('des_time') as string
 		);
-
 		// Block the user from creating a flight during times when he already has a flight
 		const { data: temp, error: conflictError } = await supabase
 			.from('logs')
